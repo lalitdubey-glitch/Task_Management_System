@@ -1,0 +1,72 @@
+﻿<div class="container">
+    <div class="row">
+        <div class="col-lg-6 col-sm-12 col-md-12 mx-auto rounded-pill p-5 shadow">
+            
+            <form method="post" id="projectForm">
+                <h2 class="text-success text-center">Add Project</h2>
+                <input type="text" name="projectID" id="projectID" hidden/>
+                <label>Project Name</label>
+                <input type="text" name="projectName" id="projectName" placeholder="Enter Project Name..." class="form-control" required/>
+                <label>Description</label>
+                <input type="text" name="Description" id="Description" placeholder="Enter Project Description..." class="form-control" required />
+
+                <label>Created By</label>
+                <input type="text" name="createdBy" id="createdBy" class="form-control" readonly value="@ViewBag.createdBy" />
+
+                <div class="text-center d-block my-4">
+                    <input type="reset" value="Clear" class="btn btn-outline-dark  " />
+                    <input type="button" value="Add Project" class="btn btn-success" id="addProject"/>
+                </div>
+
+            </form>
+        </div>
+    </div>
+</div>
+
+<div class="table-responsive border border-1 p-3 shadow rounded-3 mt-5">
+    <table class="table table-bordered table-hover " id="projectTable">
+        <thead class="table-dark text-center">
+            <tr>
+                <td>Sr. No.</td>
+                <td>Project_Name</td>
+                <td>Description</td>
+                <td>Created_By</td>
+                <td>Created_At</td>
+                <td>Action</td>
+            </tr>
+        </thead>
+        <tbody></tbody>
+    </table>
+</div>
+ 
+<div class="modal fade" id="ViewUserTask" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="centerModalLabel" aria-hidden="true">
+
+    <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable modal-fullscreen w-75 mx-auto">
+        <div class="modal-content">
+
+            <div class="modal-header">
+                <div>
+                    <h4 class="modal-title" id="PrjName">Project Name</h4>
+                    <p id="PrjDesc" class="text-muted mb-0"></p>
+                </div>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+
+            <div class="modal-body"> 
+                <div id="AllTask">
+                    <p class="text-muted" id="noTask">No Task Assign...</p>
+                </div>
+            </div>
+
+            <div class="modal-footer d-flex flex-column align-items-stretch gap-2"> 
+
+                <div class="d-flex justify-content-end gap-2">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal" aria-label="Close">Close</button>
+                </div>
+            </div>
+
+        </div>
+    </div>
+</div>
+
+

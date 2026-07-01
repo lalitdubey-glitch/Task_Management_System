@@ -1,0 +1,185 @@
+﻿@using System.Data
+@model DataTable
+
+<input type="text" hidden name="hdnUserId" id="hdnUserId" value="@User.FindFirst("userId")?.Value" />
+
+@foreach (DataRow row in Model.Rows)
+{
+    <div class="container">
+        <div class="row">
+            <div class="col-6">
+                <h2>--Your Details--</h2>
+                <div class="card p-2">
+                    <h4>Name : @row["name"]</h4>
+                    <h4>Email : @row["email"]</h4>
+                    <h4>Role : @row["role"]</h4>
+                    <h4>Created At : @row["createdAt"]</h4>
+
+                    <div>
+                        <input type="button" value="Edit" class="btn btn-success" id="userEdit" />
+                    </div>
+                    
+                </div>
+              
+            </div>
+            <div class="col-6">
+                <canvas id="empCanva"></canvas>
+            </div>
+            
+        </div>
+    </div>
+} 
+ 
+ 
+<div class="table-responsive border border-1 p-3 shadow rounded-3 mt-5">
+    <table class="table table-bordered table-hover table-striped" id="EmpTable">
+        <thead class="table-dark">
+            <tr>
+                <th>Sr.No.</th>
+                <th>Project</th> 
+                <th>Task</th>
+                <th>Desc</th>
+                <th>Priority</th>
+                <th>Created_At</th>
+                <th>Due_Date</th>
+                <th>Status</th>
+                <th>Actions</th>
+
+            </tr>
+        </thead>
+        <tbody></tbody>
+    </table>
+</div>
+
+ 
+<div class="modal fade" id="EmpModal" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="centerModalLabel" aria-hidden="true">
+
+    <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable modal-fullscreen w-75 mx-auto">
+        <div class="modal-content">
+
+            <div class="modal-header">
+                <div>
+                    <h4 class="modal-title" id="taskName">Task Name</h4>
+                  <div>
+                        <p id="pName" hidden></p>
+                        <p id="taskDesc" class="text-muted mb-0"></p>
+                  </div>
+                 
+                </div>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+
+            <div class="modal-body">
+                <input type="hidden" name="id" id="id" />
+                <div id="userCmt">
+                    <p class="text-muted">No comments yet...</p>
+                </div>
+            </div>
+
+            <div class="modal-footer d-flex flex-column align-items-stretch gap-2">
+                <textarea name="comment" id="comment" class="form-control" rows="2" placeholder="Write comment here..."></textarea>
+
+                <div class="d-flex justify-content-end gap-2"> 
+                    <button type="button" class="btn btn-primary" id="sendCmt">Send</button>
+                </div>
+            </div>
+
+        </div>
+    </div>
+</div>
+
+
+<div class="modal fade" id="UserEditModal" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="modalTitle" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+
+            <div class="modal-header">
+                <h5 class="modal-title" id="modalTitle">Edit User</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            @foreach (DataRow row in Model.Rows)
+            { 
+                <div class="modal-body">
+                    <form method="post" id="editFormUserModal">
+                    <input type="text" name="id" id="id" value="@User.FindFirst("userId")?.Value" hidden/>
+                    <label>Name</label>
+                    <input type="text" name="name" value="@row["name"]" id="name" class="form-control" />
+                    <label>Email</label>
+                    <input type="email" name="email" id="email" value="@row["email"]" readonly class="form-control" />
+                </form>
+            </div>
+            }
+            <div class="modal-footer">
+
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                <input type="button" value="Forgot Password?" id="frgtPass" class="btn btn-warning" />
+                <button type="button" class="btn btn-primary" id="SaveEdit">Save Changes</button>
+            </div>
+
+        </div>
+    </div>
+</div>
+
+
+<div class="modal fade" id="SendOtpModal" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="forgotPassModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="forgotPassModalLabel">Send OTP</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <div class="mb-3">
+                    <label for="forgotEmail" class="form-label">Enter your registered email</label>
+                    <input type="email" class="form-control" id="forgotEmail" value="@User.FindFirst("email")?.Value" placeholder="name@example.com">
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                <button type="button" class="btn btn-primary" id="BtnSendOtp">Send OTP</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="VerifyOtpModal" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="VerifyOtpModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="VerifyOtpModalLabel">Verify OTP</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <div class="mb-3">
+                    <label for="otp" class="form-label">Enter your OTP</label>
+                    <input type="text" class="form-control" id="otp" name="otp" placeholder="..........">
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                <button type="button" class="btn btn-primary" id="BtnVerifyOtp">Verify OTP</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="ChangePassModal" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="ChangePassModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="ChangePassModalLabel">Reset Password</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <div class="mb-3">
+                    <label for="pass" class="form-label">Enter your New Password</label>
+                    <input type="text" class="form-control" id="pass" name="pass" placeholder="..........">
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                <button type="button" class="btn btn-primary" id="BtnChangePass">Change Password</button>
+            </div>
+        </div>
+    </div>
+</div>

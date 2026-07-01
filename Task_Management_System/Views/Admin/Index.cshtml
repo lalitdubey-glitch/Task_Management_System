@@ -1,0 +1,39 @@
+﻿ 
+<h1>Hello @ViewBag.LoginUser</h1>
+
+<div class="container">
+    <div class="row">
+        <div class="col-6 border border-2">
+            <div>
+                <canvas id="statsChart"></canvas>
+            </div>
+
+            <input type="text" hidden value="@ViewBag.totalUser" id="user" />
+            <input type="text" hidden value="@ViewBag.totalProject" id="project" />
+            <input type="text" hidden value="@ViewBag.totalTask" id="task" />
+
+        </div>
+        <div class="col-6 border border-2">
+            <a href="/admin/UserData">
+                <input type="button" class="btn btn-primary" value="View User" />
+            </a>
+
+            <a href="/admin/Project">
+                <input type="button" class="btn btn-success" value="View Project" />
+            </a>
+
+            <a href="/admin/Task">
+                <input type="button" class="btn btn-danger" value="View Task" />
+            </a>
+
+        </div>
+    </div>
+</div>
+ 
+
+
+
+ 
+
+
+

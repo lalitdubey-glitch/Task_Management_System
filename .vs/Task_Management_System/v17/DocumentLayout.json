@@ -1,0 +1,436 @@
+{
+  "Version": 1,
+  "WorkspaceRootPath": "E:\\Dot Net Core\\Task_Management_System\\",
+  "Documents": [
+    {
+      "AbsoluteMoniker": "D:0:0:{4AD5D3C3-F2ED-44EA-A306-89F393A98361}|Task_Management_System\\Task_Management_System.csproj|e:\\dot net core\\task_management_system\\task_management_system\\appsettings.json||{90A6B3A7-C1A3-4009-A288-E2FF89E96FA0}",
+      "RelativeMoniker": "D:0:0:{4AD5D3C3-F2ED-44EA-A306-89F393A98361}|Task_Management_System\\Task_Management_System.csproj|solutionrelative:task_management_system\\appsettings.json||{90A6B3A7-C1A3-4009-A288-E2FF89E96FA0}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{4AD5D3C3-F2ED-44EA-A306-89F393A98361}|Task_Management_System\\Task_Management_System.csproj|e:\\dot net core\\task_management_system\\task_management_system\\views\\employee\\index.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}",
+      "RelativeMoniker": "D:0:0:{4AD5D3C3-F2ED-44EA-A306-89F393A98361}|Task_Management_System\\Task_Management_System.csproj|solutionrelative:task_management_system\\views\\employee\\index.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{4AD5D3C3-F2ED-44EA-A306-89F393A98361}|Task_Management_System\\Task_Management_System.csproj|e:\\dot net core\\task_management_system\\task_management_system\\controllers\\homecontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{4AD5D3C3-F2ED-44EA-A306-89F393A98361}|Task_Management_System\\Task_Management_System.csproj|solutionrelative:task_management_system\\controllers\\homecontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{4AD5D3C3-F2ED-44EA-A306-89F393A98361}|Task_Management_System\\Task_Management_System.csproj|e:\\dot net core\\task_management_system\\task_management_system\\controllers\\employeecontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{4AD5D3C3-F2ED-44EA-A306-89F393A98361}|Task_Management_System\\Task_Management_System.csproj|solutionrelative:task_management_system\\controllers\\employeecontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{4AD5D3C3-F2ED-44EA-A306-89F393A98361}|Task_Management_System\\Task_Management_System.csproj|e:\\dot net core\\task_management_system\\task_management_system\\views\\admin\\task.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}",
+      "RelativeMoniker": "D:0:0:{4AD5D3C3-F2ED-44EA-A306-89F393A98361}|Task_Management_System\\Task_Management_System.csproj|solutionrelative:task_management_system\\views\\admin\\task.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{4AD5D3C3-F2ED-44EA-A306-89F393A98361}|Task_Management_System\\Task_Management_System.csproj|e:\\dot net core\\task_management_system\\task_management_system\\wwwroot\\js\\task.js||{14D17961-FE51-464D-9111-C4AF11D7D99A}",
+      "RelativeMoniker": "D:0:0:{4AD5D3C3-F2ED-44EA-A306-89F393A98361}|Task_Management_System\\Task_Management_System.csproj|solutionrelative:task_management_system\\wwwroot\\js\\task.js||{14D17961-FE51-464D-9111-C4AF11D7D99A}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{4AD5D3C3-F2ED-44EA-A306-89F393A98361}|Task_Management_System\\Task_Management_System.csproj|e:\\dot net core\\task_management_system\\task_management_system\\controllers\\admincontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{4AD5D3C3-F2ED-44EA-A306-89F393A98361}|Task_Management_System\\Task_Management_System.csproj|solutionrelative:task_management_system\\controllers\\admincontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{4AD5D3C3-F2ED-44EA-A306-89F393A98361}|Task_Management_System\\Task_Management_System.csproj|e:\\dot net core\\task_management_system\\task_management_system\\models\\emailservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{4AD5D3C3-F2ED-44EA-A306-89F393A98361}|Task_Management_System\\Task_Management_System.csproj|solutionrelative:task_management_system\\models\\emailservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{4AD5D3C3-F2ED-44EA-A306-89F393A98361}|Task_Management_System\\Task_Management_System.csproj|e:\\dot net core\\task_management_system\\task_management_system\\wwwroot\\js\\employee.js||{14D17961-FE51-464D-9111-C4AF11D7D99A}",
+      "RelativeMoniker": "D:0:0:{4AD5D3C3-F2ED-44EA-A306-89F393A98361}|Task_Management_System\\Task_Management_System.csproj|solutionrelative:task_management_system\\wwwroot\\js\\employee.js||{14D17961-FE51-464D-9111-C4AF11D7D99A}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{4AD5D3C3-F2ED-44EA-A306-89F393A98361}|Task_Management_System\\Task_Management_System.csproj|e:\\dot net core\\task_management_system\\task_management_system\\wwwroot\\js\\comment.js||{14D17961-FE51-464D-9111-C4AF11D7D99A}",
+      "RelativeMoniker": "D:0:0:{4AD5D3C3-F2ED-44EA-A306-89F393A98361}|Task_Management_System\\Task_Management_System.csproj|solutionrelative:task_management_system\\wwwroot\\js\\comment.js||{14D17961-FE51-464D-9111-C4AF11D7D99A}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{4AD5D3C3-F2ED-44EA-A306-89F393A98361}|Task_Management_System\\Task_Management_System.csproj|e:\\dot net core\\task_management_system\\task_management_system\\wwwroot\\js\\admin.js||{14D17961-FE51-464D-9111-C4AF11D7D99A}",
+      "RelativeMoniker": "D:0:0:{4AD5D3C3-F2ED-44EA-A306-89F393A98361}|Task_Management_System\\Task_Management_System.csproj|solutionrelative:task_management_system\\wwwroot\\js\\admin.js||{14D17961-FE51-464D-9111-C4AF11D7D99A}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{4AD5D3C3-F2ED-44EA-A306-89F393A98361}|Task_Management_System\\Task_Management_System.csproj|e:\\dot net core\\task_management_system\\task_management_system\\models\\taskmodel.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{4AD5D3C3-F2ED-44EA-A306-89F393A98361}|Task_Management_System\\Task_Management_System.csproj|solutionrelative:task_management_system\\models\\taskmodel.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{4AD5D3C3-F2ED-44EA-A306-89F393A98361}|Task_Management_System\\Task_Management_System.csproj|e:\\dot net core\\task_management_system\\task_management_system\\views\\admin\\index.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}",
+      "RelativeMoniker": "D:0:0:{4AD5D3C3-F2ED-44EA-A306-89F393A98361}|Task_Management_System\\Task_Management_System.csproj|solutionrelative:task_management_system\\views\\admin\\index.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{4AD5D3C3-F2ED-44EA-A306-89F393A98361}|Task_Management_System\\Task_Management_System.csproj|e:\\dot net core\\task_management_system\\task_management_system\\wwwroot\\js\\site.js||{14D17961-FE51-464D-9111-C4AF11D7D99A}",
+      "RelativeMoniker": "D:0:0:{4AD5D3C3-F2ED-44EA-A306-89F393A98361}|Task_Management_System\\Task_Management_System.csproj|solutionrelative:task_management_system\\wwwroot\\js\\site.js||{14D17961-FE51-464D-9111-C4AF11D7D99A}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{4AD5D3C3-F2ED-44EA-A306-89F393A98361}|Task_Management_System\\Task_Management_System.csproj|e:\\dot net core\\task_management_system\\task_management_system\\program.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{4AD5D3C3-F2ED-44EA-A306-89F393A98361}|Task_Management_System\\Task_Management_System.csproj|solutionrelative:task_management_system\\program.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{4AD5D3C3-F2ED-44EA-A306-89F393A98361}|Task_Management_System\\Task_Management_System.csproj|e:\\dot net core\\task_management_system\\task_management_system\\models\\signupmodel.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{4AD5D3C3-F2ED-44EA-A306-89F393A98361}|Task_Management_System\\Task_Management_System.csproj|solutionrelative:task_management_system\\models\\signupmodel.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{4AD5D3C3-F2ED-44EA-A306-89F393A98361}|Task_Management_System\\Task_Management_System.csproj|e:\\dot net core\\task_management_system\\task_management_system\\views\\admin\\userdata.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}",
+      "RelativeMoniker": "D:0:0:{4AD5D3C3-F2ED-44EA-A306-89F393A98361}|Task_Management_System\\Task_Management_System.csproj|solutionrelative:task_management_system\\views\\admin\\userdata.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{4AD5D3C3-F2ED-44EA-A306-89F393A98361}|Task_Management_System\\Task_Management_System.csproj|e:\\dot net core\\task_management_system\\task_management_system\\views\\shared\\_layout.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}",
+      "RelativeMoniker": "D:0:0:{4AD5D3C3-F2ED-44EA-A306-89F393A98361}|Task_Management_System\\Task_Management_System.csproj|solutionrelative:task_management_system\\views\\shared\\_layout.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{4AD5D3C3-F2ED-44EA-A306-89F393A98361}|Task_Management_System\\Task_Management_System.csproj|e:\\dot net core\\task_management_system\\task_management_system\\views\\home\\userdashboard.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}",
+      "RelativeMoniker": "D:0:0:{4AD5D3C3-F2ED-44EA-A306-89F393A98361}|Task_Management_System\\Task_Management_System.csproj|solutionrelative:task_management_system\\views\\home\\userdashboard.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{4AD5D3C3-F2ED-44EA-A306-89F393A98361}|Task_Management_System\\Task_Management_System.csproj|e:\\dot net core\\task_management_system\\task_management_system\\views\\admin\\project.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}",
+      "RelativeMoniker": "D:0:0:{4AD5D3C3-F2ED-44EA-A306-89F393A98361}|Task_Management_System\\Task_Management_System.csproj|solutionrelative:task_management_system\\views\\admin\\project.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{4AD5D3C3-F2ED-44EA-A306-89F393A98361}|Task_Management_System\\Task_Management_System.csproj|e:\\dot net core\\task_management_system\\task_management_system\\wwwroot\\js\\project.js||{14D17961-FE51-464D-9111-C4AF11D7D99A}",
+      "RelativeMoniker": "D:0:0:{4AD5D3C3-F2ED-44EA-A306-89F393A98361}|Task_Management_System\\Task_Management_System.csproj|solutionrelative:task_management_system\\wwwroot\\js\\project.js||{14D17961-FE51-464D-9111-C4AF11D7D99A}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{4AD5D3C3-F2ED-44EA-A306-89F393A98361}|Task_Management_System\\Task_Management_System.csproj|e:\\dot net core\\task_management_system\\task_management_system\\models\\projectmodel.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{4AD5D3C3-F2ED-44EA-A306-89F393A98361}|Task_Management_System\\Task_Management_System.csproj|solutionrelative:task_management_system\\models\\projectmodel.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{4AD5D3C3-F2ED-44EA-A306-89F393A98361}|Task_Management_System\\Task_Management_System.csproj|e:\\dot net core\\task_management_system\\task_management_system\\views\\home\\index.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}",
+      "RelativeMoniker": "D:0:0:{4AD5D3C3-F2ED-44EA-A306-89F393A98361}|Task_Management_System\\Task_Management_System.csproj|solutionrelative:task_management_system\\views\\home\\index.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{4AD5D3C3-F2ED-44EA-A306-89F393A98361}|Task_Management_System\\Task_Management_System.csproj|e:\\dot net core\\task_management_system\\task_management_system\\views\\home\\login.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}",
+      "RelativeMoniker": "D:0:0:{4AD5D3C3-F2ED-44EA-A306-89F393A98361}|Task_Management_System\\Task_Management_System.csproj|solutionrelative:task_management_system\\views\\home\\login.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}"
+    }
+  ],
+  "DocumentGroupContainers": [
+    {
+      "Orientation": 0,
+      "VerticalTabListWidth": 256,
+      "DocumentGroups": [
+        {
+          "DockedWidth": 200,
+          "SelectedChildIndex": 14,
+          "Children": [
+            {
+              "$type": "Document",
+              "DocumentIndex": 2,
+              "Title": "HomeController.cs",
+              "DocumentMoniker": "E:\\Dot Net Core\\Task_Management_System\\Task_Management_System\\Controllers\\HomeController.cs",
+              "RelativeDocumentMoniker": "Task_Management_System\\Controllers\\HomeController.cs",
+              "ToolTip": "E:\\Dot Net Core\\Task_Management_System\\Task_Management_System\\Controllers\\HomeController.cs",
+              "RelativeToolTip": "Task_Management_System\\Controllers\\HomeController.cs",
+              "ViewState": "AgIAACkAAAAAAAAAAAAIwNoAAAAaAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-06-27T03:36:21.897Z",
+              "IsPinned": true
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 6,
+              "Title": "AdminController.cs",
+              "DocumentMoniker": "E:\\Dot Net Core\\Task_Management_System\\Task_Management_System\\Controllers\\AdminController.cs",
+              "RelativeDocumentMoniker": "Task_Management_System\\Controllers\\AdminController.cs",
+              "ToolTip": "E:\\Dot Net Core\\Task_Management_System\\Task_Management_System\\Controllers\\AdminController.cs",
+              "RelativeToolTip": "Task_Management_System\\Controllers\\AdminController.cs",
+              "ViewState": "AgIAALoAAAAAAAAAAAAkwMAAAAArAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-06-27T05:56:01.952Z",
+              "IsPinned": true
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 3,
+              "Title": "EmployeeController.cs",
+              "DocumentMoniker": "E:\\Dot Net Core\\Task_Management_System\\Task_Management_System\\Controllers\\EmployeeController.cs",
+              "RelativeDocumentMoniker": "Task_Management_System\\Controllers\\EmployeeController.cs",
+              "ToolTip": "E:\\Dot Net Core\\Task_Management_System\\Task_Management_System\\Controllers\\EmployeeController.cs",
+              "RelativeToolTip": "Task_Management_System\\Controllers\\EmployeeController.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAGIAAAANAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-06-27T08:00:55.481Z",
+              "IsPinned": true
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 8,
+              "Title": "Employee.js",
+              "DocumentMoniker": "E:\\Dot Net Core\\Task_Management_System\\Task_Management_System\\wwwroot\\js\\Employee.js",
+              "RelativeDocumentMoniker": "Task_Management_System\\wwwroot\\js\\Employee.js",
+              "ToolTip": "E:\\Dot Net Core\\Task_Management_System\\Task_Management_System\\wwwroot\\js\\Employee.js",
+              "RelativeToolTip": "Task_Management_System\\wwwroot\\js\\Employee.js",
+              "ViewState": "AgIAAGkAAAAAAAAAAAAQwHQAAAArAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.001646|",
+              "WhenOpened": "2026-06-28T15:27:43.421Z",
+              "IsPinned": true
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 1,
+              "Title": "Index.cshtml",
+              "DocumentMoniker": "E:\\Dot Net Core\\Task_Management_System\\Task_Management_System\\Views\\Employee\\Index.cshtml",
+              "RelativeDocumentMoniker": "Task_Management_System\\Views\\Employee\\Index.cshtml",
+              "ToolTip": "E:\\Dot Net Core\\Task_Management_System\\Task_Management_System\\Views\\Employee\\Index.cshtml",
+              "RelativeToolTip": "Task_Management_System\\Views\\Employee\\Index.cshtml",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAG0AAAASAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
+              "WhenOpened": "2026-06-28T15:26:56.172Z",
+              "IsPinned": true
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 10,
+              "Title": "admin.js",
+              "DocumentMoniker": "E:\\Dot Net Core\\Task_Management_System\\Task_Management_System\\wwwroot\\js\\admin.js",
+              "RelativeDocumentMoniker": "Task_Management_System\\wwwroot\\js\\admin.js",
+              "ToolTip": "E:\\Dot Net Core\\Task_Management_System\\Task_Management_System\\wwwroot\\js\\admin.js",
+              "RelativeToolTip": "Task_Management_System\\wwwroot\\js\\admin.js",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAABIAAAAsAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.001646|",
+              "WhenOpened": "2026-06-27T09:40:02.729Z",
+              "IsPinned": true
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 13,
+              "Title": "site.js",
+              "DocumentMoniker": "E:\\Dot Net Core\\Task_Management_System\\Task_Management_System\\wwwroot\\js\\site.js",
+              "RelativeDocumentMoniker": "Task_Management_System\\wwwroot\\js\\site.js",
+              "ToolTip": "E:\\Dot Net Core\\Task_Management_System\\Task_Management_System\\wwwroot\\js\\site.js",
+              "RelativeToolTip": "Task_Management_System\\wwwroot\\js\\site.js",
+              "ViewState": "AgIAAAYAAAAAAAAAAAAAAB4AAAA1AAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.001646|",
+              "WhenOpened": "2026-06-27T04:45:25.595Z",
+              "IsPinned": true
+            },
+            {
+              "$type": "Bookmark",
+              "Name": "ST:129:0:{1fc202d4-d401-403c-9834-5b218574bb67}"
+            },
+            {
+              "$type": "Bookmark",
+              "Name": "ST:0:0:{eefa5220-e298-11d0-8f78-00a0c9110057}"
+            },
+            {
+              "$type": "Bookmark",
+              "Name": "ST:0:0:{fbcae063-e2c0-4ab1-a516-996ea3dafb72}"
+            },
+            {
+              "$type": "Bookmark",
+              "Name": "ST:0:0:{34e76e81-ee4a-11d0-ae2e-00a0c90fffc3}"
+            },
+            {
+              "$type": "Bookmark",
+              "Name": "ST:0:0:{3ae79031-e1bc-11d0-8f78-00a0c9110057}"
+            },
+            {
+              "$type": "Bookmark",
+              "Name": "ST:0:0:{74946827-37a0-11d2-a273-00c04f8ef4ff}"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 7,
+              "Title": "EmailService.cs",
+              "DocumentMoniker": "E:\\Dot Net Core\\Task_Management_System\\Task_Management_System\\Models\\EmailService.cs",
+              "RelativeDocumentMoniker": "Task_Management_System\\Models\\EmailService.cs",
+              "ToolTip": "E:\\Dot Net Core\\Task_Management_System\\Task_Management_System\\Models\\EmailService.cs",
+              "RelativeToolTip": "Task_Management_System\\Models\\EmailService.cs",
+              "ViewState": "AgIAAAkAAAAAAAAAAAAAACIAAAAQAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-06-30T16:03:52.686Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 0,
+              "Title": "appsettings.json",
+              "DocumentMoniker": "E:\\Dot Net Core\\Task_Management_System\\Task_Management_System\\appsettings.json",
+              "RelativeDocumentMoniker": "Task_Management_System\\appsettings.json",
+              "ToolTip": "E:\\Dot Net Core\\Task_Management_System\\Task_Management_System\\appsettings.json",
+              "RelativeToolTip": "Task_Management_System\\appsettings.json",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAA4AAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.001642|",
+              "WhenOpened": "2026-06-30T15:59:01.619Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 14,
+              "Title": "Program.cs",
+              "DocumentMoniker": "E:\\Dot Net Core\\Task_Management_System\\Task_Management_System\\Program.cs",
+              "RelativeDocumentMoniker": "Task_Management_System\\Program.cs",
+              "ToolTip": "E:\\Dot Net Core\\Task_Management_System\\Task_Management_System\\Program.cs",
+              "RelativeToolTip": "Task_Management_System\\Program.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAACoAAAAdAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-06-30T15:57:16.239Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 15,
+              "Title": "SignUpModel.cs",
+              "DocumentMoniker": "E:\\Dot Net Core\\Task_Management_System\\Task_Management_System\\Models\\SignUpModel.cs",
+              "RelativeDocumentMoniker": "Task_Management_System\\Models\\SignUpModel.cs",
+              "ToolTip": "E:\\Dot Net Core\\Task_Management_System\\Task_Management_System\\Models\\SignUpModel.cs",
+              "RelativeToolTip": "Task_Management_System\\Models\\SignUpModel.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-06-30T12:45:36.544Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 22,
+              "Title": "Index.cshtml",
+              "DocumentMoniker": "E:\\Dot Net Core\\Task_Management_System\\Task_Management_System\\Views\\Home\\Index.cshtml",
+              "RelativeDocumentMoniker": "Task_Management_System\\Views\\Home\\Index.cshtml",
+              "ToolTip": "E:\\Dot Net Core\\Task_Management_System\\Task_Management_System\\Views\\Home\\Index.cshtml",
+              "RelativeToolTip": "Task_Management_System\\Views\\Home\\Index.cshtml",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAYAAAAGAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
+              "WhenOpened": "2026-06-30T05:18:05.886Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 23,
+              "Title": "Login.cshtml",
+              "DocumentMoniker": "E:\\Dot Net Core\\Task_Management_System\\Task_Management_System\\Views\\Home\\Login.cshtml",
+              "RelativeDocumentMoniker": "Task_Management_System\\Views\\Home\\Login.cshtml",
+              "ToolTip": "E:\\Dot Net Core\\Task_Management_System\\Task_Management_System\\Views\\Home\\Login.cshtml",
+              "RelativeToolTip": "Task_Management_System\\Views\\Home\\Login.cshtml",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAABMAAAAGAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
+              "WhenOpened": "2026-06-29T17:11:01.02Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 5,
+              "Title": "Task.js",
+              "DocumentMoniker": "E:\\Dot Net Core\\Task_Management_System\\Task_Management_System\\wwwroot\\js\\Task.js",
+              "RelativeDocumentMoniker": "Task_Management_System\\wwwroot\\js\\Task.js",
+              "ToolTip": "E:\\Dot Net Core\\Task_Management_System\\Task_Management_System\\wwwroot\\js\\Task.js",
+              "RelativeToolTip": "Task_Management_System\\wwwroot\\js\\Task.js",
+              "ViewState": "AgIAAEIAAAAAAAAAAAAowFoAAACIAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.001646|",
+              "WhenOpened": "2026-06-28T07:22:53.031Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 9,
+              "Title": "Comment.js",
+              "DocumentMoniker": "E:\\Dot Net Core\\Task_Management_System\\Task_Management_System\\wwwroot\\js\\Comment.js",
+              "RelativeDocumentMoniker": "Task_Management_System\\wwwroot\\js\\Comment.js",
+              "ToolTip": "E:\\Dot Net Core\\Task_Management_System\\Task_Management_System\\wwwroot\\js\\Comment.js",
+              "RelativeToolTip": "Task_Management_System\\wwwroot\\js\\Comment.js",
+              "ViewState": "AgIAACsAAAAAAAAAAAAUwDwAAAAmAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.001646|",
+              "WhenOpened": "2026-06-29T14:55:40.468Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 4,
+              "Title": "Task.cshtml",
+              "DocumentMoniker": "E:\\Dot Net Core\\Task_Management_System\\Task_Management_System\\Views\\Admin\\Task.cshtml",
+              "RelativeDocumentMoniker": "Task_Management_System\\Views\\Admin\\Task.cshtml",
+              "ToolTip": "E:\\Dot Net Core\\Task_Management_System\\Task_Management_System\\Views\\Admin\\Task.cshtml",
+              "RelativeToolTip": "Task_Management_System\\Views\\Admin\\Task.cshtml",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAADMAAABEAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
+              "WhenOpened": "2026-06-27T14:59:35.908Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 11,
+              "Title": "TaskModel.cs",
+              "DocumentMoniker": "E:\\Dot Net Core\\Task_Management_System\\Task_Management_System\\Models\\TaskModel.cs",
+              "RelativeDocumentMoniker": "Task_Management_System\\Models\\TaskModel.cs",
+              "ToolTip": "E:\\Dot Net Core\\Task_Management_System\\Task_Management_System\\Models\\TaskModel.cs",
+              "RelativeToolTip": "Task_Management_System\\Models\\TaskModel.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAqwAgAAAAqAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-06-27T16:10:57.56Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 12,
+              "Title": "Index.cshtml",
+              "DocumentMoniker": "E:\\Dot Net Core\\Task_Management_System\\Task_Management_System\\Views\\Admin\\Index.cshtml",
+              "RelativeDocumentMoniker": "Task_Management_System\\Views\\Admin\\Index.cshtml",
+              "ToolTip": "E:\\Dot Net Core\\Task_Management_System\\Task_Management_System\\Views\\Admin\\Index.cshtml",
+              "RelativeToolTip": "Task_Management_System\\Views\\Admin\\Index.cshtml",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAABYAAAAQAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
+              "WhenOpened": "2026-06-28T06:31:39.809Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 20,
+              "Title": "Project.js",
+              "DocumentMoniker": "E:\\Dot Net Core\\Task_Management_System\\Task_Management_System\\wwwroot\\js\\Project.js",
+              "RelativeDocumentMoniker": "Task_Management_System\\wwwroot\\js\\Project.js",
+              "ToolTip": "E:\\Dot Net Core\\Task_Management_System\\Task_Management_System\\wwwroot\\js\\Project.js",
+              "RelativeToolTip": "Task_Management_System\\wwwroot\\js\\Project.js",
+              "ViewState": "AgIAAGIAAAAAAAAAAAAgwHoAAAAtAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.001646|",
+              "WhenOpened": "2026-06-27T16:21:42.36Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 21,
+              "Title": "ProjectModel.cs",
+              "DocumentMoniker": "E:\\Dot Net Core\\Task_Management_System\\Task_Management_System\\Models\\ProjectModel.cs",
+              "RelativeDocumentMoniker": "Task_Management_System\\Models\\ProjectModel.cs",
+              "ToolTip": "E:\\Dot Net Core\\Task_Management_System\\Task_Management_System\\Models\\ProjectModel.cs",
+              "RelativeToolTip": "Task_Management_System\\Models\\ProjectModel.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAqwAoAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-06-27T16:10:46.584Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 19,
+              "Title": "Project.cshtml",
+              "DocumentMoniker": "E:\\Dot Net Core\\Task_Management_System\\Task_Management_System\\Views\\Admin\\Project.cshtml",
+              "RelativeDocumentMoniker": "Task_Management_System\\Views\\Admin\\Project.cshtml",
+              "ToolTip": "E:\\Dot Net Core\\Task_Management_System\\Task_Management_System\\Views\\Admin\\Project.cshtml",
+              "RelativeToolTip": "Task_Management_System\\Views\\Admin\\Project.cshtml",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAABEAAABTAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
+              "WhenOpened": "2026-06-27T14:59:18.713Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 16,
+              "Title": "UserData.cshtml",
+              "DocumentMoniker": "E:\\Dot Net Core\\Task_Management_System\\Task_Management_System\\Views\\Admin\\UserData.cshtml",
+              "RelativeDocumentMoniker": "Task_Management_System\\Views\\Admin\\UserData.cshtml",
+              "ToolTip": "E:\\Dot Net Core\\Task_Management_System\\Task_Management_System\\Views\\Admin\\UserData.cshtml",
+              "RelativeToolTip": "Task_Management_System\\Views\\Admin\\UserData.cshtml",
+              "ViewState": "AgIAABMAAAAAAAAAAAAAADcAAAAGAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
+              "WhenOpened": "2026-06-27T14:54:45.625Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 18,
+              "Title": "UserDashboard.cshtml",
+              "DocumentMoniker": "E:\\Dot Net Core\\Task_Management_System\\Task_Management_System\\Views\\Home\\UserDashboard.cshtml",
+              "RelativeDocumentMoniker": "Task_Management_System\\Views\\Home\\UserDashboard.cshtml",
+              "ToolTip": "E:\\Dot Net Core\\Task_Management_System\\Task_Management_System\\Views\\Home\\UserDashboard.cshtml",
+              "RelativeToolTip": "Task_Management_System\\Views\\Home\\UserDashboard.cshtml",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAcAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
+              "WhenOpened": "2026-06-27T07:53:51.587Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 17,
+              "Title": "_Layout.cshtml",
+              "DocumentMoniker": "E:\\Dot Net Core\\Task_Management_System\\Task_Management_System\\Views\\Shared\\_Layout.cshtml",
+              "RelativeDocumentMoniker": "Task_Management_System\\Views\\Shared\\_Layout.cshtml",
+              "ToolTip": "E:\\Dot Net Core\\Task_Management_System\\Task_Management_System\\Views\\Shared\\_Layout.cshtml",
+              "RelativeToolTip": "Task_Management_System\\Views\\Shared\\_Layout.cshtml",
+              "ViewState": "AgIAAEkAAAAAAAAAAAAAAGEAAAAFAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
+              "WhenOpened": "2026-06-27T03:39:52.83Z"
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,56 @@
+﻿
+<a href="/home/SignUp">
+    <input type="button" class="btn btn-primary my-5" value="+ Add User" />
+</a>
+
+<div class="table-responsive border border-1 p-3 shadow rounded-3 mt-3">
+    <table class="table table-bordered table-hover " id="userTable">
+        <thead>
+            <tr class="table-dark">
+                <td>SR. NO.</td>
+                <td>NAME</td>
+                <td>EMAIL</td>
+                <td>ROLE</td>
+                <td>CRETED AT</td>
+                <td>ACTION</td>
+            </tr>
+        </thead>
+        <tbody></tbody>
+    </table>
+</div>
+
+<div class="modal fade" id="UserEditModal" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="modalTitle" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+
+            <div class="modal-header">
+                <h5 class="modal-title" id="modalTitle">Edit User</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+
+            <div class="modal-body">
+                <form method="post" id="editForm">
+                    <input type="text" name="id" id="id" hidden />
+                    <label>Name</label>
+                    <input type="text" name="name" id="name" class="form-control" />
+                    <label>Email</label>
+                    <input type="email" name="email" id="email" class="form-control" />
+                    <label>Role</label>
+                    <select class="form-select" required name="role" id="role">
+                        <option selected disabled> --- Choose Role --- </option>
+                        <option value="employee"> Employee </option>
+                        <option value="manager"> Manager </option>
+                        <option value="hr"> HR </option>
+                        <option value="admin"> Admin </option>
+                    </select>
+                </form>
+            </div>
+
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                <button type="button" class="btn btn-primary" id="SaveEdit">Save Changes</button>
+            </div>
+
+        </div>
+    </div>
+</div>

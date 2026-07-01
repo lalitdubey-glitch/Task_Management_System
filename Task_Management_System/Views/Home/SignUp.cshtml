@@ -1,0 +1,31 @@
+﻿@*
+    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
+*@
+@{
+}
+
+<div class="container">
+    <div class="row shadow p-5 rounded-pill justify-content-center">
+        <h2 class="text-center text-success">Sign Up</h2>
+        <form id="signupForm" method="post">
+            <div class="col-lg-6 col-md-6 col-sm-12  mx-auto">
+              
+                <label>Name</label>
+                <input type="text" name="name" id="name" class="form-control" placeholder="Enter Name..." required />
+                <label>Email</label>
+                <input type="email" name="email" id="email" class="form-control" placeholder="example@gmail.com" required />
+                <label>Password</label>
+                <input type="password" name="pass" id="pass" class="form-control" placeholder="••••••••" required />
+                <label>Role</label>
+                <select class="form-select" required name="role" id="role">
+                    <option selected disabled> --- Choose Role --- </option>
+                    <option value="employee"> Employee </option>
+                    <option value="manager"> Manager </option>
+                    <option value="hr"> HR </option> 
+                </select>
+
+                <input type="button" class="btn btn-success my-4 d-block mx-auto" value="Sign Up" id="btnSignup" />
+            </div>
+        </form>
+    </div>
+</div>

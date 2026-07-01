@@ -1,0 +1,135 @@
+﻿<style>
+    
+</style>
+
+<div class="container">
+    <div class="row">
+        <div class="col-lg-6 col-mg-8 col-sm-12 m-xl-auto rounded-pill shadow p-5">
+            <form method="post" id="TaskForm" class="p-5">
+                <h2 class="text-secondary text-center">Add Task</h2>
+
+                <input type="text" name="hdnUserId" id="hdnUserId" hidden value="@User.FindFirst("userId")?.Value" />
+
+                <input type="text" name="taskId" id="taskId" hidden />
+
+                <label for="task">Task</label>
+                <input type="text" name="task" id="task" class="form-control" placeholder="Enter Your Task Here.." />
+
+                <label for="Description">Description</label>
+                <textarea name="Description" id="Description" class="form-control" placeholder="Enter Your Task Description Here.."></textarea>
+
+                <div class="row">
+                    <div class="col-6">
+                        <label for="status">status</label>
+                        <select class="form-select" name="status" id="status">
+                            <option selected disabled> -- Select Status -- </option>
+                            <option value="todo">To Do</option>
+                            <option value="complete">Complete</option>
+                            <option value="working">Working</option>
+                            <option value="pending">Pending</option>
+                            <option value="pause">Pause</option>
+                        </select>
+                    </div>
+                    <div class="col-6">
+                        <label for="priority">priority</label>
+                        <select class="form-select" name="priority" id="priority">
+                            <option selected disabled> -- Select Priority -- </option>
+                            <option value="low">Low</option>
+                            <option value="normal">Normal</option>
+                            <option value="urgent">Urgent</option>
+                        </select>
+                    </div>
+                </div>
+                
+                <div class="row">
+                    <div class="col-6">
+                        <label for="AssignedTo">User Name</label>
+                        <select class="form-select" name="AssignedTo" id="AssignedTo">
+                            <option selected disabled> -- Select User -- </option>
+
+                        </select>
+                    </div> 
+                  <input type="email" name="email" id="email" hidden />
+                    <div class="col-6">
+                        <label for="DueDate">DueDate</label>
+                        <input type="date" name="DueDate" id="DueDate" class="form-control" />
+                    </div>
+                </div>
+
+                <label for="projectId">Project Name</label>
+                <select class="form-select" name="projectId" id="projectId">
+                    <option selected disabled> -- Select Project -- </option>
+
+                </select>
+
+               <div class="text-center d-block my-4">
+                    <input type="reset" value="Clear" class="btn btn-outline-dark mx-auto " />
+                    <input type="button" value="Add Task" id="btnTask" class="btn btn-dark mx-auto " />
+               </div>
+              
+            </form>
+        </div>
+    </div>
+</div>
+
+
+<div class="table-responsive border border-1 p-3 shadow rounded-3 mt-5">
+    <table class="table table-bordered table-hover table-striped" id="TaskTable">
+        <thead class="table-dark">
+            <tr>
+                <th>Assign_To</th>
+                <th>Project</th>
+                <th>Task</th>
+                <th>Desc</th>
+                <th>Priority</th>
+                <th>Status</th>
+                <th>Created_At</th>
+                <th>Due_Date</th>
+                <th>Actions</th> 
+                <th>Comment</th> 
+
+            </tr>
+        </thead>
+        <tbody></tbody>
+    </table>
+</div>
+
+
+<div class="modal fade" id="EmpModal" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="centerModalLabel" aria-hidden="true">
+
+    <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable modal-fullscreen w-75 mx-auto">
+        <div class="modal-content">
+
+            <div class="modal-header">
+                <div>
+                    <h4 class="modal-title" id="taskName">Task Name</h4> 
+                    <div>
+                       <p id="taskDesc" class="text-muted mb-0"></p>
+                        <p id="pName" hidden></p>
+                    </div>
+                </div>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+
+            <div class="modal-body">
+                <input type="hidden" name="id" id="id"  />
+                <div id="userCmt">
+                    <p class="text-muted">No comments yet...</p>
+                </div>
+            </div>
+
+            <div class="modal-footer d-flex flex-column align-items-stretch gap-2">
+                <textarea name="comment" id="comment" class="form-control" rows="2" placeholder="Write comment here..."></textarea>
+
+                <div class="d-flex justify-content-end gap-2">
+                    <button type="button" class="btn btn-primary" id="sendCmt">Send</button>
+                </div>
+            </div>
+
+        </div>
+    </div>
+</div>
+
+
+
+ 
