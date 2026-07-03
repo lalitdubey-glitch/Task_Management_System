@@ -10,7 +10,13 @@
 
 ## Project Screenshots
 
-![Dashboard](Screenshots/Screenshot%20(131).png)
+## Sign Up Page
+
+![Dashboard](Screenshot 2026-07-03 160711.png)
+
+## Login Page
+
+![Dashboard](Screenshot 2026-07-03 160747.png)
 
 ## Admin Dashboard
 
@@ -37,15 +43,14 @@
 
 ![View 2](Screenshots/Screenshot%20(136).png)
 
-## Task Comment  (You can see all Task comment on one click, and also you can comment on that.)
+## Task Comment  (-- You can see all Task at one place of seleted Project and also you can comment on that.)
 
 ![View 2](Screenshots/Screenshot%20(137).png)
 
-
-![View 2](Screenshots/Screenshot%20(139).png)
+ 
  
 
-## --After User Login
+## -- After User Login
 
 ## User Dashboard
 
