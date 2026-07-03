@@ -12,11 +12,11 @@
 
 ## Sign Up Page
 
-![Dashboard](Screenshot 2026-07-03 160711.png)
+![Dashboard](Screenshot%202026-07-03%20160711.png)
 
 ## Login Page
 
-![Dashboard](Screenshot 2026-07-03 160747.png)
+![Dashboard](Screenshot%202026-07-03%20160747.png)
 
 ## Admin Dashboard
 
