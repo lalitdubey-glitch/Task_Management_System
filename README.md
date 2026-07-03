@@ -11,12 +11,10 @@
 ## Project Screenshots
 
 ## Sign Up Page
-
-![Dashboard](Screenshot%202026-07-03%20160711.png)
+![Sign Up](Screenshots/Screenshot%202026-07-03%20160711.png)
 
 ## Login Page
-
-![Dashboard](Screenshot%202026-07-03%20160747.png)
+![Login](Screenshots/Screenshot%202026-07-03%20160747.png)
 
 ## Admin Dashboard
 
