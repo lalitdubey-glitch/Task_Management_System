@@ -9,8 +9,8 @@ namespace Task_Management_System
         {
             var builder = WebApplication.CreateBuilder(args);
 
-            builder.Services.AddScoped<DBLayer>();
-            builder.Services.AddScoped<EmailService>();
+            builder.Services.AddScoped<IDBLayer , DBLayer>();
+            builder.Services.AddScoped<IEmailService, EmailService>();
             builder.Services.AddSession();
 
             // Add services to the container.
@@ -38,9 +38,9 @@ namespace Task_Management_System
 
             app.UseRouting();
 
+            app.UseSession();
             app.UseAuthentication();
             app.UseAuthorization();
-            app.UseSession();
 
             app.MapControllerRoute(
                 name: "default",

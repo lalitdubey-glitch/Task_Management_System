@@ -3,7 +3,7 @@ using System.Data;
 
 namespace Task_Management_System.Models
 {
-    public class DBLayer
+    public class DBLayer : IDBLayer
     {
         private readonly string _con;
         public DBLayer(IConfiguration config)

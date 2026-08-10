@@ -12,9 +12,9 @@ namespace Task_Management_System.Controllers
     [Authorize(Roles ="admin")]
     public class AdminController : Controller
     {
-        DBLayer db;
-        private readonly EmailService EmailService;
-        public AdminController(DBLayer _db, EmailService _EmailService)
+        private readonly IDBLayer db;
+        private readonly IEmailService EmailService;
+        public AdminController(IDBLayer _db, IEmailService _EmailService)
         {
             db = _db;
             EmailService = _EmailService;

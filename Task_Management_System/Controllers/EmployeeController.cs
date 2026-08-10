@@ -15,9 +15,9 @@ namespace Task_Management_System.Controllers
     [Authorize(Roles = "employee,hr,manager")]
     public class EmployeeController : Controller
     {
-        DBLayer db;
-        private readonly EmailService emailService;
-        public EmployeeController(DBLayer _db , EmailService _emailService)
+        private readonly IDBLayer db;
+        private readonly IEmailService emailService;
+        public EmployeeController(IDBLayer _db , IEmailService _emailService)
         {
             db = _db;
             emailService = _emailService;

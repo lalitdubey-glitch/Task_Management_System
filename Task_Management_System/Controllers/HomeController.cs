@@ -16,9 +16,9 @@ namespace Task_Management_System.Controllers
 {
     public class HomeController : Controller
     {
-        DBLayer db;
-        private readonly EmailService emailService;
-        public HomeController(DBLayer _db, EmailService _emailService)
+        private readonly IDBLayer db;
+        private readonly IEmailService emailService;
+        public HomeController(IDBLayer _db, IEmailService _emailService)
         {
             db = _db;
             emailService = _emailService;
@@ -37,47 +37,55 @@ namespace Task_Management_System.Controllers
         [HttpPost]
         public IActionResult SignUp(SignUpModel s)
         {
-            string hashPass = null;
-            if (s.pass != null)
+            try
             {
-                hashPass = BCrypt.Net.BCrypt.HashPassword(s.pass);
-            }
+                string hashPass = null;
+                if (!string.IsNullOrWhiteSpace(s.pass))
+                {
+                    hashPass = BCrypt.Net.BCrypt.HashPassword(s.pass);
+                }
 
-            string[] allowRoles = { "manager", "hr", "employee" };
-            if (!allowRoles.Contains(s.role))
-            {
-                return View();
-            }
+                string[] allowRoles = { "manager", "hr", "employee" };
+                if (!allowRoles.Contains(s.role))
+                {
+                    return View();
+                }
 
-            SqlParameter msg = new SqlParameter("@msg", SqlDbType.NVarChar, 255)
-            {
-                Direction = ParameterDirection.Output
-            };
+                SqlParameter msg = new SqlParameter("@msg", SqlDbType.NVarChar, 255)
+                {
+                    Direction = ParameterDirection.Output
+                };
 
-            db.ExecuteQuery("sp_Users", new SqlParameter[]
-            {
+                db.ExecuteQuery("sp_Users", new SqlParameter[]
+                {
                 new SqlParameter("@action" , "add"),
                 new SqlParameter("@name" , s.name),
                 new SqlParameter("@email" , s.email),
                 new SqlParameter("@pass" , hashPass),
                 new SqlParameter("@role" , s.role),
                 msg
-            });
+                });
 
-            string ms = msg.Value.ToString();
+                string ms = msg.Value.ToString();
 
-            if (ms == "success")
-            {
-                return Json(new { success = ms });
+                if (ms == "success")
+                {
+                    return Json(new { success = ms });
+                }
+                else if (ms == "Email Already Exists")
+                {
+                    return Json(new { success = ms });
+                }
+                else
+                {
+                    return View();
+                }
             }
-            else if (ms == "Email Already Exists")
+            catch (Exception ex)
             {
-                return Json(new { success = ms });
+                return Json(new {success=false , msg = ex.Message});
             }
-            else
-            {
-                return View();
-            }
+          
         }
 
         [HttpPost]
