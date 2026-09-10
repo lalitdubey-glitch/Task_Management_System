@@ -3,7 +3,7 @@
 > A robust, secure task management application built with **ASP.NET Core** and **MS SQL Server**. 
 
 ### 🛠️ Tech Stack & Key Features:
-* **Framework:** ASP.NET Core
+* **Framework:** ASP.NET Core MVC
 * **Database:** MS SQL Server (Optimized with **Stored Procedures**)
 * **Security:** Role-Based Authentication
 * **State Management:** Secure Cookie & Session Handling
