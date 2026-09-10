@@ -20,7 +20,7 @@
                     <td>${data["email"]}</td>
                     <td>${data["role"]}</td>
                     <td>${data["createdAt"].split("T")[0]}</td>
-                    <td>
+                    <td class="text-nowrap">
                         <input type="button" value="Edit" data-id="${data["userId"]}" data-name="${data['name']}" data-email="${data['email']}" data-role="${data['role']}"  class="btn btn-success btnEdit"/>
 
                          <input type="button" value="Delete" data-id="${data["userId"]}" class="btn btn-danger btnDelete"/>

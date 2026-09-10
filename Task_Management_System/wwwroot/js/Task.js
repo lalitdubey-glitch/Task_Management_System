@@ -14,7 +14,7 @@
             type: "get",
             success: function (res) { 
                 $("#AssignedTo").empty();
-                $("#AssignedTo").append("<option selected disabled> -- Select User -- </option>")
+                $("#AssignedTo").append("<option selected disabled>Select User</option>")
                 
                 $.each(res, function (index, data) {
                     $("#AssignedTo").append(
@@ -75,6 +75,12 @@
                     }
 
                     $.each(res, function (index, data) {
+
+                        const totalDays = Math.round((new Date(data.DueDate) - new Date(data.createAt)) / 86400000);
+                        const leftDays = Math.round((new Date(data.DueDate) - new Date()) / 86400000);
+
+                        const leftText = leftDays < 0 ? `${Math.abs(leftDays)}d Overdue ` : `${leftDays}d left`;
+
                         $("#TaskTable tbody").append(
                             `
                             <tr>
@@ -86,8 +92,12 @@
                                 <td>${data.status}</td>
                                 <td>${data.createAt.split("T")[0]}</td>
                                 <td class="text-danger fw-bold">${data.DueDate.split("T")[0]}</td>
-                                <td class="text-center">
-                                    <input type="button" value="Edit" class="btn btn-warning BtntaskEdit m-2 " data-email="${data.userEmail}" data-id="${data.taskId}"/> 
+                                 <td>
+                                  <span class="fw-bold">${totalDays}d</span> / 
+                                  <span class="${leftDays < 0 ? 'text-danger fw-bold' : 'text-success'}">${leftText}</span>
+                                </td> 
+                                <td class="text-center text-nowrap">
+                                    <input type="button" value="Edit" class="btn btn-warning BtntaskEdit" data-email="${data.userEmail}" data-id="${data.taskId}"/> 
                                     <input type="button" value="Delete" class="btn btn-danger BtntaskDelete" data-id="${data.taskId}"/> 
                                 </td>
                                 <td>
@@ -100,6 +110,8 @@
 
                   
                     $('#TaskTable').DataTable();
+                   
+
                 }
             },
             error: function (res) {

@@ -3,6 +3,8 @@
     var empChart = null;
     selectByMember();
 
+
+
     function selectByMember() {
         $.ajax({
             url: "/Employee/selectByMember",
@@ -16,7 +18,13 @@
                     }
 
                     
-                    $.each(res, function (index, data) {
+                    $.each(res, function (index, data) { 
+
+                        const totalDays = Math.round((new Date(data.DueDate) - new Date(data.createAt)) / 86400000);
+                        const leftDays = Math.round((new Date(data.DueDate) - new Date()) / 86400000);
+                         
+                        const leftText = leftDays < 0 ? `${Math.abs(leftDays)}d Overdue ` : `${leftDays}d left`;
+
                         $("#EmpTable tbody").append(
                             `
                             <tr>
@@ -28,7 +36,11 @@
                                 <td>${data.createAt.split("T")[0]}</td>
                                 <td class="text-danger fw-bold">${data.DueDate.split("T")[0]}</td>
                                 <td>
-                                    <select class="form-select StatusSelect" data-status="${data.status}" data-id="${data.taskId}">
+                                  <span class="fw-bold">${totalDays}d</span> / 
+                                  <span class="${leftDays < 0 ? 'text-danger fw-bold' : 'text-success'}">${leftText}</span>
+                                </td>
+                                <td>
+                                    <select class="form-select StatusSelect text-nowrap" style="min-width:120px;" data-status="${data.status}" data-id="${data.taskId}">
                                             <option selected disabled> -- Select Status -- </option>
                                             <option value="todo">To Do</option>
                                             <option value="complete">Complete</option>

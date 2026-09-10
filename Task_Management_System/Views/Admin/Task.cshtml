@@ -4,7 +4,7 @@
 
 <div class="container">
     <div class="row">
-        <div class="col-lg-6 col-mg-8 col-sm-12 m-xl-auto rounded-pill shadow p-5">
+        <div class="col-lg-6 col-mg-6 col-sm-12 m-xl-auto rounded-pill shadow p-0 p-md-5 p-lg-5">
             <form method="post" id="TaskForm" class="p-5">
                 <h2 class="text-secondary text-center">Add Task</h2>
 
@@ -13,16 +13,16 @@
                 <input type="text" name="taskId" id="taskId" hidden />
 
                 <label for="task">Task</label>
-                <input type="text" name="task" id="task" class="form-control" placeholder="Enter Your Task Here.." />
+                <input type="text" name="task" id="task" class="form-control mb-3" placeholder="Enter Your Task Here.." />
 
                 <label for="Description">Description</label>
-                <textarea name="Description" id="Description" class="form-control" placeholder="Enter Your Task Description Here.."></textarea>
+                <textarea name="Description" id="Description" class="form-control mb-3" placeholder="Enter Your Task Description Here.."></textarea>
 
                 <div class="row">
-                    <div class="col-6">
-                        <label for="status">status</label>
+                    <div class="col-6 mb-3">
+                        <label for="status">Status</label>
                         <select class="form-select" name="status" id="status">
-                            <option selected disabled> -- Select Status -- </option>
+                            <option selected disabled> Select Status </option>
                             <option value="todo">To Do</option>
                             <option value="complete">Complete</option>
                             <option value="working">Working</option>
@@ -30,10 +30,10 @@
                             <option value="pause">Pause</option>
                         </select>
                     </div>
-                    <div class="col-6">
-                        <label for="priority">priority</label>
+                    <div class="col-6 mb-3">
+                        <label for="priority">Priority</label>
                         <select class="form-select" name="priority" id="priority">
-                            <option selected disabled> -- Select Priority -- </option>
+                            <option selected disabled>Select Priority</option>
                             <option value="low">Low</option>
                             <option value="normal">Normal</option>
                             <option value="urgent">Urgent</option>
@@ -42,22 +42,22 @@
                 </div>
                 
                 <div class="row">
-                    <div class="col-6">
-                        <label for="AssignedTo">User Name</label>
-                        <select class="form-select" name="AssignedTo" id="AssignedTo">
-                            <option selected disabled> -- Select User -- </option>
+                        <div class="col-6 mb-3">
+                            <label for="AssignedTo">User Name</label>
+                            <select class="form-select" name="AssignedTo" id="AssignedTo">
+                                <option selected disabled>Select User</option>
 
-                        </select>
-                    </div> 
+                            </select>
+                        </div> 
                   <input type="email" name="email" id="email" hidden />
-                    <div class="col-6">
+                    <div class="col-6 mb-3">
                         <label for="DueDate">DueDate</label>
                         <input type="date" name="DueDate" id="DueDate" class="form-control" />
                     </div>
                 </div>
 
                 <label for="projectId">Project Name</label>
-                <select class="form-select" name="projectId" id="projectId">
+                <select class="form-select mb-3" name="projectId" id="projectId">
                     <option selected disabled> -- Select Project -- </option>
 
                 </select>
@@ -74,7 +74,7 @@
 
 
 <div class="table-responsive border border-1 p-3 shadow rounded-3 mt-5">
-    <table class="table table-bordered table-hover table-striped" id="TaskTable">
+    <table class="table table-bordered table-hover table-striped text-nowrap" id="TaskTable">
         <thead class="table-dark">
             <tr>
                 <th>Assign_To</th>
@@ -85,6 +85,7 @@
                 <th>Status</th>
                 <th>Created_At</th>
                 <th>Due_Date</th>
+                <th>Days (Total / Left)</th>
                 <th>Actions</th> 
                 <th>Comment</th> 
 

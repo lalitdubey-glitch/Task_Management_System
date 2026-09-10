@@ -7,7 +7,7 @@
 {
     <div class="container">
         <div class="row">
-            <div class="col-6">
+            <div class="col-12 col-lg-6">
                 <h2>--Your Details--</h2>
                 <div class="card p-2">
                     <h4>Name : @row["name"]</h4>
@@ -22,7 +22,7 @@
                 </div>
               
             </div>
-            <div class="col-6">
+            <div class="col-12 col-lg-6">
                 <canvas id="empCanva"></canvas>
             </div>
             
@@ -32,7 +32,7 @@
  
  
 <div class="table-responsive border border-1 p-3 shadow rounded-3 mt-5">
-    <table class="table table-bordered table-hover table-striped" id="EmpTable">
+    <table class="table table-bordered table-hover table-striped text-nowrap" id="EmpTable">
         <thead class="table-dark">
             <tr>
                 <th>Sr.No.</th>
@@ -42,6 +42,7 @@
                 <th>Priority</th>
                 <th>Created_At</th>
                 <th>Due_Date</th>
+                <th>Days (Total / Left)</th>
                 <th>Status</th>
                 <th>Actions</th>
 

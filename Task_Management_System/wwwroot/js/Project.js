@@ -48,10 +48,10 @@
                                 <td>${data.whoCreate}</td>
                                 <td>${data.createAt.split("T")[0]}</td>
                                 <td class="text-center">
-                                 <input type="button" class="btn btn-success EditPrj" value="Edit" data-pname="${data.projectName}" data-pdesc="${data.Description}" data-id="${data.projectID}"/>
-                                 <input type="button" class="btn btn-danger DeletePrj" value="Delete" data-id="${data.projectID}"/>
+                                 <input type="button" class="btn btn-success EditPrj m-1" value="Edit" data-pname="${data.projectName}" data-pdesc="${data.Description}" data-id="${data.projectID}"/>
+                                 <input type="button" class="btn btn-danger DeletePrj m-1" value="Delete" data-id="${data.projectID}"/>
 
-                                 <input type="button" class="btn btn-primary ViewPrj" value="View Project Task" data-pname="${data.projectName}" data-pdesc="${data.Description}"  data-id="${data.projectID}"/>
+                                 <input type="button" class="btn btn-primary ViewPrj m-1" value="View Project Task" data-pname="${data.projectName}" data-pdesc="${data.Description}"  data-id="${data.projectID}"/>
                             
                                 </td>
                             </tr>

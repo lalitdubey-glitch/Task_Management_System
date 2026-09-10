@@ -6,10 +6,10 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>@ViewData["Title"] - Task_Management_System</title>
-    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
-    <link href="~/lib/datatables.net-bs5/datatables.bootstrap5.min.css" rel="stylesheet" />
+    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" asp-append-version="true" />
+    <link href="~/lib/datatables.net-bs5/datatables.bootstrap5.min.css" rel="stylesheet" asp-append-version="true" />
     <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
-    <link href="~/lib/sweetalert2/sweetalert2.min.css" rel="stylesheet" />
+    <link href="~/lib/sweetalert2/sweetalert2.min.css" rel="stylesheet" asp-append-version="true" />
     <link rel="stylesheet" href="~/Task_Management_System.styles.css" asp-append-version="true" />
 </head>
 <body>
@@ -79,25 +79,25 @@
             &copy; 2026 - Task_Management_System
         </div>
     </footer>
-    <script src="~/lib/jquery/dist/jquery.min.js"></script>
-    <script src="~/lib/datatables.net/datatables.min.js"></script>
-    <script src="~/lib/datatables.net-bs5/datatables.bootstrap5.min.js"></script>
+    <script src="~/lib/jquery/dist/jquery.min.js" asp-append-version="true"></script>
+    <script src="~/lib/datatables.net/datatables.min.js" asp-append-version="true"></script>
+    <script src="~/lib/datatables.net-bs5/datatables.bootstrap5.min.js" asp-append-version="true"></script>
 
-    <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
-    <script src="~/lib/sweetalert2/sweetalert2.min.js"></script>
-    <script src="~/lib/chart.js/chart.umd.min.js"></script> 
+    <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js" asp-append-version="true"></script>
+    <script src="~/lib/sweetalert2/sweetalert2.min.js" asp-append-version="true"></script>
+    <script src="~/lib/chart.js/chart.umd.min.js" asp-append-version="true"></script>
     @if (User.IsInRole("admin"))
     {
-        <script src="~/js/admin.js"></script>
-        <script src="~/js/project.js"></script>
-        <script src="~/js/task.js"></script>
+        <script src="~/js/admin.js" asp-append-version="true"></script>
+        <script src="~/js/project.js" asp-append-version="true"></script>
+        <script src="~/js/task.js" asp-append-version="true"></script>
     }
     @if(User.IsInRole("employee") || User.IsInRole("hr") || User.IsInRole("manager"))
     {
-        <script src="~/js/employee.js"></script>
+        <script src="~/js/employee.js" asp-append-version="true"></script>
     }
     
-    <script src="~/js/comment.js"></script>
+    <script src="~/js/comment.js" asp-append-version="true"></script>
 
     <script src="~/js/site.js" asp-append-version="true"></script>
  
