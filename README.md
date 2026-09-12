@@ -1,5 +1,7 @@
 # Task_Management_System
 
+[![Live Demo](https://img.shields.io/badge/▶_EXPLORE_LIVE_APP-CLICK_HERE-39FF14?style=for-the-badge&labelColor=1a1a1a)](https://taskmanagementsystems.runasp.net/)
+
 > A robust, secure task management application built with **ASP.NET Core** and **MS SQL Server**. 
 
 ### 🛠️ Tech Stack & Key Features:
