@@ -3,8 +3,6 @@
     var empChart = null;
     selectByMember();
 
-
-
     function selectByMember() {
         $.ajax({
             url: "/Employee/selectByMember",
@@ -129,7 +127,7 @@
     $("#sendCmt").on("click", function () {
         var cmt = $("#comment").val();
         var id = $("#id").val();
-       var TaskName =  $("#pName").text()
+        var TaskName =  $("#pName").text()
         var ProjectName = $("#taskName").text()
         var UserEmail = $("#email").val();
 
@@ -176,27 +174,52 @@
     })
 
     $("#BtnVerifyOtp").on("click", function () {
-        var UserOTP = $("#otp").val();
+        var UserOTP = $("#otp").val().trim();
+        var btn = $(this);
+
+        if (!UserOTP) {
+            Swal.fire("Warning", "Please Enter the OTP!", "warning");
+            return;
+        }
+
+
         $.ajax({
             url: "/employee/VerifyOTP",
             type: "post", 
             data: { UserOTP: UserOTP },
+            beforeSend: function() {
+                btn.prop("disabled" , true)
+            },
             success: function (res) {
                 if (res.success) {
-                    Swal.fire("Success", "OTP Verified", "success");
-                    $("#VerifyOtpModal").modal("hide");
-                    $("#ChangePassModal").modal("show")
+                    Swal.fire({
+                        title: "Success",
+                        text: res.message || "OTP Verified Successfully!",
+                        icon: "success",
+                        timer: 1000,
+                        showConfirmButton: false
+                    }).then(() => {
+                        $("#VerifyOtpModal").modal("hide");
+                        $("#otp").val("");  
+                        $("#ChangePassModal").modal("show");
+                    });
+                } else {  
+                    Swal.fire({
+                        title: "Warning",
+                        text: res.message || "Invalid OTP!",
+                        icon: "warning",
+                        allowOutsideClick: false,
+                        showConfirmButton: true,
+                        timer:2000
+                    })
                 }
-                else {
-                    Swal.fire("Error", "OTP Not Veryfied!", "error");
-                    $("#VerifyOtpModal").modal("show");
-                    $("#ChangePassModal").modal("hide")
-                }
-               
-           
             },
-            error: function (res) {
-                console.log(res)
+            error: function (xhr, status, error) {
+                console.error("Verification Error:", error);
+                Swal.fire("Error", "Server error. Please try again later.", "error");
+            },
+            complete: function () {
+                btn.prop("disabled", false); 
             }
 
         })
@@ -204,6 +227,11 @@
 
     $("#BtnChangePass").on("click", function () {
         var pass = $("#pass").val();
+
+        if (!pass) {
+            Swal.fire("Warning", "Please Enter New Password!", "warning");
+            return;
+        }
 
         $.ajax({
             url: "/employee/ResetPass",
@@ -217,11 +245,7 @@
                 }
                 else {
                     Swal.fire("Error", "OTP Not Veryfied!", "error");
-                    $("#ChangePassModal").modal("show");
-                    $("#VerifyOtpModal").modal("hide");
                 }
-               
-           
             },
             error: function (res) {
                 console.log(res)
@@ -231,11 +255,18 @@
     })
 
     $("#BtnSendOtp").on("click", function () {
+        var email = $("#forgotEmail").val();
+        if (!email) {
+            Swal.fire("Warning", "Please Enter Your Email First..!","warning");
+            return;
+        }
+
+        var btn = $(this);
         $.ajax({
             url: "/employee/SendOTP",
             type: "post",
             beforeSend: function () {
-                $("#BtnResetPass").prop("disabled", true);
+                btn.prop("disabled", true);
                 Swal.fire({
                     title: "Sending OTP...",
                     text: "Please wait while we send the verification code.",
@@ -246,23 +277,31 @@
                 })
             },
             success: function (res) {
-                if (res.success) {
-                    Swal.fire("Success", "OTP Sent!", "success");
-                    $("#SendOtpModal").modal("hide")
-                    $("#VerifyOtpModal").modal("show")
+                if (res.success) { 
+                    Swal.fire({
+                        title: "Success",
+                        text: res.message || "OTP Sent!",
+                        icon: "success",
+                        timer: 1000,
+                        allowOutsideClick: false,
+                        showConfirmButton: true
+                    }).then(() => {
+                        $("#SendOtpModal").modal("hide")
+                        $("#VerifyOtpModal").modal("show")
+                    })
+                  
                 }
                 else {
-                    Swal.fire("Error", "OTP Not Sent!", "error");
-                    $("#SendOtpModal").modal("show")
-                    $("#VerifyOtpModal").modal("hide")
+                    Swal.fire("Error", res.message , "error");
                 }
                
             },
-            error: function (res) {
-                console.log(res.success)
+            error: function (xhr, status, error) {
+                console.error("OTP Error:", error);
+                Swal.fire("Error", "Server error. Please try again later.", "error");
             },
             complete: function () {
-                $("#BtnResetPass").prop("disabled", false);
+                btn.prop("disabled", false);
             }
 
         })

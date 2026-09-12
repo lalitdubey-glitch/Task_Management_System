@@ -22,7 +22,7 @@
             processData: false,
             contentType: false,
             success: function (res) {
-                debugger
+              
                 if (res.success === "success") {
                     Swal.fire("Success", "User Saved!", "success");
                     document.getElementById('signupForm').reset();
@@ -100,6 +100,17 @@
             }
         })
     })
+
+    // Jab bhi SweetAlert screen par ho, modal ke action ko roka
+    $(document).on("keydown", function (e) {
+        if (Swal.isVisible() && e.which === 32) {
+            // Agar user kisi text input box ke andar type nahi kar raha
+            if (!$(e.target).is("input, textarea")) {
+                e.preventDefault();
+                e.stopPropagation();
+            }
+        }
+    });
      
 
 })

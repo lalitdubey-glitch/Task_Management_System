@@ -39,7 +39,7 @@
 $(document).on("click", ".btnDeleteComment" , function () {
     var id = $(this).data("cmt_id");
     var task_id = $(this).data("task_id");
-    debugger
+  
     $.ajax({
         url: "/home/DeleteComment",
         type: "post",
@@ -58,7 +58,13 @@ $(document).on("click", ".btnDeleteComment" , function () {
  
 
 
-function SendCommet(cmt, id, UserEmail, ProjectName,TaskName) {
+function SendCommet(cmt, id, UserEmail, ProjectName, TaskName) {
+     
+    if (!cmt.trim()) {
+        Swal.fire("Warning", "Please Enter Some Comment!", "warning")
+        return;
+    }
+
     $.ajax({
         url: "/home/SendComment",
         type: "post",
@@ -79,14 +85,18 @@ function SendCommet(cmt, id, UserEmail, ProjectName,TaskName) {
                 $("#comment").val('');
                 GetComments(id);
             }
+            else {
+                Swal.fire("Warning", res.messsge , "warning");
+            }
 
             setTimeout(function () {
                 var modalBody = $('#EmpModal .modal-body');
                 modalBody.animate({ scrollTop: modalBody[0].scrollHeight }, 300);
             }, 100);
         },
-        error: function (res) {
-            console.log(res)
+        error: function (xhr,status,error) {
+            console.log(error)
+            Swal.fire("Error" , "Server Error, Please Try Again!" , "error")
         },
         complete: function () {
             $("#sendCmt").prop("disabled", false);

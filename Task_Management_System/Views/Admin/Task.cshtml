@@ -12,6 +12,11 @@
 
                 <input type="text" name="taskId" id="taskId" hidden />
 
+                <label for="projectId">Project Name</label>
+                <select class="form-select mb-3" name="projectId" id="projectId">
+                    <option selected disabled> -- Select Project -- </option>
+                </select>
+
                 <label for="task">Task</label>
                 <input type="text" name="task" id="task" class="form-control mb-3" placeholder="Enter Your Task Here.." />
 
@@ -22,8 +27,8 @@
                     <div class="col-6 mb-3">
                         <label for="status">Status</label>
                         <select class="form-select" name="status" id="status">
-                            <option selected disabled> Select Status </option>
-                            <option value="todo">To Do</option>
+                            <option disabled> Select Status </option>
+                            <option selected value="todo">To Do</option>
                             <option value="complete">Complete</option>
                             <option value="working">Working</option>
                             <option value="pending">Pending</option>
@@ -33,10 +38,10 @@
                     <div class="col-6 mb-3">
                         <label for="priority">Priority</label>
                         <select class="form-select" name="priority" id="priority">
-                            <option selected disabled>Select Priority</option>
-                            <option value="low">Low</option>
-                            <option value="normal">Normal</option>
-                            <option value="urgent">Urgent</option>
+                            <option disabled>Select Priority</option>
+                            <option value="low" class="bg-primary text-white">Low</option>
+                            <option value="normal" class="bg-success text-white">Normal</option>
+                            <option value="urgent" class="bg-danger text-white fw-bold">Urgent</option>
                         </select>
                     </div>
                 </div>
@@ -56,11 +61,7 @@
                     </div>
                 </div>
 
-                <label for="projectId">Project Name</label>
-                <select class="form-select mb-3" name="projectId" id="projectId">
-                    <option selected disabled> -- Select Project -- </option>
-
-                </select>
+                
 
                <div class="text-center d-block my-4">
                     <input type="reset" value="Clear" class="btn btn-outline-dark mx-auto " />
@@ -74,18 +75,18 @@
 
 
 <div class="table-responsive border border-1 p-3 shadow rounded-3 mt-5">
-    <table class="table table-bordered table-hover table-striped text-nowrap" id="TaskTable">
-        <thead class="table-dark">
+    <table class="table table-bordered table-hover table-striped" id="TaskTable">
+        <thead class="table-dark text-nowrap">
             <tr>
                 <th>Assign_To</th>
                 <th>Project</th>
                 <th>Task</th>
                 <th>Desc</th>
-                <th>Priority</th>
                 <th>Status</th>
                 <th>Created_At</th>
                 <th>Due_Date</th>
                 <th>Days (Total / Left)</th>
+                <th>Priority</th>
                 <th>Actions</th> 
                 <th>Comment</th> 
 

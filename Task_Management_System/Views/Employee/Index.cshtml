@@ -32,8 +32,8 @@
  
  
 <div class="table-responsive border border-1 p-3 shadow rounded-3 mt-5">
-    <table class="table table-bordered table-hover table-striped text-nowrap" id="EmpTable">
-        <thead class="table-dark">
+    <table class="table table-bordered table-hover table-striped" id="EmpTable">
+        <thead class="table-dark text-nowrap">
             <tr>
                 <th>Sr.No.</th>
                 <th>Project</th> 
@@ -130,9 +130,8 @@
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body">
-                <div class="mb-3">
-                    <label for="forgotEmail" class="form-label">Enter your registered email</label>
-                    <input type="email" class="form-control" id="forgotEmail" value="@User.FindFirst("email")?.Value" placeholder="name@example.com">
+                <div class="mb-3"> 
+                    <input type="email" class="form-control" readonly id="forgotEmail" value="@User.FindFirst("email")?.Value" placeholder="name@example.com">
                 </div>
             </div>
             <div class="modal-footer">
@@ -147,8 +146,7 @@
     <div class="modal-dialog">
         <div class="modal-content">
             <div class="modal-header">
-                <h5 class="modal-title" id="VerifyOtpModalLabel">Verify OTP</h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                <h5 class="modal-title" id="VerifyOtpModalLabel">Verify OTP</h5> 
             </div>
             <div class="modal-body">
                 <div class="mb-3">
@@ -156,8 +154,7 @@
                     <input type="text" class="form-control" id="otp" name="otp" placeholder="..........">
                 </div>
             </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+            <div class="modal-footer"> 
                 <button type="button" class="btn btn-primary" id="BtnVerifyOtp">Verify OTP</button>
             </div>
         </div>

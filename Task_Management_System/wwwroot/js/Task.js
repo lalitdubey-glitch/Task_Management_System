@@ -81,6 +81,19 @@
 
                         const leftText = leftDays < 0 ? `${Math.abs(leftDays)}d Overdue ` : `${leftDays}d left`;
 
+                        var bg_color = null;
+                        var priority = (data.priority).toLowerCase().trim();
+
+                        if (priority == "low") {
+                            bg_color = "bg-primary text-white"
+                        } 
+                        else if (priority == "normal") {
+                            bg_color = "bg-success text-white"
+                        } 
+                        else{
+                            bg_color = "bg-danger text-white"
+                        } 
+
                         $("#TaskTable tbody").append(
                             `
                             <tr>
@@ -88,14 +101,14 @@
                                 <td>${data.projectName}</td>
                                 <td>${data.task}</td>
                                 <td>${data.Description}</td>
-                                <td>${data.priority}</td>
                                 <td>${data.status}</td>
                                 <td>${data.createAt.split("T")[0]}</td>
                                 <td class="text-danger fw-bold">${data.DueDate.split("T")[0]}</td>
-                                 <td>
+                                <td>
                                   <span class="fw-bold">${totalDays}d</span> / 
                                   <span class="${leftDays < 0 ? 'text-danger fw-bold' : 'text-success'}">${leftText}</span>
                                 </td> 
+                                <td class="${bg_color}">${data.priority}</td>
                                 <td class="text-center text-nowrap">
                                     <input type="button" value="Edit" class="btn btn-warning BtntaskEdit" data-email="${data.userEmail}" data-id="${data.taskId}"/> 
                                     <input type="button" value="Delete" class="btn btn-danger BtntaskDelete" data-id="${data.taskId}"/> 
@@ -108,14 +121,12 @@
                         )
                     })
 
-                  
                     $('#TaskTable').DataTable();
-                   
-
                 }
             },
-            error: function (res) {
-
+            error: function (xhr, status, error) {
+                console.error("Error : " , error)
+                Swal.fire("Error", "Server Error!", "error");
             }
         })
     }
@@ -125,11 +136,9 @@
         $("#id").val(id);
         $("#taskName").text($(this).data("task"));
         var d = $("#pName").text($(this).data("pname"));
-        debugger
         $("#taskDesc").text($(this).data("desc"));
         $("#email").val($(this).data("email"));
             
-
         GetComments(id);
 
     })
@@ -150,7 +159,7 @@
         document.getElementById("TaskForm").scrollIntoView({ behavior: "smooth",  block: "center" });
         var email = $(this).data("email");
         $("#email").val(email)
-        debugger
+      
         var id = $(this).data("id");
         $("#taskId").val(id);
         $("#btnTask").val("Edit Task");
@@ -215,7 +224,10 @@
     })
  
     $("#btnTask").on("click", function () {
-        var formData = new FormData(document.getElementById("TaskForm"))
+        var form = document.getElementById("TaskForm")
+        var formData = new FormData(form)
+        var btn = $(this);
+
         $.ajax({
             url: "/admin/Task",
             type: "post",
@@ -223,7 +235,7 @@
             processData: false,
             contentType: false,
             beforeSend: function () {
-                $("#btnTask").prop("disabled", true);
+                btn.prop("disabled", true);
                 Swal.fire({
                     title: "Sending Task",
                     text: "Sending Task to User Email , Please wait...",
@@ -235,22 +247,23 @@
             },
             success: function (res) {
                 if (res.success) {
-                    Swal.fire("Success", "Command Successful", "success");
-                    document.getElementById("TaskForm").reset();
-                    $("#btnTask").val("Add Task");
+                    Swal.fire("Success", res.message || "Task assigned successfully!", "success");
+                    form.reset();
+                    btn.val("Add Task");
                     $("#TaskForm h2").text("Add Task");
                     TaskTable();
                 }
                 else {
-                    Swal.fire("Error", "Command Unsuccessful", "error");
+                    Swal.fire("Error", res.message || "Command Unsuccessful", "error");
                 }
 
             },
-            error: function (res) {
-                console.log(res)
+            error: function (xhr,status,error) {
+                console.log("Error : ", error);
+                Swal.fire("Error", "Task Not Saved! Server Error", "error");
             },
             complete: function () {
-                $("#btnTask").prop("disabled", false);
+                btn.prop("disabled", false);
             }
         })
     })

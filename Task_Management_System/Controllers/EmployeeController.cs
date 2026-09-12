@@ -6,6 +6,7 @@ using Microsoft.Data.SqlClient;
 using Newtonsoft.Json;
 using System.Data;
 using System.Net.Mail;
+using System.Threading.Tasks;
 using Task_Management_System.Models;
 
 
@@ -23,11 +24,11 @@ namespace Task_Management_System.Controllers
             emailService = _emailService;
         }
 
-        public IActionResult Index()
+        public async Task<IActionResult> Index()
         {
-            string email = User.FindFirst("email")?.Value;
+            string? email = User.FindFirst("email")?.Value;
 
-            DataTable dt =   db.table("sp_Users", new SqlParameter[]
+            DataTable dt =  await db.TableAsync("sp_Users", new SqlParameter[]
             {
                 new SqlParameter("@action" , "selectOne"),
                 new SqlParameter("@email" , email),
@@ -40,7 +41,7 @@ namespace Task_Management_System.Controllers
             return View();
         }
 
-        public ActionResult selectByMember()
+        public async Task<ActionResult> selectByMember()
         {
 
             SqlParameter msg = new SqlParameter("@msg", SqlDbType.NVarChar, 255)
@@ -48,14 +49,14 @@ namespace Task_Management_System.Controllers
                 Direction = ParameterDirection.Output
             };
 
-            DataTable res = db.table("sp_Task", new SqlParameter[]
+            DataTable res =await db.TableAsync("sp_Task", new SqlParameter[]
              {
                 new SqlParameter("@action" , "selectByMember"),
                 new SqlParameter("@AssignedTo" , User.FindFirst("userId")?.Value),
                 msg
              });
 
-            string ms = msg.Value.ToString();
+            string? ms = msg.Value?.ToString()??"";
 
             if (ms == "success")
             {
@@ -66,7 +67,7 @@ namespace Task_Management_System.Controllers
         }
 
         [HttpPost]
-        public ActionResult ChangeStatus(string? status , int? id)
+        public async Task<ActionResult> ChangeStatus(string? status , int? id)
         {
 
             SqlParameter msg = new SqlParameter("@msg", SqlDbType.NVarChar, 255)
@@ -74,7 +75,7 @@ namespace Task_Management_System.Controllers
                 Direction = ParameterDirection.Output
             };
 
-             db.ExecuteQuery("sp_Task", new SqlParameter[]
+            await db.ExecuteQueryAsync("sp_Task", new SqlParameter[]
              {
                 new SqlParameter("@action" , "updateStatus"),
                 new SqlParameter("@status" , status),
@@ -82,7 +83,7 @@ namespace Task_Management_System.Controllers
                 msg
              });
 
-            string ms = msg.Value.ToString();
+            string? ms = msg.Value?.ToString()??"";
 
             if (ms == "success")
             {
@@ -93,7 +94,7 @@ namespace Task_Management_System.Controllers
         }
 
         [HttpPost]
-        public ActionResult ResetPass(string pass)
+        public async Task<ActionResult> ResetPass(string pass)
         {
             SqlParameter msg = new SqlParameter("@msg", SqlDbType.NVarChar, 255)
             {
@@ -102,7 +103,7 @@ namespace Task_Management_System.Controllers
 
             string HashPass = BCrypt.Net.BCrypt.HashPassword(pass);
 
-            db.ExecuteQuery("sp_Users", new SqlParameter[]
+           await db.ExecuteQueryAsync("sp_Users", new SqlParameter[]
             {
                 new SqlParameter("@action", "resetPass"),
                 new SqlParameter("@pass", HashPass),
@@ -111,7 +112,7 @@ namespace Task_Management_System.Controllers
                 msg
             });
 
-            string ms = msg.Value.ToString();
+            string? ms = msg.Value?.ToString()??"";
              
             if (ms == "success")
             {
@@ -124,48 +125,75 @@ namespace Task_Management_System.Controllers
              
         }
 
-        public ActionResult SendOTP()
+        [HttpPost]
+        public async Task<ActionResult> SendOTP()
         {
             try
-            {
+            { 
+                string? userEmail = User.FindFirst("email")?.Value; 
+
+                if (string.IsNullOrWhiteSpace(userEmail))
+                {
+                    return Json(new { success = false, message = "User email not found or user is not authenticated." });
+                } 
+                 
                 Random random = new Random();
-                string otp = random.Next(111111, 999999).ToString();
-
+                string otp = random.Next(100000, 999999).ToString();
+                 
                 HttpContext.Session.SetString("otp", otp);
+                HttpContext.Session.SetString("otp_expiry", DateTime.UtcNow.AddMinutes(5).ToString("o"));
+                 
+                string emailBody = $@"
+                <div>
+                    <h2>Your Verification Code</h2>
+                    <p>{otp}</p>
+                    <p>Fill this OTP and verify yourself. This code is valid for 5 minutes.</p>
+                </div>";
 
-                emailService.SendEmail
-                (
-                    User.FindFirst("email")?.Value,
-                    "Your OTP is : " + otp,
-                    "<p>Fill this otp and verify yourself</p>"
-
+                bool isSent = await emailService.SendEmail(
+                    userEmail,
+                    "Your OTP Code",
+                    emailBody
                 );
 
+                if (!isSent)
+                {
+                    return Json(new { success = false, message = "Failed to send email. Please check SMTP settings." });
+                }
 
-                return Json(new { success = true });
+                return Json(new { success = true, message = "OTP sent successfully." });
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
-                return Json(new { success = ex.Message });
+                return Json(new { success = false, message = ex.Message });
             }
-           
         }
 
-        public ActionResult VerifyOTP(string UserOTP)
-        {
-            string sessionOtp = HttpContext.Session.GetString("otp")?.ToString();
-
-            if (UserOTP == sessionOtp)
+        [HttpPost]
+        public ActionResult VerifyOTP(string? UserOTP)
+        { 
+            if (string.IsNullOrWhiteSpace(UserOTP))
             {
-                return Json(new { success = true });
+                return Json(new { success = false, message = "Please enter OTP." });
             }
-            else
+             
+            string? sessionOtp = HttpContext.Session.GetString("otp");
+             
+            if (string.IsNullOrEmpty(sessionOtp))
             {
-                return Json(new { success = false });
-            } 
+                return Json(new { success = false, message = "OTP not found or expired. Request a new one." });
+            }
+             
+            if (UserOTP.Trim() == sessionOtp)
+            { 
+                HttpContext.Session.Remove("otp");
+                return Json(new { success = true, message = "OTP verified successfully!" });
+            }
+
+            return Json(new { success = false, message = "Invalid OTP." });
         }
 
-       
+
     }
 
 }

@@ -5,7 +5,7 @@ namespace Task_Management_System.Models
 {
     public interface IDBLayer
     {
-        int ExecuteQuery(string procname, SqlParameter[] parameter);
-        DataTable table(string procname, SqlParameter[] parameters);
+        Task<int> ExecuteQueryAsync(string procname, SqlParameter[] parameter);
+        Task<DataTable> TableAsync(string procname, SqlParameter[] parameters);
     }
 }

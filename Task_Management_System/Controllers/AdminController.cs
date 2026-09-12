@@ -4,6 +4,7 @@ using Microsoft.Data.SqlClient;
 using Newtonsoft.Json;
 using System.Data;
 using System.Text.Json.Serialization;
+using System.Threading.Tasks;
 using System.Xml.Linq;
 using Task_Management_System.Models;
 
@@ -13,16 +14,16 @@ namespace Task_Management_System.Controllers
     public class AdminController : Controller
     {
         private readonly IDBLayer db;
-        private readonly IEmailService EmailService;
-        public AdminController(IDBLayer _db, IEmailService _EmailService)
+        private readonly IEmailService _emailService;
+        public AdminController(IDBLayer _db, IEmailService EmailService)
         {
             db = _db;
-            EmailService = _EmailService;
+            _emailService = EmailService;
         }
-        public IActionResult Index()
+        public async Task<IActionResult> Index()
         {
 
-            DataTable totals = db.table("sp_Users", new SqlParameter[]
+            DataTable totals = await db.TableAsync("sp_Users", new SqlParameter[]
             {
                 new SqlParameter("@action" , "totalCounts")
             });
@@ -35,10 +36,10 @@ namespace Task_Management_System.Controllers
             return View();
         }
 
-        public ActionResult GetUser()
+        public async Task<ActionResult> GetUser()
         { 
 
-            DataTable dt = db.table("sp_Users", new SqlParameter[]
+            DataTable dt =await db.TableAsync("sp_Users", new SqlParameter[]
             {
                 new SqlParameter("@action" , "selectAll")
             });
@@ -53,10 +54,10 @@ namespace Task_Management_System.Controllers
             }
         }
 
-        public ActionResult GetProject()
+        public async Task<ActionResult> GetProject()
         { 
 
-            DataTable dt = db.table("sp_Projects", new SqlParameter[]
+            DataTable dt =await db.TableAsync("sp_Projects", new SqlParameter[]
             {
                 new SqlParameter("@action" , "selectAll")
             });
@@ -71,10 +72,10 @@ namespace Task_Management_System.Controllers
             }
         }
 
-        public ActionResult selectByProjectId(int? id)
+        public async Task<ActionResult> selectByProjectId(int? id)
         { 
 
-            DataTable dt = db.table("sp_Task", new SqlParameter[]
+            DataTable dt =await db.TableAsync("sp_Task", new SqlParameter[]
             {
                 new SqlParameter("@action" , "selectByProject"),
                 new SqlParameter("@projectId" , id),
@@ -92,21 +93,21 @@ namespace Task_Management_System.Controllers
         }
 
         [HttpPost]
-        public ActionResult DeleteProject(int? id)
+        public async Task<ActionResult> DeleteProject(int? id)
         {
             SqlParameter msg = new SqlParameter("@msg", SqlDbType.NVarChar, 255)
             {
                 Direction = ParameterDirection.Output
             };
 
-            db.ExecuteQuery("sp_Projects", new SqlParameter[]
+           await db.ExecuteQueryAsync("sp_Projects", new SqlParameter[]
             {
                 new SqlParameter("@action" , "delete"),
                 new SqlParameter("@projectID" , id),
                 msg
             });
 
-            string ms = msg.Value.ToString();
+            string? ms = msg.Value?.ToString()??"";
 
             if (ms == "success")
             {
@@ -119,21 +120,21 @@ namespace Task_Management_System.Controllers
         }
 
         [HttpPost]
-        public IActionResult DeleteUser(int? id)
+        public async Task<IActionResult> DeleteUser(int? id)
         {
             SqlParameter msg = new SqlParameter("@msg", SqlDbType.NVarChar, 255)
             {
                 Direction = ParameterDirection.Output
             };
 
-            db.ExecuteQuery("sp_Users", new SqlParameter[]
+           await db.ExecuteQueryAsync("sp_Users", new SqlParameter[]
             {
                 new SqlParameter("@action" , "delete"),
                 new SqlParameter("@userId" , id),
                 msg
             });
 
-            string ms = msg.Value.ToString();
+            string? ms = msg.Value?.ToString()??"";
 
             if (ms == "success")
             {
@@ -156,7 +157,7 @@ namespace Task_Management_System.Controllers
         }
 
         [HttpPost]
-        public ActionResult Project(ProjectModel p)
+        public async Task<ActionResult> Project(ProjectModel p)
         {
             string action = p.projectID > 0 ? "edit" : "add";
 
@@ -165,10 +166,10 @@ namespace Task_Management_System.Controllers
                 Direction = ParameterDirection.Output
             };
 
-            db.ExecuteQuery("sp_Projects", new SqlParameter[]
+           await db.ExecuteQueryAsync("sp_Projects", new SqlParameter[]
             {
                 new SqlParameter("@action" , action),
-                new SqlParameter("@projectID" , p.projectID!=null?p.projectID:(object)DBNull.Value),
+                new SqlParameter("@projectID" , p.projectID!=0?p.projectID:(object)DBNull.Value),
                 new SqlParameter("@projectName" , p.projectName),
                 new SqlParameter("@Description" , p.Description),
                 new SqlParameter("@createdBy" , User.FindFirst("userId")?.Value),
@@ -176,7 +177,7 @@ namespace Task_Management_System.Controllers
 
             });
 
-            string ms = msg.Value.ToString();
+            string? ms = msg.Value?.ToString()??"";
 
             if (ms == "success")
             {
@@ -188,9 +189,9 @@ namespace Task_Management_System.Controllers
         {
             return View();
         }
-
+ 
         [HttpPost]
-        public ActionResult Task(TaskModel t)
+        public async Task<ActionResult> Task(TaskModel t)
         {
             string action = t.taskId > 0 ? "edit" : "add";
 
@@ -199,40 +200,45 @@ namespace Task_Management_System.Controllers
                 Direction = ParameterDirection.Output
             };
 
-           int res = db.ExecuteQuery("sp_Task", new SqlParameter[]
+            int res = await db.ExecuteQueryAsync("sp_Task", new SqlParameter[]
             {
-                new SqlParameter("@action" , action),
-                new SqlParameter("@taskId" , t.taskId > 0 ? t.taskId:(object)DBNull.Value),
-                new SqlParameter("@task" , t.task),
-                new SqlParameter("@DueDate" , t.DueDate),
-                new SqlParameter("@priority" , t.priority),
-                new SqlParameter("@status" , t.status),
-                new SqlParameter("@Description" , t.Description),
-                new SqlParameter("@AssignedTo" , t.AssignedTo),
-                new SqlParameter("@projectId" , t.projectId),
+                new SqlParameter("@action", action),
+                new SqlParameter("@taskId", t.taskId > 0 ? t.taskId : (object)DBNull.Value),
+                new SqlParameter("@task", t.task ?? (object)DBNull.Value),
+                new SqlParameter("@DueDate", t.DueDate ?? (object)DBNull.Value),
+                new SqlParameter("@priority", t.priority ?? (object)DBNull.Value),
+                new SqlParameter("@status", t.status ?? (object)DBNull.Value),
+                new SqlParameter("@Description", t.Description ?? (object)DBNull.Value),
+                new SqlParameter("@AssignedTo", t.AssignedTo),
+                new SqlParameter("@projectId", t.projectId),
                 msg
             });
 
-            string ms = msg.Value.ToString();
+            string ms = msg.Value?.ToString() ?? "";
 
             if (ms == "success")
-            {
-                EmailService.SendEmail
-                    (
-                        t.email,
-                        "You have a Task",
-                        "<h3>Your Task is : " + t.task +"</h3>"+ "<p> <strong>Task Discription : </strong> " + t.Description +"</p>" + "<p style='color:red;'> <strong>Due Date : </strong> " + t.DueDate + "</p>"
-
-                    );
+            { 
+                string emailBody = $@"
+                <div>
+                    <h3>Your Task is: {t.task}</h3>
+                    <p><strong>Task Description:</strong> {t.Description}</p>
+                    <p style='color: red;'><strong>Due Date:</strong> {t.DueDate}</p>
+                </div>";
                  
+                await _emailService.SendEmail(
+                    t.email,
+                    "You have a Task",
+                    emailBody
+                );
+
                 return Json(new { success = true });
             }
-            return View();
-          
+             
+            return Json(new { success = false, message = ms });
         }
 
         [HttpPost]
-        public ActionResult TaskDelete(int? id)
+        public async Task<ActionResult> TaskDelete(int? id)
         {
              
             SqlParameter msg = new SqlParameter("@msg", SqlDbType.NVarChar, 255)
@@ -240,14 +246,14 @@ namespace Task_Management_System.Controllers
                 Direction = ParameterDirection.Output
             };
 
-           int res = db.ExecuteQuery("sp_Task", new SqlParameter[]
+           int res = await db.ExecuteQueryAsync("sp_Task", new SqlParameter[]
             {
                 new SqlParameter("@action" , "delete"),
                 new SqlParameter("@taskId" , id),
                 msg
             });
 
-            string ms = msg.Value.ToString();
+            string? ms = msg.Value?.ToString()??"";
 
             if (ms == "success")
             {
@@ -257,7 +263,7 @@ namespace Task_Management_System.Controllers
           
         }
 
-        public ActionResult GetTaskById(int? id)
+        public async Task<ActionResult> GetTaskById(int? id)
         {
              
             SqlParameter msg = new SqlParameter("@msg", SqlDbType.NVarChar, 255)
@@ -265,14 +271,14 @@ namespace Task_Management_System.Controllers
                 Direction = ParameterDirection.Output
             };
 
-           DataTable res = db.table("sp_Task", new SqlParameter[]
+           DataTable res =await db.TableAsync("sp_Task", new SqlParameter[]
             {
                 new SqlParameter("@action" , "selectOne"),
                 new SqlParameter("@taskId" , id),
                 msg
             });
 
-            string ms = msg.Value.ToString();
+            string? ms = msg.Value?.ToString()??"";
 
             if (ms == "success")
             {
@@ -284,10 +290,10 @@ namespace Task_Management_System.Controllers
 
        
 
-        public ActionResult GetTask()
+        public async Task<ActionResult> GetTask()
         {
 
-            DataTable dt = db.table("sp_Task", new SqlParameter[]
+            DataTable dt =await db.TableAsync("sp_Task", new SqlParameter[]
             {
                 new SqlParameter("@action" , "selectAll")
             });

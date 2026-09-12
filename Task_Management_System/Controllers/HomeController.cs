@@ -7,6 +7,7 @@ using Microsoft.Data.SqlClient;
 using Newtonsoft.Json;
 using System.Data;
 using System.Diagnostics;
+using System.Net;
 using System.Security.Claims;
 using System.Security.Cryptography;
 using System.Threading.Tasks;
@@ -35,11 +36,12 @@ namespace Task_Management_System.Controllers
         }
 
         [HttpPost]
-        public IActionResult SignUp(SignUpModel s)
+        public async Task<IActionResult> SignUp(SignUpModel s)
         {
             try
             {
-                string hashPass = null;
+                string? hashPass = null;
+
                 if (!string.IsNullOrWhiteSpace(s.pass))
                 {
                     hashPass = BCrypt.Net.BCrypt.HashPassword(s.pass);
@@ -56,7 +58,7 @@ namespace Task_Management_System.Controllers
                     Direction = ParameterDirection.Output
                 };
 
-                db.ExecuteQuery("sp_Users", new SqlParameter[]
+               await db.ExecuteQueryAsync("sp_Users", new SqlParameter[]
                 {
                 new SqlParameter("@action" , "add"),
                 new SqlParameter("@name" , s.name),
@@ -66,7 +68,7 @@ namespace Task_Management_System.Controllers
                 msg
                 });
 
-                string ms = msg.Value.ToString();
+                string? ms = msg.Value?.ToString()??"";
 
                 if (ms == "success")
                 {
@@ -89,7 +91,7 @@ namespace Task_Management_System.Controllers
         }
 
         [HttpPost]
-        public ActionResult EditUser(SignUpModel s)
+        public async Task<ActionResult> EditUser(SignUpModel s)
         {
 
             SqlParameter msg = new SqlParameter("@msg", SqlDbType.NVarChar, 255)
@@ -97,7 +99,7 @@ namespace Task_Management_System.Controllers
                 Direction = ParameterDirection.Output
             };
 
-            db.ExecuteQuery("sp_Users", new SqlParameter[]
+           await db.ExecuteQueryAsync("sp_Users", new SqlParameter[]
             {
                 new SqlParameter("@action" , "edit"),
                 new SqlParameter("@userId" , s.id),
@@ -106,7 +108,7 @@ namespace Task_Management_System.Controllers
                 msg
             });
 
-            string ms = msg.Value.ToString();
+            string? ms = msg.Value?.ToString()??"";
 
             if (ms == "success")
             {
@@ -131,22 +133,22 @@ namespace Task_Management_System.Controllers
                 Direction = ParameterDirection.Output
             };
 
-            DataTable dt = db.table("sp_Users", new SqlParameter[]
+            DataTable dt =await db.TableAsync("sp_Users", new SqlParameter[]
             {
                 new SqlParameter("@action" , "selectOne"),
                 new SqlParameter("@email" ,l.email),
                 msg
             });
 
-            string ms = msg.Value.ToString();
+            string? ms = msg.Value?.ToString()??"";
 
             bool hashPass = false;
-            string roles = null;
+            string? roles = null;
 
             if(dt.Rows.Count > 0)
             {
-                roles = dt.Rows[0]["role"].ToString();
-                string pass = dt.Rows[0]["pass"].ToString();
+                roles = dt.Rows[0]["role"].ToString()!;
+                string pass = dt.Rows[0]["pass"].ToString()!;
                 if (l.pass != null)
                 {
                     hashPass = BCrypt.Net.BCrypt.Verify(l.pass, pass);
@@ -157,9 +159,9 @@ namespace Task_Management_System.Controllers
             {
                 var claims = new List<Claim>
                 {
-                    new Claim("userId" , dt.Rows[0]["userId"].ToString()),
-                    new Claim("name" , dt.Rows[0]["name"].ToString()),
-                    new Claim("email" , dt.Rows[0]["email"].ToString()),
+                    new Claim("userId" , dt.Rows[0]["userId"].ToString()!),
+                    new Claim("name" , dt.Rows[0]["name"].ToString()!),
+                    new Claim("email" , dt.Rows[0]["email"].ToString()!),
                     new Claim(ClaimTypes.Role , roles)
                 };
 
@@ -179,7 +181,7 @@ namespace Task_Management_System.Controllers
             return View();
         }
 
-        public ActionResult GetComments(int? id)
+        public async Task<ActionResult> GetComments(int? id)
         {
 
             SqlParameter msg = new SqlParameter("@msg", SqlDbType.NVarChar, 255)
@@ -187,14 +189,14 @@ namespace Task_Management_System.Controllers
                 Direction = ParameterDirection.Output
             };
 
-            DataTable res = db.table("sp_TaskComments", new SqlParameter[]
+            DataTable res =await db.TableAsync("sp_TaskComments", new SqlParameter[]
              {
                 new SqlParameter("@action" , "selectByTask"),
                 new SqlParameter("@taskId" , id),
                 msg
              });
 
-            string ms = msg.Value.ToString();
+            string? ms = msg.Value?.ToString()??"";
 
             if (ms == "success")
             {
@@ -205,43 +207,40 @@ namespace Task_Management_System.Controllers
         }
 
         [HttpPost]
-        public ActionResult SendComment(string? cmt, int? id, string UserEmail,string ProjectName, string TaskName)
+        public async Task<ActionResult> SendComment(string? cmt, int? id, string UserEmail, string ProjectName, string TaskName)
         {
-
             SqlParameter msg = new SqlParameter("@msg", SqlDbType.NVarChar, 255)
             {
                 Direction = ParameterDirection.Output
             };
 
-            db.ExecuteQuery("sp_TaskComments", new SqlParameter[]
+           await db.ExecuteQueryAsync("sp_TaskComments", new SqlParameter[]
             {
-                new SqlParameter("@action" , "add"),
-                new SqlParameter("@comment" , cmt),
-                new SqlParameter("@taskId" , id),
-                new SqlParameter("@commentedBy" , User.FindFirst("userId")?.Value),
+                new SqlParameter("@action", "add"),
+                new SqlParameter("@comment", cmt ?? (object)DBNull.Value),
+                new SqlParameter("@taskId", id ?? (object)DBNull.Value),
+                new SqlParameter("@commentedBy", User.FindFirst("userId")?.Value ?? (object)DBNull.Value),
                 msg
             });
 
-            emailService.SendEmail
-                (
-                UserEmail,
-                "You have a Comment",
-                "<p><strong>Project Name : </strong>" + ProjectName +"</p>"+ "<p><strong>Task Name : </strong>" + TaskName +"</p>" + "<h2>"+cmt+"</h2>"
-
-                );
-
-            string ms = msg.Value.ToString();
+            string ms = msg.Value?.ToString() ?? "";
 
             if (ms == "success")
-            {
+            { 
+                string body = $"<p><strong>Project Name : </strong>{WebUtility.HtmlEncode(ProjectName)}</p>" +
+                              $"<p><strong>Task Name : </strong>{WebUtility.HtmlEncode(TaskName)}</p>" +
+                              $"<h2>{WebUtility.HtmlEncode(cmt)}</h2>";
+
+                await emailService.SendEmail(UserEmail, "You have a Comment", body);
+
                 return Json(new { success = true });
             }
 
-            return View("Index");
+            return Json(new { success = false, message = ms });
         }
 
         [HttpPost]
-        public ActionResult DeleteComment(int? id)
+        public async Task<ActionResult> DeleteComment(int? id)
         {
 
             SqlParameter msg = new SqlParameter("@msg", SqlDbType.NVarChar, 255)
@@ -249,14 +248,14 @@ namespace Task_Management_System.Controllers
                 Direction = ParameterDirection.Output
             };
 
-            db.ExecuteQuery("sp_TaskComments", new SqlParameter[]
+           await db.ExecuteQueryAsync("sp_TaskComments", new SqlParameter[]
             {
                 new SqlParameter("@action" , "delete"), 
                 new SqlParameter("@commentId" , id), 
                 msg
             });
 
-            string ms = msg.Value.ToString();
+            string ms = msg.Value?.ToString()??"";
 
             if (ms == "success")
             {
@@ -271,6 +270,15 @@ namespace Task_Management_System.Controllers
             await HttpContext.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme);
             return RedirectToAction("Login");
          
+        }
+
+        [ResponseCache(Duration =0, Location =ResponseCacheLocation.None,NoStore =true)]
+        public IActionResult Error()
+        {
+            return View(new ErrorViewModel
+            {
+                RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier
+            });
         }
 
     }
