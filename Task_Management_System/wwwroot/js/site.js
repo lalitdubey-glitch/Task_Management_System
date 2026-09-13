@@ -1,4 +1,5 @@
 ﻿$(document).ready(function () {
+
     $("#btnSignup").on("click", function () {
         var formdata = new FormData(document.getElementById('signupForm'));
         if ($("input[required]").val().trim() === "") {
@@ -22,17 +23,19 @@
             processData: false,
             contentType: false,
             success: function (res) {
-              
-                if (res.success === "success") {
+                if (res.ms == "invalid email") {
+                    Swal.fire("Info", "Please enter valid Email Address", "info"); 
+                }
+                else if (res.success === "Email Already Exists") {
+                    Swal.fire("Error", "Email Already Exists", "error");
+                }
+                else if (res.success === "success") {
                     Swal.fire("Success", "User Saved!", "success");
                     document.getElementById('signupForm').reset();
 
                     setTimeout(function () {
                         location.href = "/home/Login"
                     }, 2000);
-                }
-                else if (res.success === "Email Already Exists") {
-                    Swal.fire("Error", "Email Already Exists", "error");
                 }
                 else {
                     Swal.fire("Error", "User Not Added!", "error");
@@ -111,6 +114,55 @@
             }
         }
     });
-     
 
 })
+
+function PolishWithAI() {
+    var rawComment = $("#comment").val().trim();
+
+    if (!rawComment) {
+        Swal.fire("Warning", "Write Something in Comment box First!", "warning");
+        return;
+    }
+
+    $.ajax({
+        url: "/AI/PolishComment",
+        type: "POST",
+        data: { cmt: rawComment },
+        beforeSend: function () {
+            $("#btnPolishCmt").prop("disabled", true);
+            Swal.fire({
+                title: "AI Polishing...",
+                text: "Refining your comment into a professional update...",
+                allowOutsideClick: false,
+                didOpen: () => {
+                    Swal.showLoading();
+                }
+            });
+        },
+        success: function (res) {
+            if (res.success) {
+                $("#comment").val(res.data);
+                Swal.fire({
+                    icon: "success",
+                    title: "Polished!",
+                    text: "Comment professional format me update ho gaya hai.",
+                    timer: 1500,
+                    showConfirmButton: false
+                });
+            } else {
+                Swal.fire("Error", res.message || "Failed to polish comment", "error");
+            }
+        },
+        error: function (xhr, status, error) {
+            console.error(error);
+            Swal.fire("Error", "AI service connect nahi ho payi. Please try again!", "error");
+        },
+        complete: function () {
+            $("#btnPolishCmt").prop("disabled", false);
+        }
+    });
+}
+
+  
+ 

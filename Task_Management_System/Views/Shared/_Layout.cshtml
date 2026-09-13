@@ -13,8 +13,8 @@
     <link rel="stylesheet" href="~/Task_Management_System.styles.css" asp-append-version="true" />
 </head>
 <body>
-    <header>
-        <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-light bg-white border-bottom box-shadow mb-3">
+    <header class="sticky-top">
+        <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-light bg-light border-bottom box-shadow mb-3">
             <div class="container-fluid">
                 <a class="navbar-brand" asp-area="" asp-controller="Home" asp-action="Index">Task_Management_System</a>
                 <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target=".navbar-collapse" aria-controls="navbarSupportedContent"
@@ -23,6 +23,7 @@
                 </button>
                 <div class="navbar-collapse collapse d-sm-inline-flex justify-content-between">
                     <ul class="navbar-nav flex-grow-1">
+                      
                        @if(!User.Identity.IsAuthenticated){
                         <li class="nav-item">
                             <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Index">Home</a>
@@ -36,6 +37,7 @@
                        }
                         @if (User.FindFirst(ClaimTypes.Role)?.Value == "admin")
                         {
+                            
                             <li class="nav-item">
                                 <a class="nav-link text-dark" asp-area="" asp-controller="Admin" asp-action="index">Dashboard</a>
                             </li>
@@ -47,19 +49,20 @@
                             </li>
                             <li class="nav-item">
                                 <a class="nav-link text-dark" asp-area="" asp-controller="Admin" asp-action="Task">Task</a>
-                            </li>
+                            </li> 
                         }
                       
                         @if (User.IsInRole("employee") || User.IsInRole("hr") || User.IsInRole("manager"))
                         {
                             <li class="nav-item">
                                 <a class="nav-link text-dark" asp-area="" asp-controller="Employee" asp-action="index">Dashboard</a>
-                            </li>
+                            </li> 
+
                         }
                         @if (User.Identity.IsAuthenticated)
                         {
-                            <li class="nav-item">
-                                <a class="nav-link text-danger" asp-area="" asp-controller="Home" asp-action="Logout">Logout</a>
+                            <li class="nav-item end-0 ms-sm-auto">
+                                <a class="nav-link text-white btn-sm btn-danger rounded-pill text-center" asp-area="" asp-controller="Home" asp-action="Logout">Logout</a>
                             </li>
                         }
                        

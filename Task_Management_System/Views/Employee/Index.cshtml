@@ -7,9 +7,8 @@
 {
     <div class="container">
         <div class="row">
-            <div class="col-12 col-lg-6">
-                <h2>--Your Details--</h2>
-                <div class="card p-2">
+            <div class="col-12 col-lg-6"> 
+                <div class="card p-2 shadow bg-light">
                     <h4>Name : @row["name"]</h4>
                     <h4>Email : @row["email"]</h4>
                     <h4>Role : @row["role"]</h4>
@@ -17,6 +16,12 @@
 
                     <div>
                         <input type="button" value="Edit" class="btn btn-success" id="userEdit" />
+                        <button class="btn btn-dark rounded-pill shadow"
+                                data-bs-toggle="offcanvas"
+                                data-bs-target="#userCopilotDrawer">
+                            <span class="fw-semibold">⚡Ask AI</span>
+                            <span class="spinner-grow spinner-grow-sm text-success"></span>
+                        </button>
                     </div>
                     
                 </div>
@@ -30,6 +35,39 @@
     </div>
 } 
  
+
+<!-- Offcanvas Sidebar Drawer -->
+<div class="offcanvas offcanvas-end shadow" tabindex="-1" id="userCopilotDrawer" style="width: 400px;">
+    <div class="offcanvas-header bg-primary text-white py-3">
+        <h5 class="offcanvas-title d-flex align-items-center gap-2"> 
+            <span>⚡Task Assistant</span>
+        </h5>
+        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="offcanvas"></button>
+    </div>
+
+    <div class="offcanvas-body d-flex flex-column p-3 bg-light">
+        <!-- Chat History Box -->
+        <div id="userChatBox" class="flex-grow-1 overflow-auto border rounded p-3 mb-3 bg-white" style="max-height: 72vh;">
+            <div class="p-2 mb-2 bg-light rounded border-start border-primary border-3">
+                <small class="text-primary fw-bold">Assistant</small>
+                <div class="small text-muted mt-1">
+                    Hi! Apne pending tasks, deadlines ya priorities ke baare me kuch bhi puchiye.
+                </div>
+            </div>
+        </div>
+         
+        <div class="input-group">
+            <input type="text" id="txtUserCopilotInput"  class="form-control"  placeholder="e.g. Mera sabse urgent task kaunsa hai?" />
+            <button class="btn btn-primary" id="btnSendUserCopilot">  Send </button>
+        </div>
+    </div>
+</div>
+ 
+<!-- Yahan Subtasks Render Honge -->
+<div id="subtasksContainer" class="mt-3" style="display: none;">
+    <label class="fw-bold">Generated Subtasks:</label>
+    <ul class="list-group" id="subtaskList"></ul>
+</div>
  
 <div class="table-responsive border border-1 p-3 shadow rounded-3 mt-5">
     <table class="table table-bordered table-hover table-striped" id="EmpTable">
@@ -44,6 +82,7 @@
                 <th>Due_Date</th>
                 <th>Days (Total / Left)</th>
                 <th>Status</th>
+                <th>Ask AI</th>
                 <th>Actions</th>
 
             </tr>
@@ -81,6 +120,7 @@
                 <textarea name="comment" id="comment" class="form-control" rows="2" placeholder="Write comment here..."></textarea>
 
                 <div class="d-flex justify-content-end gap-2"> 
+                    <button type="button" class="btn btn-outline-success" id="btnPolishCmt" onclick="PolishWithAI()">  Polish with AI </button>
                     <button type="button" class="btn btn-primary" id="sendCmt">Send</button>
                 </div>
             </div>

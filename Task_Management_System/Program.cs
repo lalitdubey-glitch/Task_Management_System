@@ -11,7 +11,9 @@ namespace Task_Management_System
 
             builder.Services.AddScoped<IDBLayer , DBLayer>();
             builder.Services.AddScoped<IEmailService, EmailService>();
+            builder.Services.AddHttpClient<IGroqAIServices, GroqAIServices>();
             builder.Services.AddSession();
+
 
             // Add services to the container.
             builder.Services.AddControllersWithViews();

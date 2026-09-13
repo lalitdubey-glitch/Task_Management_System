@@ -47,11 +47,14 @@
                                 <td>${data.Description}</td>
                                 <td>${data.whoCreate}</td>
                                 <td>${data.createAt.split("T")[0]}</td>
+                                <td>
+                                    <input type="button" value="Summerize with Ai" data-id="${data.projectID}" class="btn btn-outline-success prjAi"/>
+                                </td>
                                 <td class="text-center">
-                                 <input type="button" class="btn btn-success EditPrj m-1" value="Edit" data-pname="${data.projectName}" data-pdesc="${data.Description}" data-id="${data.projectID}"/>
-                                 <input type="button" class="btn btn-danger DeletePrj m-1" value="Delete" data-id="${data.projectID}"/>
+                                 <input type="button" class="btn btn-success EditPrj" value="Edit" data-pname="${data.projectName}" data-pdesc="${data.Description}" data-id="${data.projectID}"/>
+                                 <input type="button" class="btn btn-danger DeletePrj" value="Delete" data-id="${data.projectID}"/>
 
-                                 <input type="button" class="btn btn-primary ViewPrj m-1" value="View Project Task" data-pname="${data.projectName}" data-pdesc="${data.Description}"  data-id="${data.projectID}"/>
+                                 <input type="button" class="btn btn-primary ViewPrj" value="View All Tasks" data-pname="${data.projectName}" data-pdesc="${data.Description}"  data-id="${data.projectID}"/>
                             
                                 </td>
                             </tr>
@@ -71,6 +74,53 @@
             }
         })
     }
+
+    $(document).on("click", ".prjAi", function () {
+        var pId = $(this).data("id");
+
+        if (!pId) {
+            Swal.fire("Warning", "Project ID missing ya invalid hai!", "warning");
+            return;
+        }
+
+        $.ajax({
+            url: "/AI/GenerateProjectSummary",
+            type: "GET",
+            data: { projectId: pId },
+            beforeSend: function () {
+                $("#btnProjectSummary").prop("disabled", true);
+                Swal.fire({
+                    title: "Analyzing Project...",
+                    text: "Scanning all tasks, assigned owners, and recent comments...",
+                    allowOutsideClick: false,
+                    didOpen: () => {
+                        Swal.showLoading();
+                    }
+                });
+            },
+            success: function (res) {
+                if (res.success) {
+                    Swal.close(); 
+                    $("#aiSummaryBody").html(res.data);
+                    $("#aiSummaryContainer").slideDown(300);
+                     
+                    $('html, body').animate({
+                        scrollTop: $("#aiSummaryContainer").offset().top - 80
+                    }, 400);
+                } else {
+                    Swal.fire("Notice", res.message || "Summary generate nahi ho saki.", "info");
+                }
+            },
+            error: function (xhr, status, error) {
+                console.error(error);
+                Swal.fire("Error", "Server error occurred while generating summary.", "error");
+            },
+            complete: function () {
+                $("#btnProjectSummary").prop("disabled", false);
+            }
+        });
+    })
+    
 
     function ViewProjectDetail(id) {
         $.ajax({

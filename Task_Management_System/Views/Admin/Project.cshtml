@@ -23,21 +23,37 @@
     </div>
 </div>
 
+<!-- AI Health Summary Display Card -->
+<div id="aiSummaryContainer" class="card shadow border-primary my-4" style="display: none;">
+    <div class="card-header bg-primary text-white d-flex justify-content-between align-items-center py-2">
+        <span class="fw-semibold">Executive AI Status Report</span>
+        <button type="button" class="btn-close btn-close-white btn-sm" onclick="$('#aiSummaryContainer').slideUp()"></button>
+    </div>
+    <div class="card-body bg-light">
+        <div id="aiSummaryBody" class="lh-base">
+            <!-- AI report yahan inject hogi -->
+        </div>
+    </div>
+</div>
+
 <div class="table-responsive border border-1 p-3 shadow rounded-3 mt-5">
     <table class="table table-bordered table-hover" id="projectTable">
-        <thead class="table-dark text-nowrap">
+        <thead class="table-dark text-nowrap text-center">
             <tr>
                 <td>Sr. No.</td>
                 <td>Project_Name</td>
                 <td>Description</td>
                 <td>Created_By</td>
                 <td>Created_At</td>
+                <td>Ai</td>
                 <td>Action</td>
             </tr>
         </thead>
         <tbody></tbody>
     </table>
 </div>
+
+
  
 <div class="modal fade" id="ViewUserTask" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="centerModalLabel" aria-hidden="true">
 

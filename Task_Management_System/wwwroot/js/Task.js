@@ -38,7 +38,7 @@
 
     function GetProject() {
         $.ajax({
-            url: "/admin/GetProject",
+            url: "/Admin/GetProject",
             type: "get",
             success: function (res) {
                 if (res.length > 0) {
@@ -47,8 +47,8 @@
 
                     $.each(res, function (index, data) {
                         $("#projectId").append(
-                        `
-                         <option value="${data["projectID"]}"> ${data.projectName} </option>
+                            `
+                         <option value="${data.projectID}"> ${data.projectName} </option>
                         `
                         );
                     })
@@ -67,7 +67,7 @@
         $.ajax({
             url: "/admin/GetTask",
             type: "get",
-            success: function (res) { 
+            success: function (res) {
                 if (res.length > 0) {
                     if ($.fn.DataTable.isDataTable("#TaskTable")) {
                         $("#TaskTable").DataTable().destroy();
@@ -75,60 +75,76 @@
                     }
 
                     $.each(res, function (index, data) {
+                         
+                        const dueDate = new Date(data.DueDate);
+                        const createdAt = new Date(data.createAt);
+                        const today = new Date();
 
-                        const totalDays = Math.round((new Date(data.DueDate) - new Date(data.createAt)) / 86400000);
-                        const leftDays = Math.round((new Date(data.DueDate) - new Date()) / 86400000);
-
-                        const leftText = leftDays < 0 ? `${Math.abs(leftDays)}d Overdue ` : `${leftDays}d left`;
+                        // Time strip kiya (00:00:00) taaki timezone aur hours ka bug na aaye
+                        dueDate.setHours(0, 0, 0, 0);
+                        createdAt.setHours(0, 0, 0, 0);
+                        today.setHours(0, 0, 0, 0);
+                         
+                        const totalDays = Math.round((dueDate - createdAt) / 86400000);
+                        const leftDays = Math.round((dueDate - today) / 86400000);
+                         
+                        let leftText = "";
+                        if (leftDays < 0) {
+                            leftText = `${Math.abs(leftDays)}d Overdue`;
+                        } else if (leftDays === 0) {
+                            leftText = "Due Today";
+                        } else {
+                            leftText = `${leftDays}d left`;
+                        }
 
                         var bg_color = null;
                         var priority = (data.priority).toLowerCase().trim();
 
                         if (priority == "low") {
-                            bg_color = "bg-primary text-white"
-                        } 
+                            bg_color = "bg-primary text-white";
+                        }
                         else if (priority == "normal") {
-                            bg_color = "bg-success text-white"
-                        } 
-                        else{
-                            bg_color = "bg-danger text-white"
-                        } 
+                            bg_color = "bg-success text-white";
+                        }
+                        else {
+                            bg_color = "bg-danger text-white";
+                        }
 
                         $("#TaskTable tbody").append(
                             `
-                            <tr>
-                                <td>${data.userName}</td>
-                                <td>${data.projectName}</td>
-                                <td>${data.task}</td>
-                                <td>${data.Description}</td>
-                                <td>${data.status}</td>
-                                <td>${data.createAt.split("T")[0]}</td>
-                                <td class="text-danger fw-bold">${data.DueDate.split("T")[0]}</td>
-                                <td>
-                                  <span class="fw-bold">${totalDays}d</span> / 
-                                  <span class="${leftDays < 0 ? 'text-danger fw-bold' : 'text-success'}">${leftText}</span>
-                                </td> 
-                                <td class="${bg_color}">${data.priority}</td>
-                                <td class="text-center text-nowrap">
-                                    <input type="button" value="Edit" class="btn btn-warning BtntaskEdit" data-email="${data.userEmail}" data-id="${data.taskId}"/> 
-                                    <input type="button" value="Delete" class="btn btn-danger BtntaskDelete" data-id="${data.taskId}"/> 
-                                </td>
-                                <td>
-                                    <input type="button" value="Comments" data-id="${data.taskId}" data-task="${data.task}" data-desc="${data.Description}" data-email="${data.userEmail}" data-pname="${data.projectName}" data-bs-toggle="modal" data-bs-target="#EmpModal" class="btn btn-primary btn_cmt"/>
-                                </td>
-                            </tr>
-                            `
-                        )
-                    })
+                        <tr>
+                            <td>${data.userName}</td>
+                            <td>${data.projectName}</td>
+                            <td>${data.task}</td>
+                            <td>${data.Description}</td>
+                            <td>${data.status}</td>
+                            <td>${data.createAt.split("T")[0]}</td>
+                            <td class="text-danger fw-bold">${data.DueDate.split("T")[0]}</td>
+                              <td>
+                              <span class="fw-bold text-dark">${totalDays}d</span> / 
+                              <span class="fw-bold ${leftDays > 0 ? 'text-success' : 'text-danger'}">${leftText}</span>
+                            </td>
+                            <td class="${bg_color}">${data.priority}</td>
+                            <td class="text-center text-nowrap">
+                                <input type="button" value="Edit" class="btn btn-warning BtntaskEdit" data-email="${data.userEmail}" data-id="${data.taskId}"/> 
+                                <input type="button" value="Delete" class="btn btn-danger BtntaskDelete" data-id="${data.taskId}"/> 
+                            </td>
+                            <td>
+                                <input type="button" value="Comments" data-id="${data.taskId}" data-task="${data.task}" data-desc="${data.Description}" data-email="${data.userEmail}" data-pname="${data.projectName}" data-bs-toggle="modal" data-bs-target="#EmpModal" class="btn btn-primary btn_cmt"/>
+                            </td>
+                        </tr>
+                        `
+                        );
+                    });
 
                     $('#TaskTable').DataTable();
                 }
             },
             error: function (xhr, status, error) {
-                console.error("Error : " , error)
+                console.error("Error : ", error);
                 Swal.fire("Error", "Server Error!", "error");
             }
-        })
+        });
     }
 
     $(document).on("click", ".btn_cmt", function () {

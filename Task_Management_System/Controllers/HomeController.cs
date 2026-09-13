@@ -38,6 +38,10 @@ namespace Task_Management_System.Controllers
         [HttpPost]
         public async Task<IActionResult> SignUp(SignUpModel s)
         {
+            if (!ModelState.IsValid)
+            {
+                return Json(new { success = false , ms = "invalid email"});
+            }
             try
             {
                 string? hashPass = null;
