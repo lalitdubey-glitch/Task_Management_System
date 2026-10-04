@@ -210,14 +210,15 @@
             type: "get",
             data: { id: id },
             success: function (res) {
-                if (res.length > 0) { 
-                    $("#task").val(res[0]["task"]);
-                    $("#AssignedTo").val(res[0]["AssignedTo"]);
-                    $("#projectId").val(res[0]["projectId"]);
-                    $("#DueDate").val(res[0]["DueDate"].split("T")[0]);
-                    $("#priority").val(res[0]["priority"]);
-                    $("#status").val(res[0]["status"]);
-                    $("#Description").val(res[0]["Description"]);
+                debugger
+                if (res.success &&+ res.data.length > 0) { 
+                    $("#task").val(res.data[0]["task"]);
+                    $("#AssignedTo").val(res.data[0]["assignedTo"]);
+                    $("#projectId").val(res.data[0]["projectId"]);
+                    $("#DueDate").val(res.data[0]["dueDate"].split("T")[0]);
+                    $("#priority").val(res.data[0]["priority"]);
+                    $("#status").val(res.data[0]["status"]);
+                    $("#Description").val(res.data[0]["description"]);
                 }
                 else {
                     Swal.fire("info", "No Task Found!", "info");

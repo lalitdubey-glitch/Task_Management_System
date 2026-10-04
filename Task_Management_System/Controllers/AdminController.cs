@@ -349,7 +349,7 @@ namespace Task_Management_System.Controllers
 
                 if (dt.Rows.Count>0 && ms == "success")
                 {
-                    return Json(new { data = dt });
+                    return Json(new {success = true, data = dt });
                 }
 
                 return Json(new { success = false});
