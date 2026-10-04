@@ -1,0 +1,171 @@
+﻿
+
+<div class="offcanvas offcanvas-start" tabindex="-1" id="newComments" aria-labelledby="newCommentsLabel">
+    <div class="offcanvas-header">
+        <h5 class="offcanvas-title" id="newCommentsLabel">Today Comment's <span></span></h5>
+        <button type="button" class="btn-close" data-bs-dismiss="offcanvas" aria-label="Close"></button>
+    </div>
+    <div class="offcanvas-body">
+    </div>
+</div>
+
+
+<!-- Offcanvas Sidebar Drawer -->
+<div class="offcanvas offcanvas-end shadow" tabindex="-1" id="userCopilotDrawer" style="width: 400px;">
+    <div class="offcanvas-header bg-primary text-white py-3">
+        <h5 class="offcanvas-title d-flex align-items-center gap-2">
+            <span>⚡Task Assistant</span>
+        </h5>
+        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="offcanvas"></button>
+    </div>
+
+    <div class="offcanvas-body d-flex flex-column p-3 bg-light">
+        <!-- Chat History Box -->
+        <div id="userChatBox" class="flex-grow-1 overflow-auto border rounded p-3 mb-3 bg-white" style="max-height: 72vh;">
+            <div class="p-2 mb-2 bg-light rounded border-start border-primary border-3">
+                <small class="text-primary fw-bold">Assistant</small>
+                <div class="small text-muted mt-1">
+                    Hi! Apne pending tasks, deadlines ya priorities ke baare me kuch bhi puchiye.
+                </div>
+            </div>
+        </div>
+
+        <div class="input-group">
+            <input type="text" id="txtUserCopilotInput" class="form-control" placeholder="e.g. Mera sabse urgent task kaunsa hai?" />
+            <button class="btn btn-primary" id="btnSendUserCopilot">  Send </button>
+        </div>
+    </div>
+</div>
+
+
+<div class="modal fade" id="EmpModal" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="centerModalLabel" aria-hidden="true">
+
+    <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable modal-fullscreen w-75 mx-auto">
+        <div class="modal-content">
+
+            <div class="modal-header">
+                <div>
+                    <h4 class="modal-title" id="taskName">Task Name</h4>
+                    <div>
+                        <p id="pName" hidden></p>
+                        <p id="taskDesc" class="text-muted mb-0"></p>
+                    </div>
+
+                </div>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+
+            <div class="modal-body">
+                <input type="hidden" name="id" id="id" />
+                <div id="userCmt">
+                    <p class="text-muted">No comments yet...</p>
+                </div>
+            </div>
+
+            <div class="modal-footer d-flex flex-column align-items-stretch gap-2">
+                <textarea name="comment" id="comment" class="form-control" rows="2" placeholder="Write comment here..."></textarea>
+
+                <div class="d-flex justify-content-end gap-2">
+                    <button type="button" class="btn btn-outline-success" id="btnPolishCmt" onclick="PolishWithAI()">  Polish with AI </button>
+                    <button type="button" class="btn btn-primary" id="sendCmt">Send</button>
+                </div>
+            </div>
+
+        </div>
+    </div>
+</div>
+
+
+
+
+
+<div class="modal fade" id="SendOtpModal" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="forgotPassModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="forgotPassModalLabel">Send OTP</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <div class="mb-3">
+                    <input type="email" class="form-control" readonly id="forgotEmail" value="@User.FindFirst("email")?.Value" placeholder="name@example.com">
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                <button type="button" class="btn btn-primary" id="BtnSendOtp">Send OTP</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="VerifyOtpModal" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="VerifyOtpModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="VerifyOtpModalLabel">Verify OTP</h5>
+            </div>
+            <div class="modal-body">
+                <div class="mb-3">
+                    <label for="otp" class="form-label">Enter your OTP</label>
+                    <input type="text" class="form-control" id="otp" name="otp" placeholder="..........">
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-primary" id="BtnVerifyOtp">Verify OTP</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="ChangePassModal" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="ChangePassModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="ChangePassModalLabel">Reset Password</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <div class="mb-3">
+                    <label for="pass" class="form-label">Enter your New Password</label>
+                    <input type="text" class="form-control" id="pass" name="pass" placeholder="..........">
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                <button type="button" class="btn btn-primary" id="BtnChangePass">Change Password</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+@* -------Edit User Modal------- *@
+
+<div class="modal fade" id="UserEditModal" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="modalTitle" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+
+            <div class="modal-header">
+                <h5 class="modal-title" id="modalTitle">Edit User</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+
+            <div class="modal-body">
+                <form method="post" id="editFormUserModal">
+                    <input type="text" name="id" id="id" value="@User.FindFirst("userId")?.Value"  hidden/>
+                    <label>Name</label>
+                    <input type="text" name="name"   id="name" class="form-control" />
+                    <label>Email</label>
+                    <input type="email" name="email" id="email"   readonly class="form-control" />
+                </form>
+            </div>
+            <div class="modal-footer">
+
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                <input type="button" value="Forgot Password?" id="frgtPass" class="btn btn-warning" />
+                <button type="button" class="btn btn-primary" id="SaveEdit">Save Changes</button>
+            </div>
+
+        </div>
+    </div>
+</div>

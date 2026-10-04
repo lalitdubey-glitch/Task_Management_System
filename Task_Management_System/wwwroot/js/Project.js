@@ -1,5 +1,6 @@
 ﻿$(document).ready(function () { 
     projectTable();
+
     $("#addProject").on("click", function () { 
         var formData = new FormData(document.getElementById('projectForm'));
         $.ajax({
@@ -20,8 +21,17 @@
                     Swal.fire("Error", "Project Not Added!", "error");
                 }
             },
-            error: function (res) {
-                console.log(res)
+            error: function (xhr, status, error) {
+                var err = null;
+                try {
+                    err = JSON.parse(xhr.responseText)
+                }
+                catch (e) {
+                    err = xhr.responseText
+                }
+
+                Swal.fire("Server Error", "Something went wrong, Please check your internet connection or Try Again Leter...!", "error")
+                console.log(err)
             }
         })
     })
@@ -31,30 +41,30 @@
             url: "/admin/GetProject",
             type: "get", 
             success: function (res) {
-
+                 
                 if ($.fn.DataTable.isDataTable("#projectTable")) {
                     $("#projectTable").DataTable().destroy();
                     $("#projectTable tbody").empty();
                 }
 
-                if (res.length>0) {
-                    $.each(res, function (index, data) {
+                if (res.success && res.data.length > 0) {
+                    $.each(res.data, function (index, item) {
                         $("#projectTable tbody").append(
                             `
                             <tr >
                                 <td>${index + 1}</td> 
-                                 <td>${data.projectName}</td>
-                                <td>${data.Description}</td>
-                                <td>${data.whoCreate}</td>
-                                <td>${data.createAt.split("T")[0]}</td>
+                                 <td>${item.projectName}</td>
+                                <td>${item.description}</td>
+                                <td>${item.whoCreate}</td>
+                                <td>${item.createAt.split("T")[0]}</td>
                                 <td>
-                                    <input type="button" value="Summerize with Ai" data-id="${data.projectID}" class="btn btn-outline-success prjAi"/>
+                                    <input type="button" value="Summerize with Ai" data-id="${item.projectID}" class="btn btn-outline-success prjAi"/>
                                 </td>
                                 <td class="text-center">
-                                 <input type="button" class="btn btn-success EditPrj" value="Edit" data-pname="${data.projectName}" data-pdesc="${data.Description}" data-id="${data.projectID}"/>
-                                 <input type="button" class="btn btn-danger DeletePrj" value="Delete" data-id="${data.projectID}"/>
+                                 <input type="button" class="btn btn-success EditPrj" value="Edit" data-pname="${item.projectName}" data-pdesc="${item.description}" data-id="${item.projectID}"/>
+                                 <input type="button" class="btn btn-danger DeletePrj" value="Delete" data-id="${item.projectID}"/>
 
-                                 <input type="button" class="btn btn-primary ViewPrj" value="View All Tasks" data-pname="${data.projectName}" data-pdesc="${data.Description}"  data-id="${data.projectID}"/>
+                                 <input type="button" class="btn btn-primary ViewPrj" value="View All Tasks" data-pname="${item.projectName}" data-pdesc="${item.description}"  data-id="${item.projectID}"/>
                             
                                 </td>
                             </tr>
@@ -66,11 +76,20 @@
                     $('#projectTable').DataTable();
                 }
                 else {
-                    Swal.fire("Error", "No Data Found!", "error");
-                }
+                    Swal.fire("Info", "No Project Found!", "info");
+                } 
             },
-            error: function (res) {
-                console.log(res)
+             error: function (xhr, status, error) {
+                var err = null;
+                try {
+                    err = JSON.parse(xhr.responseText)
+                }
+                catch (e) {
+                    err = xhr.responseText
+                }
+
+                Swal.fire("Server Error", "Something went wrong, Please check your internet connection or Try Again Leter...!", "error")
+                console.log(err)
             }
         })
     }
@@ -112,8 +131,16 @@
                 }
             },
             error: function (xhr, status, error) {
-                console.error(error);
-                Swal.fire("Error", "Server error occurred while generating summary.", "error");
+                var err = null;
+                try {
+                    err = JSON.parse(xhr.responseText)
+                }
+                catch (e) {
+                    err = xhr.responseText
+                }
+
+                Swal.fire("Server Error", "Something went wrong, Please check your internet connection or Try Again Leter...!", "error")
+                console.log(err)
             },
             complete: function () {
                 $("#btnProjectSummary").prop("disabled", false);
@@ -129,17 +156,18 @@
             data: { id: id },
             success: function (res) { 
                 $("#AllTask").empty();
-                $.each(res, function (index, data) {
-                    $("#AllTask").append(
-                        `
+                if (res.success && res.data.length > 0) {
+                    $.each(res.data, function (index, item) {
+                        $("#AllTask").append(
+                            `
                           <div class="rounded shadow-lg p-2 my-3">
-                          <p> <strong>Assign To : </strong> <span class="rounded p-1 text-success">${data.userName}</span></p>
-                           <div><strong>Task Name : </strong>  <span>${data.task}</span></div>
-                           <div><strong>Task Desc : </strong>  <span>${data.Description}</span></div>
-                           <div><strong>Task Priority : </strong>  <span>${data.priority}</span></div>
-                           <div><strong>Task Status : </strong>  <span> ${data.status}</span></div>
-                           <div><strong>Created At : </strong>  <span>${data.createAt.split("T")[0]}</span></div>
-                           <strong>Due Date : </strong>  <span class="text-danger">${data.DueDate.split("T")[0]}</span>
+                          <p> <strong>Assign To : </strong> <span class="rounded p-1 text-success">${item.userName}</span></p>
+                           <div><strong>Task Name : </strong>  <span>${item.task}</span></div>
+                           <div><strong>Task Desc : </strong>  <span>${item.description}</span></div>
+                           <div><strong>Task Priority : </strong>  <span>${item.priority}</span></div>
+                           <div><strong>Task Status : </strong>  <span> ${item.status}</span></div>
+                           <div><strong>Created At : </strong>  <span>${item.createAt.split("T")[0]}</span></div>
+                           <strong>Due Date : </strong>  <span class="text-danger">${item.dueDate.split("T")[0]}</span>
 
                           <div class="my-2">
                                 <a class="btn btn-success" href="/admin/task">Go To Task</a> 
@@ -148,11 +176,25 @@
                           </div>
 
                         `
-                    )
-                })
+                        )
+                    })
+                }
+                else {
+                    $("#AllTask").append(`<h2>No Task</h2>`);
+                }
+                
             },
-            error: function (res) {
+            error: function (xhr, status, error) {
+                var err = null;
+                try {
+                    err = JSON.parse(xhr.responseText)
+                }
+                catch (e) {
+                    err = xhr.responseText
+                }
 
+                Swal.fire("Server Error", "Something went wrong, Please check your internet connection or Try Again Leter...!", "error")
+                console.log(err)
             }
         })
     }
@@ -200,8 +242,17 @@
                             Swal.fire("Error", "Project Not Delete!", "error");
                         }
                     },
-                    error: function (res) {
-                        console.log(res)
+                    error: function (xhr, status, error) {
+                        var err = null;
+                        try {
+                            err = JSON.parse(xhr.responseText)
+                        }
+                        catch (e) {
+                            err = xhr.responseText
+                        }
+
+                        Swal.fire("Server Error", "Something went wrong, Please check your internet connection or Try Again Leter...!", "error")
+                        console.log(err)
                     }
                 })
             }

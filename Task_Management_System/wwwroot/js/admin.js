@@ -2,40 +2,51 @@
 
     LoadProjectsDropdown();
     UserTable();
+
     function UserTable() {
         $.ajax({
             url: "/admin/GetUser",
             type: "get",
-            success: function (res) {
-
+            success: function (res) { 
                 if ($.fn.DataTable.isDataTable("#userTable")) {
                     $("#userTable").DataTable().destroy();
                     $("#userTable tbody").empty();
+                } 
+
+                if (res.data.length > 0) { 
+                    $.each(res.data, function (index, data) {
+                        $("#userTable tbody").append(`
+                        <tr>
+                            <td>${index + 1}</td>
+                            <td>${data["name"]}</td>
+                            <td>${data["email"]}</td>
+                            <td>${data["role"]}</td>
+                            <td>${data["createdAt"].split("T")[0]}</td>
+                            <td class="text-nowrap">
+                                <input type="button" value="Edit" data-id="${data["userId"]}" data-name="${data['name']}" data-email="${data['email']}" data-role="${data['role']}"  class="btn btn-success btnEdit"/>
+
+                                 <input type="button" value="Delete" data-id="${data["userId"]}" class="btn btn-danger btnDelete"/>
+                            </td>
+                        </tr>
+
+                    `)
+                    })
                 }
-
-                $.each(res, function (index, data) {
-                    $("#userTable tbody").append(`
-                <tr>
-                    <td>${index+1}</td>
-                    <td>${data["name"]}</td>
-                    <td>${data["email"]}</td>
-                    <td>${data["role"]}</td>
-                    <td>${data["createdAt"].split("T")[0]}</td>
-                    <td class="text-nowrap">
-                        <input type="button" value="Edit" data-id="${data["userId"]}" data-name="${data['name']}" data-email="${data['email']}" data-role="${data['role']}"  class="btn btn-success btnEdit"/>
-
-                         <input type="button" value="Delete" data-id="${data["userId"]}" class="btn btn-danger btnDelete"/>
-                    </td>
-                </tr>
-
-            `)
-                })
 
                 $('#userTable').DataTable();
                  
             },
-            error: function (res) {
-                console.log(res)
+            error: function (xhr, status, error) {
+                var err = null;
+                try {
+                    err = JSON.parse(xhr.responseText)
+                }
+                catch (e) {
+                    err = xhr.responseText
+                }
+
+                Swal.fire("Server Error", "Something went wrong, Please check your internet connection or Try Again Leter...!", "error")
+                console.log(err)
             }
         })
     }
@@ -71,8 +82,17 @@
                     Swal.fire("Error", "User Not Edited", "error");
                 }
             },
-            error: function (res) {
+            error: function (xhr, status, error) {
+                var err = null;
+                try {
+                    err = JSON.parse(xhr.responseText)
+                }
+                catch (e) {
+                    err = xhr.responseText
+                }
 
+                Swal.fire("Server Error", "Something went wrong, Please check your internet connection or Try Again Leter...!", "error")
+                console.log(err)
             }
         })
     })
@@ -105,8 +125,17 @@
                             Swal.fire("Error", "User Not Deleted!", "error");
                         }
                     },
-                    error: function (res) {
-                        console.log(res)
+                    error: function (xhr, status, error) {
+                        var err = null;
+                        try {
+                            err = JSON.parse(xhr.responseText)
+                        }
+                        catch (e) {
+                            err = xhr.responseText
+                        }
+
+                        Swal.fire("Server Error", "Something went wrong, Please check your internet connection or Try Again Leter...!", "error")
+                        console.log(err)
                     }
                 })
                  
@@ -154,21 +183,30 @@ function LoadProjectsDropdown() {
         url: "/Admin/GetProject",
         type: "GET",
         dataType: "json",
-        success: function (data) {
+        success: function (res) {
             var ddl = $("#ddlCopilotProject");
             ddl.empty(); 
 
-            if (data && data.length > 0) {
+            if (res.data.length > 0) {
                 ddl.append('<option value=""> -- Select Project --</option>');
-                $.each(data, function (index, item) { 
+                $.each(res.data, function (index, item) { 
                     ddl.append(`<option value="${item.projectID}">${item.projectName}</option>`);
                 });
             } else {
-                ddl.append('<option value="">No projects found</option>');
+                ddl.append('<option value="">No projects found in GetProject</option>');
             }
         },
-        error: function () {
-            $("#ddlCopilotProject").html('<option value="">Failed to load projects</option>');
+        error: function (xhr, status, error) {
+            var err = null;
+            try {
+                err = JSON.parse(xhr.responseText)
+            }
+            catch (e) {
+                err = xhr.responseText
+            }
+
+            Swal.fire("Server Error", "Something went wrong, Please check your internet connection or Try Again Leter...!", "error")
+            console.log(err)
         }
     });
 }

@@ -25,6 +25,10 @@
     {
       "library": "datatables.net-bs5@2.3.4",
       "destination": "wwwroot/lib/datatables.net-bs5/"
+    },
+    {
+      "library": "fontawesome-iconpicker@3.2.0",
+      "destination": "wwwroot/lib/fontawesome-iconpicker/"
     }
   ]
 }

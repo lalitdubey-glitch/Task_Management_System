@@ -1,20 +1,12 @@
 ﻿$(document).ready(function () {
 
     $("#btnSignup").on("click", function () {
+
         var formdata = new FormData(document.getElementById('signupForm'));
         if ($("input[required]").val().trim() === "") {
             Swal.fire("Info", "Please! Fill All Fields", "info");
             return
         }
-
-        Swal.fire({
-            title: 'Verifying...',
-            text: 'Please wait while we check your credentials.',
-            allowOutsideClick: false,
-            didOpen: () => {
-                Swal.showLoading();
-            }
-        });
 
         $.ajax({
             url: "/home/SignUp",
@@ -22,14 +14,18 @@
             data: formdata,
             processData: false,
             contentType: false,
+            beforeSend: function () {
+                Swal.fire({
+                    title: 'Verifying...',
+                    text: 'Please wait while we check your credentials.',
+                    allowOutsideClick: false,
+                    didOpen: () => {
+                        Swal.showLoading();
+                    }
+                });
+            },
             success: function (res) {
-                if (res.ms == "invalid email") {
-                    Swal.fire("Info", "Please enter valid Email Address", "info"); 
-                }
-                else if (res.success === "Email Already Exists") {
-                    Swal.fire("Error", "Email Already Exists", "error");
-                }
-                else if (res.success === "success") {
+                if (res.success && res.ms === "success") {
                     Swal.fire("Success", "User Saved!", "success");
                     document.getElementById('signupForm').reset();
 
@@ -37,12 +33,27 @@
                         location.href = "/home/Login"
                     }, 2000);
                 }
+                else if(res.ms == "invalid email") {
+                    Swal.fire("Info", "Please enter valid Email Address", "info"); 
+                }
+                else if (res.ms === "Email Already Exists") {
+                    Swal.fire("Warning", "Email Already Exists", "warning");
+                }  
                 else {
                     Swal.fire("Error", "User Not Added!", "error");
                 }
             },
-            error: function (res) {
-                console.log(res)
+            error: function (xhr, status, error) {
+                var err = null;
+                try {
+                    err = JSON.parse(xhr.responseText)
+                }
+                catch (e) {
+                    err = xhr.responseText
+                }
+
+                Swal.fire("Server Error", "Please Check Your Internet Connection or Try Again Later!", "error");
+                console.log(err)
 
             }
         })
@@ -51,21 +62,22 @@
     $("#BtnLogin").on("click", function () {
         var formData = new FormData(document.getElementById("loginForm"));
 
-        Swal.fire({
-            title: 'Verifying...',
-            text: 'Please wait while we check your credentials.',
-            allowOutsideClick: false, 
-            didOpen: () => {
-                Swal.showLoading();
-            }
-        });
-
         $.ajax({
             url: "/home/Login",
             type: "post",
             data: formData,
             contentType: false,
             processData: false,
+            beforeSend: function () {
+                Swal.fire({
+                    title: 'Verifying...',
+                    text: 'Please wait while we check your credentials.',
+                    allowOutsideClick: false,
+                    didOpen: () => {
+                        Swal.showLoading();
+                    }
+                });
+            },
             success: function (res) {
                 if (res.success === "success") {
                     Swal.fire({
@@ -98,8 +110,18 @@
                     Swal.fire("Error", "Email or Password is not correct! Try Again!", "error");
                 }
             },
-            error: function (res) {
-                console.log(res)
+            error: function (xhr, status, error) {
+                var err = null;
+                try {
+                    err = JSON.parse(xhr.responseText)
+                }
+                catch (e) {
+                    err = xhr.responseText
+                }
+
+                Swal.fire("Server Error", "Please Check Your Internet Connection or Try Again Later!", "error");
+                console.log(err)
+
             }
         })
     })
@@ -155,8 +177,17 @@ function PolishWithAI() {
             }
         },
         error: function (xhr, status, error) {
-            console.error(error);
-            Swal.fire("Error", "AI service connect nahi ho payi. Please try again!", "error");
+            var err = null;
+            try {
+                err = JSON.parse(xhr.responseText)
+            }
+            catch (e) {
+                err = xhr.responseText
+            }
+
+            Swal.fire("Server Error", "Please Check Your Internet Connection or Try Again Later!", "error");
+            console.log(err)
+
         },
         complete: function () {
             $("#btnPolishCmt").prop("disabled", false);
@@ -164,5 +195,6 @@ function PolishWithAI() {
     });
 }
 
-  
+
+
  

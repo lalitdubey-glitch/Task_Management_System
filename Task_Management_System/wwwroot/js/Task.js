@@ -15,18 +15,32 @@
             success: function (res) { 
                 $("#AssignedTo").empty();
                 $("#AssignedTo").append("<option selected disabled>Select User</option>")
-                
-                $.each(res, function (index, data) {
-                    $("#AssignedTo").append(
+
+                if (res.data.length > 0) {
+                    $.each(res.data, function (index, item) {
+                        $("#AssignedTo").append(
+                            `
+                        <option value="${item["userId"]}" data-email="${item["email"]}"> ${item["name"]} </option>
                         `
-                        <option value="${data["userId"]}" data-email="${data["email"]}"> ${data["name"]} </option>
-                        `
-                    ); 
-                })
+                        );
+                    })
+                }
+                else {
+                    $("#AssignedTo").append("<option selected disabled>No User Found</option>")
+                }
 
             },
-            error: function (res) {
-                console.log(res)
+            error: function (xhr, status, error) {
+                var err = null;
+                try {
+                    err = JSON.parse(xhr.responseText)
+                }
+                catch (e) {
+                    err = xhr.responseText
+                }
+
+                Swal.fire("Server Error", "Something went wrong, Please check your internet connection or Try Again Leter...!", "error")
+                console.log(err)
             }
         })
     }
@@ -40,25 +54,35 @@
         $.ajax({
             url: "/Admin/GetProject",
             type: "get",
-            success: function (res) {
-                if (res.length > 0) {
+            success: function (res) { 
+                 
+                if (res.data.length > 0) {
                     $("#projectId").empty();
                     $("#projectId").append("<option selected disabled> -- Select Project -- </option>")
 
-                    $.each(res, function (index, data) {
+                    $.each(res.data, function (index, d) {
                         $("#projectId").append(
                             `
-                         <option value="${data.projectID}"> ${data.projectName} </option>
+                         <option value="${d.projectID}"> ${d.projectName} </option>
                         `
                         );
                     })
                 }
                 else {
-                    Swal.fire("Error", "No Data Found!", "error");
+                    Swal.fire("Error", "No Data Found in get Prj Task!", "error");
                 }
             },
-            error: function (res) {
-                console.log(res)
+            error: function (xhr, status, error) {
+                var err = null;
+                try {
+                    err = JSON.parse(xhr.responseText)
+                }
+                catch (e) {
+                    err = xhr.responseText
+                }
+
+                Swal.fire("Server Error", "Something went wrong, Please check your internet connection or Try Again Leter...!", "error")
+                console.log(err)
             }
         })
     }
@@ -68,16 +92,17 @@
             url: "/admin/GetTask",
             type: "get",
             success: function (res) {
-                if (res.length > 0) {
+                if (res.data.length > 0) {
                     if ($.fn.DataTable.isDataTable("#TaskTable")) {
                         $("#TaskTable").DataTable().destroy();
                         $("#TaskTable tbody").empty();
                     }
 
-                    $.each(res, function (index, data) {
-                         
-                        const dueDate = new Date(data.DueDate);
-                        const createdAt = new Date(data.createAt);
+                    $.each(res.data, function (index, item) { 
+
+
+                        const dueDate = new Date(item.dueDate);
+                        const createdAt = new Date(item.createAt);
                         const today = new Date();
 
                         // Time strip kiya (00:00:00) taaki timezone aur hours ka bug na aaye
@@ -86,19 +111,11 @@
                         today.setHours(0, 0, 0, 0);
                          
                         const totalDays = Math.round((dueDate - createdAt) / 86400000);
-                        const leftDays = Math.round((dueDate - today) / 86400000);
-                         
-                        let leftText = "";
-                        if (leftDays < 0) {
-                            leftText = `${Math.abs(leftDays)}d Overdue`;
-                        } else if (leftDays === 0) {
-                            leftText = "Due Today";
-                        } else {
-                            leftText = `${leftDays}d left`;
-                        }
+                        const leftDays = Math.max(0, Math.round((dueDate - today) / 86400000));
+                          
 
                         var bg_color = null;
-                        var priority = (data.priority).toLowerCase().trim();
+                        var priority = (item.priority).toLowerCase().trim();
 
                         if (priority == "low") {
                             bg_color = "bg-primary text-white";
@@ -113,24 +130,24 @@
                         $("#TaskTable tbody").append(
                             `
                         <tr>
-                            <td>${data.userName}</td>
-                            <td>${data.projectName}</td>
-                            <td>${data.task}</td>
-                            <td>${data.Description}</td>
-                            <td>${data.status}</td>
-                            <td>${data.createAt.split("T")[0]}</td>
-                            <td class="text-danger fw-bold">${data.DueDate.split("T")[0]}</td>
+                            <td>${item.userName}</td>
+                            <td>${item.projectName}</td>
+                            <td>${item.task}</td>
+                            <td>${item.description}</td>
+                            <td>${item.status}</td>
+                            <td>${item.createAt.split("T")[0]}</td>
+                            <td class="text-danger fw-bold">${item.dueDate.split("T")[0]}</td>
                               <td>
                               <span class="fw-bold text-dark">${totalDays}d</span> / 
-                              <span class="fw-bold ${leftDays > 0 ? 'text-success' : 'text-danger'}">${leftText}</span>
+                              <span class="fw-bold ${leftDays > 0 ? 'text-success' : 'text-danger'}">${leftDays}</span>
                             </td>
-                            <td class="${bg_color}">${data.priority}</td>
+                            <td class="${bg_color}">${item.priority}</td>
                             <td class="text-center text-nowrap">
-                                <input type="button" value="Edit" class="btn btn-warning BtntaskEdit" data-email="${data.userEmail}" data-id="${data.taskId}"/> 
-                                <input type="button" value="Delete" class="btn btn-danger BtntaskDelete" data-id="${data.taskId}"/> 
+                                <input type="button" value="Edit" class="btn btn-warning BtntaskEdit" data-email="${item.userEmail}" data-id="${item.taskId}"/> 
+                                <input type="button" value="Delete" class="btn btn-danger BtntaskDelete" data-id="${item.taskId}"/> 
                             </td>
                             <td>
-                                <input type="button" value="Comments" data-id="${data.taskId}" data-task="${data.task}" data-desc="${data.Description}" data-email="${data.userEmail}" data-pname="${data.projectName}" data-bs-toggle="modal" data-bs-target="#EmpModal" class="btn btn-primary btn_cmt"/>
+                                <input type="button" value="Comments" data-id="${item.taskId}" data-task="${item.task}" data-desc="${item.description}" data-email="${item.userEmail}" data-pname="${item.projectName}" data-bs-toggle="modal" data-bs-target="#EmpModal" class="btn btn-primary btn_cmt"/>
                             </td>
                         </tr>
                         `
@@ -141,8 +158,16 @@
                 }
             },
             error: function (xhr, status, error) {
-                console.error("Error : ", error);
-                Swal.fire("Error", "Server Error!", "error");
+                var err = null;
+                try {
+                    err = JSON.parse(xhr.responseText)
+                }
+                catch (e) {
+                    err = xhr.responseText
+                }
+
+                Swal.fire("Server Error", "Something went wrong, Please check your internet connection or Try Again Leter...!", "error")
+                console.log(err)
             }
         });
     }
@@ -200,8 +225,17 @@
 
                 TaskTable();
             },
-            error: function (res) {
+            error: function (xhr, status, error) {
+                var err = null;
+                try {
+                    err = JSON.parse(xhr.responseText)
+                }
+                catch (e) {
+                    err = xhr.responseText
+                }
 
+                Swal.fire("Server Error", "Something went wrong, Please check your internet connection or Try Again Leter...!", "error")
+                console.log(err)
             }
         })
     })
@@ -231,8 +265,17 @@
                         TaskTable();
 
                     },
-                    error: function (res) {
-                        console.log(res)
+                    error: function (xhr, status, error) {
+                        var err = null;
+                        try {
+                            err = JSON.parse(xhr.responseText)
+                        }
+                        catch (e) {
+                            err = xhr.responseText
+                        }
+
+                        Swal.fire("Server Error", "Something went wrong, Please check your internet connection or Try Again Leter...!", "error")
+                        console.log(err)
                     }
                 })
             }
@@ -274,9 +317,17 @@
                 }
 
             },
-            error: function (xhr,status,error) {
-                console.log("Error : ", error);
-                Swal.fire("Error", "Task Not Saved! Server Error", "error");
+            error: function (xhr, status, error) {
+                var err = null;
+                try {
+                    err = JSON.parse(xhr.responseText)
+                }
+                catch (e) {
+                    err = xhr.responseText
+                }
+
+                Swal.fire("Server Error", "Something went wrong, Please check your internet connection or Try Again Leter...!", "error")
+                console.log(err)
             },
             complete: function () {
                 btn.prop("disabled", false);

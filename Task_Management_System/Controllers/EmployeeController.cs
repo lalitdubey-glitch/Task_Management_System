@@ -1,8 +1,9 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.NewtonsoftJson;
 using Microsoft.Data;
 using Microsoft.Data.Sql;
-using Microsoft.Data.SqlClient;
+using Microsoft.Data.SqlClient; 
 using Newtonsoft.Json;
 using System.Data;
 using System.Net.Mail;
@@ -41,29 +42,65 @@ namespace Task_Management_System.Controllers
             return View();
         }
 
+        public async Task<IActionResult> GetLoggedInUserDetails()
+        {
+            try
+            {
+                string? email = User.FindFirst("email")?.Value;
+
+                DataTable dt = await db.TableAsync("sp_Users", new SqlParameter[]
+                {
+                    new SqlParameter("@action" , "selectOne"),
+                    new SqlParameter("@email" , email),
+                });
+
+                if (dt.Rows.Count > 0)
+                {
+                    return Json(new { success = true, data = dt });
+                }
+                return Json(new { success = false});
+            }
+            catch (Exception ex)
+            {
+                Response.StatusCode = 500;
+                return Json(new { success = false, ms = ex.Message });
+            }
+            
+             
+        }
+
         public async Task<ActionResult> selectByMember()
         {
-
-            SqlParameter msg = new SqlParameter("@msg", SqlDbType.NVarChar, 255)
+            try
             {
-                Direction = ParameterDirection.Output
-            };
+                SqlParameter msg = new SqlParameter("@msg", SqlDbType.NVarChar, 255)
+                {
+                    Direction = ParameterDirection.Output
+                };
 
-            DataTable res =await db.TableAsync("sp_Task", new SqlParameter[]
-             {
-                new SqlParameter("@action" , "selectByMember"),
-                new SqlParameter("@AssignedTo" , User.FindFirst("userId")?.Value),
-                msg
-             });
+                DataTable dt = await db.TableAsync("sp_Task", new SqlParameter[]
+                 {
+                    new SqlParameter("@action" , "selectByMember"),
+                    new SqlParameter("@AssignedTo" , User.FindFirst("userId")?.Value),
+                    msg
+                 });
 
-            string? ms = msg.Value?.ToString()??"";
+                string? ms = msg.Value?.ToString() ?? "";
 
-            if (ms == "success")
-            {
-                return Content(JsonConvert.SerializeObject(res), "application/json");
+                if (dt.Rows.Count>0 && ms == "success")
+                {
+                    return Json(new {success=true , data=dt});
+                }
+
+                return Json(new { success = false});
             }
-
-            return View("Index");
+            catch (Exception ex)
+            {
+                Response.StatusCode = 500;
+                return Json(new { success = false, ms = ex.Message });
+            }
+            
+             
         }
 
         [HttpPost]
@@ -147,14 +184,10 @@ namespace Task_Management_System.Controllers
                 <div>
                     <h2>Your Verification Code</h2>
                     <p>{otp}</p>
-                    <p>Fill this OTP and verify yourself. This code is valid for 5 minutes.</p>
+                    <p>Fill this OTP to verify yourself. This code is valid for 5 minutes.</p>
                 </div>";
 
-                bool isSent = await emailService.SendEmail(
-                    userEmail,
-                    "Your OTP Code",
-                    emailBody
-                );
+                bool isSent = await emailService.SendEmail(userEmail,  "Your OTP Code", emailBody );
 
                 if (!isSent)
                 {
@@ -165,33 +198,65 @@ namespace Task_Management_System.Controllers
             }
             catch (Exception ex)
             {
+                Response.StatusCode = 500;
                 return Json(new { success = false, message = ex.Message });
             }
         }
 
         [HttpPost]
         public ActionResult VerifyOTP(string? UserOTP)
-        { 
+        {
             if (string.IsNullOrWhiteSpace(UserOTP))
             {
                 return Json(new { success = false, message = "Please enter OTP." });
             }
-             
+
             string? sessionOtp = HttpContext.Session.GetString("otp");
-             
-            if (string.IsNullOrEmpty(sessionOtp))
+            string? expiryStr = HttpContext.Session.GetString("otp_expiry");
+            
+
+            if (string.IsNullOrEmpty(sessionOtp) || string.IsNullOrEmpty(expiryStr))
             {
-                return Json(new { success = false, message = "OTP not found or expired. Request a new one." });
+                return Json(new { success = false, message = "OTP not found. Request a new one." });
             }
-             
-            if (UserOTP.Trim() == sessionOtp)
-            { 
+
+            
+
+            if (DateTime.UtcNow > DateTime.Parse(expiryStr).ToUniversalTime())
+            {
                 HttpContext.Session.Remove("otp");
+                HttpContext.Session.Remove("otp_expiry");
+                return Json(new { success = false, message = "OTP has expired. Request a new one." });
+            }
+
+            if (UserOTP.Trim() == sessionOtp)
+            {
+                HttpContext.Session.Remove("otp");
+                HttpContext.Session.Remove("otp_expiry");  
                 return Json(new { success = true, message = "OTP verified successfully!" });
             }
 
+            //int attempts = HttpContext.Session.GetInt32("attempt") ?? 0;
+
+            //if (UserOTP.Trim() != sessionOtp)
+            //{
+            //    attempts++;
+            //    HttpContext.Session.SetInt32("attempt", attempts);
+            //}
+
+
+            //if (attempts >= 5)
+            //{
+            //    HttpContext.Session.Remove("otp");
+            //    HttpContext.Session.Remove("otp_expiry");
+            //    HttpContext.Session.Remove("attempt");
+            //    return Json(new { success = false, message = "To Many Attempts!" });
+            //}
+
             return Json(new { success = false, message = "Invalid OTP." });
         }
+
+       
 
 
     }

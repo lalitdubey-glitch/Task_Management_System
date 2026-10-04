@@ -3,9 +3,9 @@ using BCrypt.Net;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.Data.SqlClient;
-using Newtonsoft.Json;
+using Microsoft.Data.SqlClient; 
 using System.Data;
+using Microsoft.AspNetCore.Mvc.NewtonsoftJson;
 using System.Diagnostics;
 using System.Net;
 using System.Security.Claims;
@@ -54,7 +54,7 @@ namespace Task_Management_System.Controllers
                 string[] allowRoles = { "manager", "hr", "employee" };
                 if (!allowRoles.Contains(s.role))
                 {
-                    return View();
+                    return Json(new {success=false,ms="Invalid Role"});
                 }
 
                 SqlParameter msg = new SqlParameter("@msg", SqlDbType.NVarChar, 255)
@@ -76,20 +76,22 @@ namespace Task_Management_System.Controllers
 
                 if (ms == "success")
                 {
-                    return Json(new { success = ms });
+                    return Json(new { success = true, ms = ms });
                 }
                 else if (ms == "Email Already Exists")
                 {
-                    return Json(new { success = ms });
+                    return Json(new { success = false, ms = ms });
                 }
                 else
                 {
-                    return View();
+                    return Json(new { success = false });
                 }
+               
             }
             catch (Exception ex)
             {
-                return Json(new {success=false , msg = ex.Message});
+                Response.StatusCode = 500;
+                return Json(new {success=false , ms = ex.Message});
             }
           
         }
@@ -98,30 +100,31 @@ namespace Task_Management_System.Controllers
         public async Task<ActionResult> EditUser(SignUpModel s)
         {
 
-            SqlParameter msg = new SqlParameter("@msg", SqlDbType.NVarChar, 255)
+            try
             {
-                Direction = ParameterDirection.Output
-            };
+                SqlParameter msg = new SqlParameter("@msg", SqlDbType.NVarChar, 255)
+                {
+                    Direction = ParameterDirection.Output
+                };
 
-           await db.ExecuteQueryAsync("sp_Users", new SqlParameter[]
-            {
-                new SqlParameter("@action" , "edit"),
-                new SqlParameter("@userId" , s.id),
-                new SqlParameter("@name" , s.name ),
-                new SqlParameter("@role" ,s.role ),
-                msg
-            });
+                await db.ExecuteQueryAsync("sp_Users", new SqlParameter[]
+                 {
+                    new SqlParameter("@action" , "edit"),
+                    new SqlParameter("@userId" , s.id),
+                    new SqlParameter("@name" , s.name ),
+                    new SqlParameter("@role" ,s.role ),
+                    msg
+                 });
 
-            string? ms = msg.Value?.ToString()??"";
+                string? ms = msg.Value?.ToString() ?? "";
 
-            if (ms == "success")
-            {
-                return Json(new { success = true });
+                if (ms == "success")
+                {
+                    return Json(new { success = true , ms=ms});
+                }
+                return Json(new { success = false });
             }
-            else
-            {
-                return RedirectToAction("index");
-            }
+            catch(Exception ex) { Response.StatusCode = 500; return Json(new {success = false , ms = ex.Message}); }
         }
 
         public ActionResult Login()
@@ -187,86 +190,105 @@ namespace Task_Management_System.Controllers
 
         public async Task<ActionResult> GetComments(int? id)
         {
-
-            SqlParameter msg = new SqlParameter("@msg", SqlDbType.NVarChar, 255)
+            try
             {
-                Direction = ParameterDirection.Output
-            };
+                SqlParameter msg = new SqlParameter("@msg", SqlDbType.NVarChar, 255)
+                {
+                    Direction = ParameterDirection.Output
+                };
 
-            DataTable res =await db.TableAsync("sp_TaskComments", new SqlParameter[]
-             {
-                new SqlParameter("@action" , "selectByTask"),
-                new SqlParameter("@taskId" , id),
-                msg
-             });
+                DataTable dt = await db.TableAsync("sp_TaskComments", new SqlParameter[]
+                 {
+                    new SqlParameter("@action" , "selectByTask"),
+                    new SqlParameter("@taskId" , id),
+                    msg
+                 });
 
-            string? ms = msg.Value?.ToString()??"";
+                string? ms = msg.Value?.ToString() ?? "";
 
-            if (ms == "success")
-            {
-                return Content(JsonConvert.SerializeObject(res), "application/json");
+                if (dt.Rows.Count > 0 && ms == "success")
+                {
+                    return Json(new { success = true, data = dt });
+                }
+
+                return Json(new { success = false});
             }
-
-            return View("Index");
+            catch(Exception ex)
+            {
+                Response.StatusCode = 500;
+                return Json(new { success = false, ms = ex.Message });
+            }
+             
         }
 
         [HttpPost]
         public async Task<ActionResult> SendComment(string? cmt, int? id, string UserEmail, string ProjectName, string TaskName)
         {
-            SqlParameter msg = new SqlParameter("@msg", SqlDbType.NVarChar, 255)
+            try
             {
-                Direction = ParameterDirection.Output
-            };
+                SqlParameter msg = new SqlParameter("@msg", SqlDbType.NVarChar, 255)
+                {
+                    Direction = ParameterDirection.Output
+                };
 
-           await db.ExecuteQueryAsync("sp_TaskComments", new SqlParameter[]
-            {
-                new SqlParameter("@action", "add"),
-                new SqlParameter("@comment", cmt ?? (object)DBNull.Value),
-                new SqlParameter("@taskId", id ?? (object)DBNull.Value),
-                new SqlParameter("@commentedBy", User.FindFirst("userId")?.Value ?? (object)DBNull.Value),
-                msg
-            });
+                await db.ExecuteQueryAsync("sp_TaskComments", new SqlParameter[]
+                {
+                    new SqlParameter("@action", "add"),
+                    new SqlParameter("@comment", cmt ?? (object)DBNull.Value),
+                    new SqlParameter("@taskId", id ?? (object)DBNull.Value),
+                    new SqlParameter("@commentedBy", User.FindFirst("userId")?.Value ?? (object)DBNull.Value),
+                    msg
+                });
 
-            string ms = msg.Value?.ToString() ?? "";
+                string ms = msg.Value?.ToString() ?? "";
 
-            if (ms == "success")
-            { 
-                string body = $"<p><strong>Project Name : </strong>{WebUtility.HtmlEncode(ProjectName)}</p>" +
-                              $"<p><strong>Task Name : </strong>{WebUtility.HtmlEncode(TaskName)}</p>" +
-                              $"<h2>{WebUtility.HtmlEncode(cmt)}</h2>";
+                if (ms == "success")
+                { 
+                    return Json(new { success = true });
+                }
 
-                await emailService.SendEmail(UserEmail, "You have a Comment", body);
-
-                return Json(new { success = true });
+                return Json(new { success = false });
             }
-
-            return Json(new { success = false, message = ms });
+            catch (Exception ex)
+            {
+                Response.StatusCode = 500;
+                return Json(new { success = false, ms = ex.Message });
+            }
+            
         }
 
         [HttpPost]
         public async Task<ActionResult> DeleteComment(int? id)
         {
-
-            SqlParameter msg = new SqlParameter("@msg", SqlDbType.NVarChar, 255)
+            try
             {
-                Direction = ParameterDirection.Output
-            };
+                SqlParameter msg = new SqlParameter("@msg", SqlDbType.NVarChar, 255)
+                {
+                    Direction = ParameterDirection.Output
+                };
 
-           await db.ExecuteQueryAsync("sp_TaskComments", new SqlParameter[]
-            {
-                new SqlParameter("@action" , "delete"), 
-                new SqlParameter("@commentId" , id), 
-                msg
-            });
+                 await db.ExecuteQueryAsync("sp_TaskComments", new SqlParameter[]
+                 {
+                    new SqlParameter("@action" , "delete"),
+                    new SqlParameter("@commentId" , id),
+                    msg
+                 });
 
-            string ms = msg.Value?.ToString()??"";
+                string ms = msg.Value?.ToString() ?? "";
 
-            if (ms == "success")
-            {
-                return Json(new { success = true });
+                if (ms == "success")
+                {
+                    return Json(new { success = true });
+                }
+
+                return Json(new { success = false });
             }
-
-            return View("Index");
+            catch (Exception ex)
+            {
+                Response.StatusCode = 500;
+                return Json(new { success = false, ms = ex.Message });
+            }
+             
         }
 
         public async Task<ActionResult> Logout()
@@ -283,6 +305,32 @@ namespace Task_Management_System.Controllers
             {
                 RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier
             });
+        }
+
+        public async Task<ActionResult> selectAllCommentsByLoggedInUser()
+        {
+            try
+            {
+                int userId = Convert.ToInt32(User.FindFirst("userId")?.Value ?? "0");
+
+                DataTable dt = await db.TableAsync("sp_TaskComments", new SqlParameter[]
+                 {
+                    new SqlParameter("@action" , "selectAllTaskByUser"),
+                    new SqlParameter("@LoggedInUserId" , userId)
+                 });
+
+                if (dt.Rows.Count > 0)
+                {
+                    return Json(new { success = true, data = dt });
+                }
+                return Json(new { success = false });
+            }
+            catch (Exception ex)
+            {
+                Response.StatusCode = 500;
+                return Json(new { success = false, message = ex.Message });
+            }
+
         }
 
     }

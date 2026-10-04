@@ -1,5 +1,6 @@
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Task_Management_System.Models;
+using Microsoft.AspNetCore.Mvc.NewtonsoftJson;
 
 namespace Task_Management_System
 {
@@ -16,7 +17,7 @@ namespace Task_Management_System
 
 
             // Add services to the container.
-            builder.Services.AddControllersWithViews();
+            builder.Services.AddControllersWithViews().AddNewtonsoftJson();
             builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme).AddCookie(Options =>
             {
                 Options.LoginPath = "/Home/Login";

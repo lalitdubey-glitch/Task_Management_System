@@ -1,12 +1,11 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.Data.SqlClient;
-using Newtonsoft.Json;
-using System.Data;
-using System.Text.Json.Serialization;
+using Microsoft.Data.SqlClient; 
+using System.Data; 
 using System.Threading.Tasks;
 using System.Xml.Linq;
 using Task_Management_System.Models;
+using Microsoft.AspNetCore.Mvc.NewtonsoftJson;
 
 namespace Task_Management_System.Controllers
 {
@@ -22,127 +21,163 @@ namespace Task_Management_System.Controllers
         }
         public async Task<IActionResult> Index()
         {
-
-            DataTable totals = await db.TableAsync("sp_Users", new SqlParameter[]
+            try
             {
-                new SqlParameter("@action" , "totalCounts")
-            });
+                DataTable totals = await db.TableAsync("sp_Users", new SqlParameter[]
+                {
+                    new SqlParameter("@action" , "totalCounts")
+                });
 
-            ViewBag.totalProject = totals.Rows[0]["totalProject"].ToString();
-            ViewBag.totalTask = totals.Rows[0]["totalTask"].ToString();
-            ViewBag.totalUser = totals.Rows[0]["totalUser"].ToString();
-            ViewBag.LoginUser = User.FindFirst("name")?.Value;
+                ViewBag.totalProject = totals.Rows[0]["totalProject"].ToString();
+                ViewBag.totalTask = totals.Rows[0]["totalTask"].ToString();
+                ViewBag.totalUser = totals.Rows[0]["totalUser"].ToString();
+                ViewBag.LoginUser = User.FindFirst("name")?.Value;
+            }
+            catch (Exception ex)
+            {
+                Response.StatusCode = 500;
+                return Json(new { success = false , ms = ex.Message });
+            }
 
             return View();
         }
 
         public async Task<ActionResult> GetUser()
-        { 
+        {
+            try
+            {
+                DataTable dt = await db.TableAsync("sp_Users", new SqlParameter[]
+                {
+                    new SqlParameter("@action" , "selectAll")
+                });
 
-            DataTable dt =await db.TableAsync("sp_Users", new SqlParameter[]
-            {
-                new SqlParameter("@action" , "selectAll")
-            });
+                if (dt.Rows.Count > 0)
+                { 
+                   return Json(new {success=true , data = dt});
+                }
 
-            if (dt.Rows.Count > 0)
-            {
-                return Content(JsonConvert.SerializeObject(dt), "application/json");
+                return Json(new { success = false });
+
             }
-            else
+            catch (Exception ex)
             {
-                return RedirectToAction("index");
+                Response.StatusCode = 500;
+                return Json(new { success = false , ms = ex.Message });
             }
+
         }
 
         public async Task<ActionResult> GetProject()
-        { 
+        {
+            try
+            {
+                DataTable dt = await db.TableAsync("sp_Projects", new SqlParameter[]
+                {
+                    new SqlParameter("@action" , "selectAll")
+                });
 
-            DataTable dt =await db.TableAsync("sp_Projects", new SqlParameter[]
-            {
-                new SqlParameter("@action" , "selectAll")
-            });
-
-            if (dt.Rows.Count > 0)
-            {
-                return Content(JsonConvert.SerializeObject(dt), "application/json");
+                if (dt.Rows.Count > 0)
+                {
+                   return Json(new {success=true , data = dt});
+                }
+                return Json(new { success = false });
             }
-            else
+            catch (Exception ex)
             {
-                return RedirectToAction("index");
-            }
+                Response.StatusCode = 500;
+                return Json(new { success = false , ms = ex.Message});
+            } 
         }
 
         public async Task<ActionResult> selectByProjectId(int? id)
-        { 
-
-            DataTable dt =await db.TableAsync("sp_Task", new SqlParameter[]
+        {
+            try
             {
-                new SqlParameter("@action" , "selectByProject"),
-                new SqlParameter("@projectId" , id),
+                DataTable dt = await db.TableAsync("sp_Task", new SqlParameter[]
+                {
+                    new SqlParameter("@action" , "selectByProject"),
+                    new SqlParameter("@projectId" , id),
 
-            });
+                });
 
-            if (dt.Rows.Count > 0)
-            {
-                return Content(JsonConvert.SerializeObject(dt), "application/json");
+                if (dt.Rows.Count > 0)
+                {
+                    return Json(new {success=true , data = dt});
+                }
+
+                return Json(new { success = false});
             }
-            else
+            catch (Exception ex)
             {
-                return RedirectToAction("index");
-            }
+                Response.StatusCode = 500;
+                return Json(new { success = false, ms = ex.Message });
+            } 
         }
 
         [HttpPost]
         public async Task<ActionResult> DeleteProject(int? id)
         {
-            SqlParameter msg = new SqlParameter("@msg", SqlDbType.NVarChar, 255)
+            try
             {
-                Direction = ParameterDirection.Output
-            };
+                SqlParameter msg = new SqlParameter("@msg", SqlDbType.NVarChar, 255)
+                {
+                    Direction = ParameterDirection.Output
+                };
 
-           await db.ExecuteQueryAsync("sp_Projects", new SqlParameter[]
-            {
-                new SqlParameter("@action" , "delete"),
-                new SqlParameter("@projectID" , id),
-                msg
-            });
+                await db.ExecuteQueryAsync("sp_Projects", new SqlParameter[]
+                 {
+                    new SqlParameter("@action" , "delete"),
+                    new SqlParameter("@projectID" , id),
+                    msg
+                 });
 
-            string? ms = msg.Value?.ToString()??"";
+                string? ms = msg.Value?.ToString() ?? "";
 
-            if (ms == "success")
-            {
-                return Json(new { success = true });
+                if (ms == "success")
+                {
+                    return Json(new { success = true });
+                }
+
+                return Json(new { success = false});
             }
-            else
+            catch (Exception ex)
             {
-                return RedirectToAction("index");
-            }
+                Response.StatusCode = 500;
+                return Json(new { success = false, ms = ex.Message });
+            } 
         }
 
         [HttpPost]
         public async Task<IActionResult> DeleteUser(int? id)
         {
-            SqlParameter msg = new SqlParameter("@msg", SqlDbType.NVarChar, 255)
+            try
             {
-                Direction = ParameterDirection.Output
-            };
+                SqlParameter msg = new SqlParameter("@msg", SqlDbType.NVarChar, 255)
+                {
+                    Direction = ParameterDirection.Output
+                };
 
-           await db.ExecuteQueryAsync("sp_Users", new SqlParameter[]
-            {
-                new SqlParameter("@action" , "delete"),
-                new SqlParameter("@userId" , id),
-                msg
-            });
+                await db.ExecuteQueryAsync("sp_Users", new SqlParameter[]
+                 {
+                    new SqlParameter("@action" , "delete"),
+                    new SqlParameter("@userId" , id),
+                    msg
+                 });
 
-            string? ms = msg.Value?.ToString()??"";
+                string? ms = msg.Value?.ToString() ?? "";
 
-            if (ms == "success")
-            {
-                return Json(new { success = true });
+                if (ms == "success")
+                {
+                    return Json(new { success = true });
+                }
+
+                return Json(new { success = false});
+
             }
-            else
+            catch (Exception ex)
             {
-                return RedirectToAction("index");
+                Response.StatusCode = 500;
+                return Json(new { success = false, ms = ex.Message });
             } 
         }
          
@@ -159,15 +194,17 @@ namespace Task_Management_System.Controllers
         [HttpPost]
         public async Task<ActionResult> Project(ProjectModel p)
         {
-            string action = p.projectID > 0 ? "edit" : "add";
-
-            SqlParameter msg = new SqlParameter("@msg", SqlDbType.NVarChar, 255)
+            try
             {
-                Direction = ParameterDirection.Output
-            };
+                string action = p.projectID > 0 ? "edit" : "add";
 
-           await db.ExecuteQueryAsync("sp_Projects", new SqlParameter[]
-            {
+                SqlParameter msg = new SqlParameter("@msg", SqlDbType.NVarChar, 255)
+                {
+                    Direction = ParameterDirection.Output
+                };
+
+                await db.ExecuteQueryAsync("sp_Projects", new SqlParameter[]
+                 {
                 new SqlParameter("@action" , action),
                 new SqlParameter("@projectID" , p.projectID!=0?p.projectID:(object)DBNull.Value),
                 new SqlParameter("@projectName" , p.projectName),
@@ -175,15 +212,23 @@ namespace Task_Management_System.Controllers
                 new SqlParameter("@createdBy" , User.FindFirst("userId")?.Value),
                 msg
 
-            });
+                 });
 
-            string? ms = msg.Value?.ToString()??"";
+                string? ms = msg.Value?.ToString() ?? "";
 
-            if (ms == "success")
-            {
-                return Json(new { success = true });
+                if (ms == "success")
+                {
+                    return Json(new { success = true });
+                }
+
+                return Json(new { success = false});
             }
-            return View();
+            catch (Exception ex)
+            {
+                Response.StatusCode = 500;
+                return Json(new { success = false, ms = ex.Message });
+            }
+             
         }
         public ActionResult Task()
         {
@@ -193,15 +238,18 @@ namespace Task_Management_System.Controllers
         [HttpPost]
         public async Task<ActionResult> Task(TaskModel t)
         {
-            string action = t.taskId > 0 ? "edit" : "add";
 
-            SqlParameter msg = new SqlParameter("@msg", SqlDbType.NVarChar, 255)
+            try
             {
-                Direction = ParameterDirection.Output
-            };
+                string action = t.taskId > 0 ? "edit" : "add";
 
-            int res = await db.ExecuteQueryAsync("sp_Task", new SqlParameter[]
-            {
+                SqlParameter msg = new SqlParameter("@msg", SqlDbType.NVarChar, 255)
+                {
+                    Direction = ParameterDirection.Output
+                };
+
+                int res = await db.ExecuteQueryAsync("sp_Task", new SqlParameter[]
+                {
                 new SqlParameter("@action", action),
                 new SqlParameter("@taskId", t.taskId > 0 ? t.taskId : (object)DBNull.Value),
                 new SqlParameter("@task", t.task ?? (object)DBNull.Value),
@@ -212,100 +260,132 @@ namespace Task_Management_System.Controllers
                 new SqlParameter("@AssignedTo", t.AssignedTo),
                 new SqlParameter("@projectId", t.projectId),
                 msg
-            });
+                });
 
-            string ms = msg.Value?.ToString() ?? "";
+                string ms = msg.Value?.ToString() ?? "";
 
-            if (ms == "success")
-            { 
-                string emailBody = $@"
-                <div>
-                    <h3>Your Task is: {t.task}</h3>
-                    <p><strong>Task Description:</strong> {t.Description}</p>
-                    <p style='color: red;'><strong>Due Date:</strong> {t.DueDate}</p>
-                </div>";
-                 
-                await _emailService.SendEmail(
-                    t.email,
-                    "You have a Task",
-                    emailBody
-                );
+                if (ms == "success")
+                {
+                    string emailBody = $@"
+                    <div>
+                        <h3>Your Task is: {t.task}</h3>
+                        <p><strong>Task Description:</strong> {t.Description}</p>
+                        <p style='color: red;'><strong>Due Date:</strong> {t.DueDate}</p>
+                    </div>";
 
-                return Json(new { success = true });
+                    bool isSent =   await _emailService.SendEmail(  t.email, "You have a Task", emailBody  );
+
+                    if (isSent)
+                    {
+                        return Json(new { success = true });
+                    }
+
+                }
+
+                return Json(new { success = false });
+            }
+            catch (Exception ex)
+            {
+                Response.StatusCode = 500;
+                return Json(new { success = false, ms = ex.Message });
             }
              
-            return Json(new { success = false, message = ms });
         }
 
         [HttpPost]
         public async Task<ActionResult> TaskDelete(int? id)
         {
-             
-            SqlParameter msg = new SqlParameter("@msg", SqlDbType.NVarChar, 255)
-            {
-                Direction = ParameterDirection.Output
-            };
 
-           int res = await db.ExecuteQueryAsync("sp_Task", new SqlParameter[]
+            try
             {
-                new SqlParameter("@action" , "delete"),
-                new SqlParameter("@taskId" , id),
-                msg
-            });
+                SqlParameter msg = new SqlParameter("@msg", SqlDbType.NVarChar, 255)
+                {
+                    Direction = ParameterDirection.Output
+                };
 
-            string? ms = msg.Value?.ToString()??"";
+                int res = await db.ExecuteQueryAsync("sp_Task", new SqlParameter[]
+                 {
+                    new SqlParameter("@action" , "delete"),
+                    new SqlParameter("@taskId" , id),
+                    msg
+                 });
 
-            if (ms == "success")
-            {
-                return Json(new { success = true });
+                string? ms = msg.Value?.ToString() ?? "";
+
+                if (ms == "success")
+                {
+                    return Json(new { success = true });
+                }
+
+                return Json(new { success = false });
             }
-            return View();
+            catch (Exception ex)
+            {
+                Response.StatusCode = 500;
+                return Json(new { success = false, ms = ex.Message });
+            }
+             
           
         }
 
         public async Task<ActionResult> GetTaskById(int? id)
         {
-             
-            SqlParameter msg = new SqlParameter("@msg", SqlDbType.NVarChar, 255)
-            {
-                Direction = ParameterDirection.Output
-            };
 
-           DataTable res =await db.TableAsync("sp_Task", new SqlParameter[]
+            try
             {
-                new SqlParameter("@action" , "selectOne"),
-                new SqlParameter("@taskId" , id),
-                msg
-            });
+                SqlParameter msg = new SqlParameter("@msg", SqlDbType.NVarChar, 255)
+                {
+                    Direction = ParameterDirection.Output
+                };
 
-            string? ms = msg.Value?.ToString()??"";
+                DataTable dt = await db.TableAsync("sp_Task", new SqlParameter[]
+                 {
+                    new SqlParameter("@action" , "selectOne"),
+                    new SqlParameter("@taskId" , id),
+                    msg
+                 });
 
-            if (ms == "success")
-            {
-                return Content(JsonConvert.SerializeObject(res), "application/json");
+                string? ms = msg.Value?.ToString() ?? "";
+
+                if (dt.Rows.Count>0 && ms == "success")
+                {
+                    return Json(new { data = dt });
+                }
+
+                return Json(new { success = false});
             }
-
-            return View("Task");
+            catch (Exception ex)
+            {
+                Response.StatusCode = 500;
+                return Json(new { success = false, ms = ex.Message });
+            }
         }
 
        
 
         public async Task<ActionResult> GetTask()
         {
+            try
+            {
+                DataTable dt = await db.TableAsync("sp_Task", new SqlParameter[]
+                {
+                    new SqlParameter("@action" , "selectAll")
+                });
 
-            DataTable dt =await db.TableAsync("sp_Task", new SqlParameter[]
-            {
-                new SqlParameter("@action" , "selectAll")
-            });
+                if (dt.Rows.Count > 0)
+                {
+                   return Json(new {success=true , data = dt});
+                }
 
-            if (dt.Rows.Count > 0)
-            {
-                return Content(JsonConvert.SerializeObject(dt), "application/json");
+                return Json(new { success = false});
+
             }
-            else
+            catch (Exception ex)
             {
-                return RedirectToAction("index");
+                Response.StatusCode = 500;
+                return Json(new { success = false, ms = ex.Message });
             }
+             
         } 
     }
 }

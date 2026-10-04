@@ -9,7 +9,7 @@ namespace Task_Management_System.Models
         private readonly IConfiguration config;     
         public EmailService(IConfiguration _config)
         {
-            config = _config;   // ye appsetting.json ki sabhi key and value ko uthata h ager ye string type ka hota or construtor me IConfiguration use hua hota tb ye specific ek chij ko uthata like only ConnetionString --Like DBLayer (iska datatype bhi IConfiguration hona chahiye na ki string Type)
+            config = _config;   // ye appsetting.json ki sabhi key and value ko uthata h ager ye string type ka hota or construtor me IConfiguration use hua hota tb ye specific ek chij ko uthata like only ConectionString --Like DBLayer (iska datatype bhi IConfiguration hona chahiye na ki string Type)
         }
 
         public async Task<bool> SendEmail(string email, string subject, string body)

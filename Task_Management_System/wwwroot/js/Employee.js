@@ -1,65 +1,78 @@
 ﻿$(document).ready(function () {
 
     var empChart = null;
-    selectByMember();
 
+    selectByMember();
+    GetLoggedInUserDetails()
+
+
+    $(document).on("click", ".btnEditUser", function () {
+        var name = $(this).data("name");
+        var email = $(this).data("email");
+        var role = $(this).data("role");
+
+        $("#editFormUserModal #name").val(name)
+        $("#editFormUserModal #email").val(email)
+        $("#editFormUserModal #role").val(role)
+    })
+
+   
     function selectByMember() {
         $.ajax({
             url: "/Employee/selectByMember",
             type: "get",
-            success: function (res) {
-                if (res.length > 0) {
+            success: function (res) { 
+                if (res.data.length > 0) {
 
                     if ($.fn.DataTable.isDataTable("#EmpTable")) {
                         $("#EmpTable").DataTable().destroy();
                         $("#EmpTable tbody").empty();
                     }
 
+                    $.each(res.data, function (index, item) {
 
-                    $.each(res, function (index, data) {
-
-                        // Date objects banaye
-                        const dueDate = new Date(data.DueDate);
-                        const createdAt = new Date(data.createAt);
+                        const dueDate = new Date(item.dueDate);
+                        const createdAt = new Date(item.createAt);
                         const today = new Date();
 
-                        // Time strip kiya (00:00:00) taaki same-day negative round off na ho
+                        // Time strip kiya (00:00:00) taaki timezone aur hours ka bug na aaye
                         dueDate.setHours(0, 0, 0, 0);
                         createdAt.setHours(0, 0, 0, 0);
                         today.setHours(0, 0, 0, 0);
 
-                        // Clean Days calculation
                         const totalDays = Math.round((dueDate - createdAt) / 86400000);
-                        const leftDays = Math.round((dueDate - today) / 86400000);
+                        const leftDays = Math.max(0, Math.round((dueDate - today) / 86400000));
 
-                        // Label aur Color logic (Left days par Green, overdue/today par Red)
-                        let leftText = "";
-                        if (leftDays < 0) {
-                            leftText = `${Math.abs(leftDays)}d Overdue`;
-                        } else if (leftDays === 0) {
-                            leftText = "Due Today";
-                        } else {
-                            leftText = `${leftDays}d left`;
+                        var bg_color = null;
+                        var priority = (item.priority).toLowerCase().trim();
+
+                        if (priority == "low") {
+                            bg_color = "bg-primary text-white";
                         }
-
-                        const rightColorClass = leftDays > 0 ? "text-success fw-bold" : "text-danger fw-bold";
+                        else if (priority == "normal") {
+                            bg_color = "bg-success text-white";
+                        }
+                        else {
+                            bg_color = "bg-danger text-white";
+                        }
 
                         $("#EmpTable tbody").append(
                             `
                          <tr>
                              <td>${index + 1}</td>
-                             <td>${data.ProjectName}</td> 
-                             <td>${data.task}</td>
-                             <td>${data.Description}</td>
-                             <td>${data.priority}</td>
-                             <td>${data.createAt.split("T")[0]}</td>
-                             <td class="text-danger fw-bold">${data.DueDate.split("T")[0]}</td>
+                             <td>${item.projectName}</td> 
+                             <td>${item.task}</td>
+                             <td>${item.description}</td>
+                             
+                             <td>${item.createAt.split("T")[0]}</td>
+                             <td class="text-danger fw-bold">${item.dueDate.split("T")[0]}</td>
                              <td>
                                <span class="fw-bold text-dark">${totalDays}d</span> / 
-                               <span class="${rightColorClass}">${leftText}</span>
+                               <span class="${leftDays > 0 ? 'text-success' : 'text-danger'}" >${leftDays}d</span>
                              </td>
+                             <td class="${bg_color}">${item.priority}</td>
                              <td>
-                                 <select class="form-select StatusSelect text-nowrap" style="min-width:120px;" data-status="${data.status}" data-id="${data.taskId}">
+                                 <select class="form-select StatusSelect text-nowrap" style="min-width:120px;" data-status="${item.status}" data-id="${item.taskId}">
                                          <option selected disabled> -- Select Status -- </option>
                                          <option value="todo">To Do</option>
                                          <option value="complete">Complete</option>
@@ -69,23 +82,23 @@
                                  </select> 
                              </td>
                              <td>
-                                   <input type="button" value="Breakdown Task" class="btn btn-outline-success btn-sm btnBreakdown"   data-title="${data.task}" data-desc="${data.Description}"  />
+                                   <input type="button" value="Breakdown Task" class="btn btn-outline-success btn-sm btnBreakdown"   data-title="${item.task}" data-desc="${item.description}"  />
                              </td>
                              <td>
-                                 <input type="button" value="Detail/Comments" data-id="${data.taskId}" data-task="${data.task}" data-desc="${data.Description}" data-pname="${data.ProjectName}" data-bs-toggle="modal" data-bs-target="#EmpModal" class="btn btn-primary btn_cmt"/>
+                                 <input type="button" value="Detail/Comments" data-id="${item.taskId}" data-task="${item.task}" data-desc="${item.description}" data-pname="${item.projectName}" data-bs-toggle="modal" data-bs-target="#EmpModal" class="btn btn-primary btn_cmt"/>
                              </td>
                          </tr>
                          `
                         );
 
-                        $("#EmpTable tbody tr:last .StatusSelect").val(data.status);
+                        $("#EmpTable tbody tr:last .StatusSelect").val(item.status);
                     });
 
-                    var complete = res.filter(x => x.status === 'complete').length;
-                    var pending = res.filter(x => x.status === 'pending').length;
-                    var working = res.filter(x => x.status === 'working').length;
-                    var pause = res.filter(x => x.status === 'pause').length;
-                    var todo = res.filter(x => x.status === 'todo').length;
+                    var complete = res.data.filter(x => x.status === 'complete').length;
+                    var pending = res.data.filter(x => x.status === 'pending').length;
+                    var working = res.data.filter(x => x.status === 'working').length;
+                    var pause = res.data.filter(x => x.status === 'pause').length;
+                    var todo = res.data.filter(x => x.status === 'todo').length;
 
                     $('#complete').val(complete);
                     $('#pending').val(pending);
@@ -115,8 +128,17 @@
                     $('#EmpTable').DataTable();
                 }
             },
-            error: function (res) {
-                console.log(res);
+            error: function (xhr, status, error) {
+                var err = null;
+                try {
+                    err = JSON.parse(xhr.responseText)
+                }
+                catch (e) {
+                    err = xhr.responseText
+                }
+
+                Swal.fire("Server Error", "Something went wrong, Please check your internet connection or Try Again Leter...!", "error")
+                console.log(err)
             }
         });
     }
@@ -149,8 +171,7 @@
                     var subtasks = JSON.parse(res.data);
 
                     $("#subtaskList").empty();
-
-                    // $.each loop + Template Literals 🎯
+                     
                     $.each(subtasks, function (index, step) {
                         $("#subtaskList").append(`
                         <li class="list-group-item d-flex align-items-start gap-3 py-2">
@@ -166,8 +187,16 @@
                 }
             },
             error: function (xhr, status, error) {
-                console.error(error);
-                Swal.fire("Error", "Server error while contacting AI.", "error");
+                var err = null;
+                try {
+                    err = JSON.parse(xhr.responseText)
+                }
+                catch (e) {
+                    err = xhr.responseText
+                }
+
+                Swal.fire("Server Error", "Something went wrong, Please check your internet connection or Try Again Leter...!", "error")
+                console.log(err)
             },
             complete: function () {
                 $("#btnBreakdown").prop("disabled", false);
@@ -190,7 +219,7 @@
             return;
         }
 
-        // 1. User Message Display (Template Literals 🚀)
+        //User Message Display
         chatBox.append(`
         <div class="mb-2 text-end">
             <div class="d-inline-block bg-primary text-white rounded p-2 text-start small shadow-sm" style="max-width: 85%;">
@@ -294,17 +323,24 @@
                     Swal.fire("Success", "User Edited", "success");
                     
                     $("#UserEditModal").modal("hide");
-                    setTimeout(function () {
-                        location.reload();
-                    },1000)
+                    GetLoggedInUserDetails();
                    
                 }
                 else {
                     Swal.fire("Error", "User Not Edited", "error");
                 }
             },
-            error: function (res) {
+            error: function (xhr, status, error) {
+                var err = null;
+                try {
+                    err = JSON.parse(xhr.responseText)
+                }
+                catch (e) {
+                    err = xhr.responseText
+                }
 
+                Swal.fire("Server Error", "Something went wrong, Please check your internet connection or Try Again Leter...!", "error")
+                console.log(err)
             }
         })
     })
@@ -356,8 +392,16 @@
                 }
             },
             error: function (xhr, status, error) {
-                console.error("Verification Error:", error);
-                Swal.fire("Error", "Server error. Please try again later.", "error");
+                var err = null;
+                try {
+                    err = JSON.parse(xhr.responseText)
+                }
+                catch (e) {
+                    err = xhr.responseText
+                }
+
+                Swal.fire("Server Error", "Something went wrong, Please check your internet connection or Try Again Leter...!", "error")
+                console.log(err)
             },
             complete: function () {
                 btn.prop("disabled", false); 
@@ -388,8 +432,17 @@
                     Swal.fire("Error", "OTP Not Veryfied!", "error");
                 }
             },
-            error: function (res) {
-                console.log(res)
+            error: function (xhr, status, error) {
+                var err = null;
+                try {
+                    err = JSON.parse(xhr.responseText)
+                }
+                catch (e) {
+                    err = xhr.responseText
+                }
+
+                Swal.fire("Server Error", "Something went wrong, Please check your internet connection or Try Again Leter...!", "error")
+                console.log(err)
             }
 
         })
@@ -438,8 +491,16 @@
                
             },
             error: function (xhr, status, error) {
-                console.error("OTP Error:", error);
-                Swal.fire("Error", "Server error. Please try again later.", "error");
+                var err = null;
+                try {
+                    err = JSON.parse(xhr.responseText)
+                }
+                catch (e) {
+                    err = xhr.responseText
+                }
+
+                Swal.fire("Server Error", "Something went wrong, Please check your internet connection or Try Again Leter...!", "error")
+                console.log(err)
             },
             complete: function () {
                 btn.prop("disabled", false);
@@ -460,8 +521,17 @@
                 Swal.fire("Success", "Success", "success");
                 selectByMember();
             },
-            error: function (res) {
-                console.log(res)
+            error: function (xhr, status, error) {
+                var err = null;
+                try {
+                    err = JSON.parse(xhr.responseText)
+                }
+                catch (e) {
+                    err = xhr.responseText
+                }
+
+                Swal.fire("Server Error", "Something went wrong, Please check your internet connection or Try Again Leter...!", "error")
+                console.log(err)
             }
 
         })
@@ -471,3 +541,49 @@
     
 })
 
+
+function GetLoggedInUserDetails() {
+    $.ajax({
+        url: "/employee/GetLoggedInUserDetails",
+        type: "get",
+        success: function (res) { 
+            $("#UserDetailsCard").empty();
+            if (res.data.length > 0) {
+                $("#UserDetailsCard").append(`
+                    <h4>Name : ${res.data[0].name}</h4>
+                    <h4>Email : ${res.data[0].email}</h4>
+                    <h4>Role : ${res.data[0].role}</h4>
+                    <h4>Created At : ${res.data[0].createdAt.split("T")[0]}</h4>
+
+                    <div>
+                        <input type="button" value="Edit" data-bs-target="#UserEditModal" data-bs-toggle="modal" class="btn btn-success btnEditUser" data-name="${res.data[0].name}" data-email="${res.data[0].email}" data-role="${res.data[0].role}"/>
+                        <button class="btn btn-dark rounded-pill shadow"
+                                data-bs-toggle="offcanvas"
+                                data-bs-target="#userCopilotDrawer">
+                            <span class="fw-semibold">⚡Ask AI</span>
+                            <span class="spinner-grow spinner-grow-sm text-success"></span>
+                        </button>
+                    </div>
+                `)
+            }
+            else {
+                $("#UserDetailsCard").append(`
+                    <h2>User Not Found</h2>
+                `)
+            }
+        },
+        error: function (xhr, status, error) {
+            const err = null;
+            try {
+                err = JSON.parse(xhe.responseText)
+            }
+            catch (e) {
+                err = xhr.responseText
+            }
+
+            console.log(err)
+            Swal.fire("Server Error ", "Check Your Internet Connection or Try Again Later!", "error");
+        }
+        
+    })
+}

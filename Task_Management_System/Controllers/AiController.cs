@@ -1,10 +1,9 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.Data.SqlClient;
 using Newtonsoft.Json;
-using System.Data;
-using System.Text.Json;
-using System.Text.Json.Serialization;
+using System.Data; 
 using Task_Management_System.Models;
+using Microsoft.AspNetCore.Mvc.NewtonsoftJson;
 
 namespace Task_Management_System.Controllers
 {
@@ -37,7 +36,8 @@ namespace Task_Management_System.Controllers
             }
             catch (Exception ex)
             {
-                return Json(new { success = false, message = ex.Message });
+                Response.StatusCode = 500;
+                return Json(new { success = false, ms = ex.Message });
             }
         }
 
@@ -76,7 +76,8 @@ namespace Task_Management_System.Controllers
             }
             catch (Exception ex)
             {
-                return Json(new { success = false, message = ex.Message });
+                Response.StatusCode = 500;
+                return Json(new { success = false, ms = ex.Message });
             }
         }
 
@@ -130,7 +131,8 @@ namespace Task_Management_System.Controllers
             }
             catch (Exception ex)
             {
-                return Json(new { success = false, message = ex.Message });
+                Response.StatusCode = 500;
+                return Json(new { success = false, ms = ex.Message });
             }
         }
 
@@ -183,7 +185,8 @@ namespace Task_Management_System.Controllers
             }
             catch (Exception ex)
             {
-                return Json(new { success = false, message = ex.Message });
+                Response.StatusCode = 500;
+                return Json(new { success = false, ms = ex.Message });
             }
         }
 
@@ -247,7 +250,8 @@ namespace Task_Management_System.Controllers
             }
             catch (Exception ex)
             {
-                return Json(new { success = false, message = ex.Message });
+                Response.StatusCode = 500;
+                return Json(new { success = false, ms = ex.Message });
             }
         }
          
