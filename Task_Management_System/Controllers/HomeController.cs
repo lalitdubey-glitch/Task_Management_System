@@ -11,6 +11,7 @@ using System.Net;
 using System.Security.Claims;
 using System.Security.Cryptography;
 using System.Threading.Tasks;
+using EmailValidation;
 using Task_Management_System.Models;
 
 namespace Task_Management_System.Controllers
@@ -40,10 +41,20 @@ namespace Task_Management_System.Controllers
         {
             if (!ModelState.IsValid)
             {
-                return Json(new { success = false , ms = "invalid email"});
+                return Json(new { success = false , ms = "pleaseFillMandatoryFields"});
             }
             try
             {
+                if (!string.IsNullOrWhiteSpace(s.email))
+                {
+                    var isValid = EmailValidator.Validate(s.email);
+                    if (!isValid)
+                    {
+                        return Json(new { success = false, ms = "invalidEmail" });
+                    }
+                    
+                }
+
                 string? hashPass = null;
 
                 if (!string.IsNullOrWhiteSpace(s.pass))
@@ -52,9 +63,10 @@ namespace Task_Management_System.Controllers
                 }
 
                 string[] allowRoles = { "manager", "hr", "employee" };
+
                 if (!allowRoles.Contains(s.role))
                 {
-                    return Json(new {success=false,ms="Invalid Role"});
+                    return Json(new {success=false,ms="invalidRole"});
                 }
 
                 SqlParameter msg = new SqlParameter("@msg", SqlDbType.NVarChar, 255)
@@ -80,7 +92,7 @@ namespace Task_Management_System.Controllers
                 }
                 else if (ms == "Email Already Exists")
                 {
-                    return Json(new { success = false, ms = ms });
+                    return Json(new { success = false, ms = "userAlreadyExists" });
                 }
                 else
                 {

@@ -3,6 +3,7 @@
     $("#btnSignup").on("click", function () {
 
         var formdata = new FormData(document.getElementById('signupForm'));
+
         if ($("input[required]").val().trim() === "") {
             Swal.fire("Info", "Please! Fill All Fields", "info");
             return
@@ -33,11 +34,17 @@
                         location.href = "/home/Login"
                     }, 2000);
                 }
-                else if(res.ms == "invalid email") {
-                    Swal.fire("Info", "Please enter valid Email Address", "info"); 
+                else if (res.ms == "pleaseFillMandatoryFields") {
+                    Swal.fire("Warning", "Please Fill Mandatory Fields", "warning"); 
                 }
-                else if (res.ms === "Email Already Exists") {
-                    Swal.fire("Warning", "Email Already Exists", "warning");
+                else if(res.ms == "invalidEmail") {
+                    Swal.fire("Info", "Please Enter Valid Email Address", "info"); 
+                }
+                else if (res.ms === "userAlreadyExists") {
+                    Swal.fire("Warning", "User Already Exists", "warning");
+                }  
+                else if (res.ms === "invalidRole") {
+                    Swal.fire("Warning", "Role Is Not Valid", "warning");
                 }  
                 else {
                     Swal.fire("Error", "User Not Added!", "error");

@@ -7,8 +7,10 @@ namespace Task_Management_System.Models
         public int id { get; set; }
         public string? name { get; set; }
 
-        [EmailAddress]
+        [Required]
         public string? email { get; set; }
+
+        [Required]
         public string? pass { get; set; }
         public string? role { get; set; }
     }
