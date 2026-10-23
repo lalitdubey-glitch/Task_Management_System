@@ -86,7 +86,7 @@
                 });
             },
             success: function (res) {
-                if (res.success === "success") {
+                if (res.success) {
                     Swal.fire({
                         title: "Success",
                         text: "Welcome ! " + res.userName + " Redirecting in a moment...",

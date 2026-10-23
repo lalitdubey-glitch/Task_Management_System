@@ -205,13 +205,12 @@ namespace Task_Management_System.Controllers
 
                 await db.ExecuteQueryAsync("sp_Projects", new SqlParameter[]
                  {
-                new SqlParameter("@action" , action),
-                new SqlParameter("@projectID" , p.projectID!=0?p.projectID:(object)DBNull.Value),
-                new SqlParameter("@projectName" , p.projectName),
-                new SqlParameter("@Description" , p.Description),
-                new SqlParameter("@createdBy" , User.FindFirst("userId")?.Value),
-                msg
-
+                    new SqlParameter("@action" , action),
+                    new SqlParameter("@projectID" , p.projectID!=0?p.projectID:(object)DBNull.Value),
+                    new SqlParameter("@projectName" , p.projectName),
+                    new SqlParameter("@Description" , p.Description),
+                    new SqlParameter("@createdBy" , User.FindFirst("userId")?.Value),
+                    msg
                  });
 
                 string? ms = msg.Value?.ToString() ?? "";
@@ -250,16 +249,16 @@ namespace Task_Management_System.Controllers
 
                 int res = await db.ExecuteQueryAsync("sp_Task", new SqlParameter[]
                 {
-                new SqlParameter("@action", action),
-                new SqlParameter("@taskId", t.taskId > 0 ? t.taskId : (object)DBNull.Value),
-                new SqlParameter("@task", t.task ?? (object)DBNull.Value),
-                new SqlParameter("@DueDate", t.DueDate ?? (object)DBNull.Value),
-                new SqlParameter("@priority", t.priority ?? (object)DBNull.Value),
-                new SqlParameter("@status", t.status ?? (object)DBNull.Value),
-                new SqlParameter("@Description", t.Description ?? (object)DBNull.Value),
-                new SqlParameter("@AssignedTo", t.AssignedTo),
-                new SqlParameter("@projectId", t.projectId),
-                msg
+                    new SqlParameter("@action", action),
+                    new SqlParameter("@taskId", t.taskId > 0 ? t.taskId : (object)DBNull.Value),
+                    new SqlParameter("@task", t.task ?? (object)DBNull.Value),
+                    new SqlParameter("@DueDate", t.DueDate ?? (object)DBNull.Value),
+                    new SqlParameter("@priority", t.priority ?? (object)DBNull.Value),
+                    new SqlParameter("@status", t.status ?? (object)DBNull.Value),
+                    new SqlParameter("@Description", t.Description ?? (object)DBNull.Value),
+                    new SqlParameter("@AssignedTo", t.AssignedTo),
+                    new SqlParameter("@projectId", t.projectId),
+                    msg
                 });
 
                 string ms = msg.Value?.ToString() ?? "";
@@ -295,7 +294,6 @@ namespace Task_Management_System.Controllers
         [HttpPost]
         public async Task<ActionResult> TaskDelete(int? id)
         {
-
             try
             {
                 SqlParameter msg = new SqlParameter("@msg", SqlDbType.NVarChar, 255)
@@ -324,13 +322,10 @@ namespace Task_Management_System.Controllers
                 Response.StatusCode = 500;
                 return Json(new { success = false, ms = ex.Message });
             }
-             
-          
         }
 
         public async Task<ActionResult> GetTaskById(int? id)
         {
-
             try
             {
                 SqlParameter msg = new SqlParameter("@msg", SqlDbType.NVarChar, 255)
@@ -338,7 +333,7 @@ namespace Task_Management_System.Controllers
                     Direction = ParameterDirection.Output
                 };
 
-                DataTable dt = await db.TableAsync("sp_Task", new SqlParameter[]
+                 DataTable dt = await db.TableAsync("sp_Task", new SqlParameter[]
                  {
                     new SqlParameter("@action" , "selectOne"),
                     new SqlParameter("@taskId" , id),
@@ -360,8 +355,6 @@ namespace Task_Management_System.Controllers
                 return Json(new { success = false, ms = ex.Message });
             }
         }
-
-       
 
         public async Task<ActionResult> GetTask()
         {

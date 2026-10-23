@@ -368,27 +368,30 @@
                 btn.prop("disabled" , true)
             },
             success: function (res) {
-                if (res.success) {
+                if (res.success && res.ms === "otp_verified") {
                     Swal.fire({
                         title: "Success",
-                        text: res.message || "OTP Verified Successfully!",
+                        text: "OTP Verified Successfully!",
                         icon: "success",
                         timer: 1000,
                         showConfirmButton: false
                     }).then(() => {
                         $("#VerifyOtpModal").modal("hide");
-                        $("#otp").val("");  
+                        $("#otp").val("");
                         $("#ChangePassModal").modal("show");
                     });
-                } else {  
+                } else if (!res.success && res.ms === "otp_expired") {
                     Swal.fire({
                         title: "Warning",
-                        text: res.message || "Invalid OTP!",
+                        text: "OTP has expired. Request a new one.",
                         icon: "warning",
                         allowOutsideClick: false,
                         showConfirmButton: true,
-                        timer:2000
+                        timer: 2000
                     })
+                }
+                else {
+                    Swal.fire("Error", "Try Again Leter...!", "error")
                 }
             },
             error: function (xhr, status, error) {
@@ -474,7 +477,7 @@
                 if (res.success) { 
                     Swal.fire({
                         title: "Success",
-                        text: res.message || "OTP Sent!",
+                        text: "OTP sent successfully.",
                         icon: "success",
                         timer: 1000,
                         allowOutsideClick: false,
@@ -486,7 +489,7 @@
                   
                 }
                 else {
-                    Swal.fire("Error", res.message , "error");
+                    Swal.fire("Error", "OTP Not Sent!" , "error");
                 }
                
             },
@@ -518,8 +521,13 @@
             type: "post", 
             data: {id:id, status: status },
             success: function (res) {
-                Swal.fire("Success", "Success", "success");
-                selectByMember();
+                if (res.success) {
+                    Swal.fire("Success", "Success", "success");
+                    selectByMember();
+                }
+                else {
+                    Swal.fire("Error", "Status Not Changed!", "error");
+                }
             },
             error: function (xhr, status, error) {
                 var err = null;

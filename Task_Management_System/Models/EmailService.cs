@@ -23,7 +23,7 @@ namespace Task_Management_System.Models
             }
 
             try
-            {
+            { 
                 using var smtp = new SmtpClient()
                 {
                     Host = "smtp.gmail.com",

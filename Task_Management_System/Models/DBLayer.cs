@@ -36,8 +36,8 @@ namespace Task_Management_System.Models
                 cmd.Parameters.AddRange(parameters);
             }
             await conn.OpenAsync();
-            using SqlDataReader reader = await cmd.ExecuteReaderAsync();
             DataTable dt = new DataTable();
+            using SqlDataReader reader = await cmd.ExecuteReaderAsync();
             dt.Load(reader);
             return dt;
         }

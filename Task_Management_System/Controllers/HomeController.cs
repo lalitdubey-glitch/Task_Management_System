@@ -39,12 +39,13 @@ namespace Task_Management_System.Controllers
         [HttpPost]
         public async Task<IActionResult> SignUp(SignUpModel s)
         {
-            if (!ModelState.IsValid)
-            {
-                return Json(new { success = false , ms = "pleaseFillMandatoryFields"});
-            }
             try
             {
+                if (!ModelState.IsValid)
+                {
+                    return Json(new { success = false , ms = "pleaseFillMandatoryFields"});
+                }
+            
                 if (!string.IsNullOrWhiteSpace(s.email))
                 {
                     var isValid = EmailValidator.Validate(s.email);
@@ -74,14 +75,14 @@ namespace Task_Management_System.Controllers
                     Direction = ParameterDirection.Output
                 };
 
-               await db.ExecuteQueryAsync("sp_Users", new SqlParameter[]
+                await db.ExecuteQueryAsync("sp_Users", new SqlParameter[]
                 {
-                new SqlParameter("@action" , "add"),
-                new SqlParameter("@name" , s.name),
-                new SqlParameter("@email" , s.email),
-                new SqlParameter("@pass" , hashPass),
-                new SqlParameter("@role" , s.role),
-                msg
+                    new SqlParameter("@action" , "add"),
+                    new SqlParameter("@name" , s.name),
+                    new SqlParameter("@email" , s.email),
+                    new SqlParameter("@pass" , hashPass),
+                    new SqlParameter("@role" , s.role),
+                    msg
                 });
 
                 string? ms = msg.Value?.ToString()??"";
@@ -94,11 +95,8 @@ namespace Task_Management_System.Controllers
                 {
                     return Json(new { success = false, ms = "userAlreadyExists" });
                 }
-                else
-                {
-                    return Json(new { success = false });
-                }
-               
+
+                return Json(new { success = false });
             }
             catch (Exception ex)
             {
@@ -119,7 +117,7 @@ namespace Task_Management_System.Controllers
                     Direction = ParameterDirection.Output
                 };
 
-                await db.ExecuteQueryAsync("sp_Users", new SqlParameter[]
+                 await db.ExecuteQueryAsync("sp_Users", new SqlParameter[]
                  {
                     new SqlParameter("@action" , "edit"),
                     new SqlParameter("@userId" , s.id),
@@ -147,52 +145,60 @@ namespace Task_Management_System.Controllers
         [HttpPost]
         public async Task<ActionResult> Login(LoginModel l)
         {
-            SqlParameter msg = new SqlParameter("@msg", SqlDbType.NVarChar, 255)
+            try
             {
-                Direction = ParameterDirection.Output
-            };
+                SqlParameter msg = new SqlParameter("@msg", SqlDbType.NVarChar, 255)
+                {
+                    Direction = ParameterDirection.Output
+                };
 
-            DataTable dt =await db.TableAsync("sp_Users", new SqlParameter[]
-            {
+                DataTable dt = await db.TableAsync("sp_Users", new SqlParameter[]
+                {
                 new SqlParameter("@action" , "selectOne"),
                 new SqlParameter("@email" ,l.email),
                 msg
-            });
+                });
 
-            string? ms = msg.Value?.ToString()??"";
+                string? ms = msg.Value?.ToString() ?? "";
 
-            bool hashPass = false;
-            string? roles = null;
+                bool hashPass = false;
+                string? roles = null;
 
-            if(dt.Rows.Count > 0)
-            {
-                roles = dt.Rows[0]["role"].ToString()!;
-                string pass = dt.Rows[0]["pass"].ToString()!;
-                if (l.pass != null)
+                if (dt.Rows.Count > 0)
                 {
-                    hashPass = BCrypt.Net.BCrypt.Verify(l.pass, pass);
+                    roles = dt.Rows[0]["role"].ToString()!;
+                    string pass = dt.Rows[0]["pass"].ToString()!;
+                    if (l.pass != null)
+                    {
+                        hashPass = BCrypt.Net.BCrypt.Verify(l.pass, pass);
+                    }
                 }
-            }
 
-            if(hashPass)
-            {
-                var claims = new List<Claim>
+                if (hashPass)
                 {
-                    new Claim("userId" , dt.Rows[0]["userId"].ToString()!),
-                    new Claim("name" , dt.Rows[0]["name"].ToString()!),
-                    new Claim("email" , dt.Rows[0]["email"].ToString()!),
-                    new Claim(ClaimTypes.Role , roles)
-                };
+                    var claims = new List<Claim>
+                    {
+                        new Claim("userId" , dt.Rows[0]["userId"].ToString()!),
+                        new Claim("name" , dt.Rows[0]["name"].ToString()!),
+                        new Claim("email" , dt.Rows[0]["email"].ToString()!),
+                        new Claim(ClaimTypes.Role , roles)
+                    };
 
-                var identity = new ClaimsIdentity(claims, CookieAuthenticationDefaults.AuthenticationScheme);
-                await HttpContext.SignInAsync(new ClaimsPrincipal(identity));
+                    var identity = new ClaimsIdentity(claims, CookieAuthenticationDefaults.AuthenticationScheme);
+                    await HttpContext.SignInAsync(new ClaimsPrincipal(identity));
 
-                if (ms == "success")
-                {
-                    return Json(new { success = ms , userName = dt.Rows[0]["name"] , userRole = roles });
+                    if (ms == "success")
+                    {
+                        return Json(new { success = true, ms=ms, userName = dt.Rows[0]["name"], userRole = roles });
+                    }
                 }
+                return Json(new { success = false});
             }
-            return View();
+            catch (Exception ex)
+            {
+                Response.StatusCode = 500;
+                return Json(new { success = false, ms = ex.Message });
+            }
         }
 
         public ActionResult UserDashboard()
