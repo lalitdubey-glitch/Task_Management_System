@@ -7,7 +7,6 @@ function GetComments(id) {
         type: "get",
         data: { id: id },
         success: function (res) {
-
             var LoggedInUserId = $("#hdnUserId").val();
              
             $("#userCmt").empty();
@@ -32,17 +31,8 @@ function GetComments(id) {
             })
 
         },
-        error: function (xhr, status, error) {
-            var err = null;
-            try {
-                err = JSON.parse(xhr.responseText)
-            }
-            catch (e) {
-                err = xhr.responseText
-            }
-
-            Swal.fire("Server Error", "Something went wrong, Please check your internet connection or Try Again Leter...!", "error")
-            console.log(err)
+        error: function () {
+            Swal.fire("Server Error", "Please Check Your Internet Connection or Try Again Later!", "error");
         }
 
     })
@@ -61,18 +51,12 @@ $(document).on("click", ".btnDeleteComment" , function () {
                 GetComments(task_id);
                 GetTodayCommentsByLoggedInUser();
             }
+            else {
+                Swal.fire("Warning", "Comment Not Deleted! Please Try Again", "warning");
+            }
         },
-        error: function (xhr, status, error) {
-            var err = null;
-            try {
-                err = JSON.parse(xhr.responseText)
-            }
-            catch (e) {
-                err = xhr.responseText
-            }
-
-            Swal.fire("Server Error", "Something went wrong, Please check your internet connection or Try Again Leter...!", "error")
-            console.log(err)
+        error: function () {
+            Swal.fire("Server Error", "Please Check Your Internet Connection or Try Again Later!", "error");
         }
 
     })
@@ -82,7 +66,7 @@ $(document).on("click", ".btnDeleteComment" , function () {
 function SendCommet(cmt, id, UserEmail, ProjectName, TaskName) {
      
     if (!cmt.trim()) {
-        Swal.fire("Warning", "Please write somthing!", "warning")
+        Swal.fire("Warning", "Please Write Somthing!", "warning")
         return;
     }
 
@@ -91,15 +75,7 @@ function SendCommet(cmt, id, UserEmail, ProjectName, TaskName) {
         type: "post",
         data: { cmt: cmt, id: id, UserEmail: UserEmail, ProjectName: ProjectName, TaskName: TaskName },
         beforeSend: function () {
-            $("#sendCmt").prop("disabled", true);
-            //Swal.fire({
-            //    title: "Sending Comment",
-            //    text: "Sending Comment Please Wait...",
-            //    allowOutsideClick: false,
-            //    didOpen : ()=>{
-            //        Swal.showLoading();
-            //    }
-            //})
+            $("#sendCmt").prop("disabled", true); 
         },
         success: function (res) {
             if (res.success) {
@@ -116,21 +92,11 @@ function SendCommet(cmt, id, UserEmail, ProjectName, TaskName) {
                 modalBody.animate({ scrollTop: modalBody[0].scrollHeight }, 300);
             }, 100);
         },
-        error: function (xhr, status, error) {
-            var err = null;
-            try {
-                err = JSON.parse(xhr.responseText)
-            }
-            catch (e) {
-                err = xhr.responseText
-            }
-
-            Swal.fire("Server Error", "Something went wrong, Please check your internet connection or Try Again Leter...!", "error")
-            console.log(err)
+        error: function () {
+            Swal.fire("Server Error", "Please Check Your Internet Connection or Try Again Later!", "error");
         },
         complete: function () {
-            $("#sendCmt").prop("disabled", false);
-            Swal.close();
+            $("#sendCmt").prop("disabled", false); 
         }
 
     })
@@ -171,17 +137,8 @@ function GetTodayCommentsByLoggedInUser() {
             }
 
         },
-        error: function (xhr, status, error) {
-            var err = null;
-            try {
-                err = JSON.parse(xhr.responseText)
-            }
-            catch (e) {
-                err = xhr.responseText
-            }
-
-            Swal.fire("Server Error", "Something went wrong, Please check your internet connection or Try Again Leter...!", "error")
-            console.log(err)
+        error: function () {
+            Swal.fire("Server Error", "Please Check Your Internet Connection or Try Again Later!", "error");
         }
 
     })

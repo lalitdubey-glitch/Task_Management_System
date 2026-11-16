@@ -1,7 +1,7 @@
 ﻿using Microsoft.Data.SqlClient;
 using System.Data;
 
-namespace Task_Management_System.Models
+namespace Task_Management_System.Services
 {
     public class DBLayer : IDBLayer
     {

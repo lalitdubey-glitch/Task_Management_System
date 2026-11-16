@@ -128,17 +128,8 @@
                     $('#EmpTable').DataTable();
                 }
             },
-            error: function (xhr, status, error) {
-                var err = null;
-                try {
-                    err = JSON.parse(xhr.responseText)
-                }
-                catch (e) {
-                    err = xhr.responseText
-                }
-
-                Swal.fire("Server Error", "Something went wrong, Please check your internet connection or Try Again Leter...!", "error")
-                console.log(err)
+            error: function () {
+                Swal.fire("Server Error", "Please Check Your Internet Connection or Try Again Later!", "error");
             }
         });
     }
@@ -182,21 +173,13 @@
                     });
 
                     $("#subtasksContainer").slideDown();
-                } else {
-                    Swal.fire("Error", res.message, "error");
+                }
+                else {
+                    Swal.fire("Error", "Subtask Not Genrated, Try Again!", "error");
                 }
             },
-            error: function (xhr, status, error) {
-                var err = null;
-                try {
-                    err = JSON.parse(xhr.responseText)
-                }
-                catch (e) {
-                    err = xhr.responseText
-                }
-
-                Swal.fire("Server Error", "Something went wrong, Please check your internet connection or Try Again Leter...!", "error")
-                console.log(err)
+            error: function () {
+                Swal.fire("Server Error", "Please Check Your Internet Connection or Try Again Later!", "error");
             },
             complete: function () {
                 $("#btnBreakdown").prop("disabled", false);
@@ -260,11 +243,22 @@
                         </div>
                     </div>
                 `);
-                } else {
+                }
+                else if (res.ms === "noTask") {
                     chatBox.append(`
                     <div class="mb-2">
                         <div class="p-2 bg-light border-start border-danger border-3 rounded small text-danger">
-                            ${res.message || "Could not retrieve response."}
+                            ${"You Dont Have Any Task Yet!"}
+                        </div>
+                    </div>
+                `);
+                }
+                else
+                {
+                    chatBox.append(`
+                    <div class="mb-2">
+                        <div class="p-2 bg-light border-start border-danger border-3 rounded small text-danger">
+                            ${"Could not retrieve response. Try Again!"}
                         </div>
                     </div>
                 `);
@@ -330,17 +324,8 @@
                     Swal.fire("Error", "User Not Edited", "error");
                 }
             },
-            error: function (xhr, status, error) {
-                var err = null;
-                try {
-                    err = JSON.parse(xhr.responseText)
-                }
-                catch (e) {
-                    err = xhr.responseText
-                }
-
-                Swal.fire("Server Error", "Something went wrong, Please check your internet connection or Try Again Leter...!", "error")
-                console.log(err)
+            error: function () {
+                Swal.fire("Server Error", "Please Check Your Internet Connection or Try Again Later!", "error");
             }
         })
     })
@@ -354,7 +339,7 @@
         var UserOTP = $("#otp").val().trim();
         var btn = $(this);
 
-        if (!UserOTP) {
+        if (UserOTP == null || UserOTP==="") {
             Swal.fire("Warning", "Please Enter the OTP!", "warning");
             return;
         }
@@ -391,20 +376,11 @@
                     })
                 }
                 else {
-                    Swal.fire("Error", "Try Again Leter...!", "error")
+                    Swal.fire("Warning", "OTP Not Matched, Please Try Again Leter...!", "warning")
                 }
             },
-            error: function (xhr, status, error) {
-                var err = null;
-                try {
-                    err = JSON.parse(xhr.responseText)
-                }
-                catch (e) {
-                    err = xhr.responseText
-                }
-
-                Swal.fire("Server Error", "Something went wrong, Please check your internet connection or Try Again Leter...!", "error")
-                console.log(err)
+            error: function () {
+                Swal.fire("Server Error", "Please Check Your Internet Connection or Try Again Later!", "error");
             },
             complete: function () {
                 btn.prop("disabled", false); 
@@ -435,17 +411,8 @@
                     Swal.fire("Error", "OTP Not Veryfied!", "error");
                 }
             },
-            error: function (xhr, status, error) {
-                var err = null;
-                try {
-                    err = JSON.parse(xhr.responseText)
-                }
-                catch (e) {
-                    err = xhr.responseText
-                }
-
-                Swal.fire("Server Error", "Something went wrong, Please check your internet connection or Try Again Leter...!", "error")
-                console.log(err)
+            error: function () {
+                Swal.fire("Server Error", "Please Check Your Internet Connection or Try Again Later!", "error");
             }
 
         })
@@ -493,17 +460,8 @@
                 }
                
             },
-            error: function (xhr, status, error) {
-                var err = null;
-                try {
-                    err = JSON.parse(xhr.responseText)
-                }
-                catch (e) {
-                    err = xhr.responseText
-                }
-
-                Swal.fire("Server Error", "Something went wrong, Please check your internet connection or Try Again Leter...!", "error")
-                console.log(err)
+            error: function () {
+                Swal.fire("Server Error", "Please Check Your Internet Connection or Try Again Later!", "error");
             },
             complete: function () {
                 btn.prop("disabled", false);
@@ -529,24 +487,12 @@
                     Swal.fire("Error", "Status Not Changed!", "error");
                 }
             },
-            error: function (xhr, status, error) {
-                var err = null;
-                try {
-                    err = JSON.parse(xhr.responseText)
-                }
-                catch (e) {
-                    err = xhr.responseText
-                }
-
-                Swal.fire("Server Error", "Something went wrong, Please check your internet connection or Try Again Leter...!", "error")
-                console.log(err)
+            error: function () {
+                Swal.fire("Server Error", "Please Check Your Internet Connection or Try Again Later!", "error");
             }
 
         })
     })
-
-    
-    
 })
 
 
@@ -580,18 +526,8 @@ function GetLoggedInUserDetails() {
                 `)
             }
         },
-        error: function (xhr, status, error) {
-            const err = null;
-            try {
-                err = JSON.parse(xhe.responseText)
-            }
-            catch (e) {
-                err = xhr.responseText
-            }
-
-            console.log(err)
-            Swal.fire("Server Error ", "Check Your Internet Connection or Try Again Later!", "error");
+        error: function () {
+            Swal.fire("Server Error", "Please Check Your Internet Connection or Try Again Later!", "error");
         }
-        
     })
 }

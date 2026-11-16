@@ -2,7 +2,7 @@
 using System.Net.Mail;
 using System.Security;
 
-namespace Task_Management_System.Models
+namespace Task_Management_System.Services
 {
     public class EmailService : IEmailService
     {

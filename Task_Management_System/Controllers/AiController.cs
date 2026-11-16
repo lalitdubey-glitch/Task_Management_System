@@ -1,9 +1,9 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.Data.SqlClient;
 using Newtonsoft.Json;
-using System.Data; 
-using Task_Management_System.Models;
+using System.Data;
 using Microsoft.AspNetCore.Mvc.NewtonsoftJson;
+using Task_Management_System.Services;
 
 namespace Task_Management_System.Controllers
 {
@@ -11,11 +11,13 @@ namespace Task_Management_System.Controllers
     {
         private readonly IGroqAIServices _aiServices;
         private readonly IDBLayer _db;
+        private readonly ILogger<AiController> _logger;
 
-        public AiController(IGroqAIServices aiServices, IDBLayer db )
+        public AiController(IGroqAIServices aiServices, IDBLayer db, ILogger<AiController> logger)
         {
             _aiServices = aiServices;
             _db = db;
+            _logger = logger;
         }
 
         [HttpPost]
@@ -23,7 +25,8 @@ namespace Task_Management_System.Controllers
         {
             if (string.IsNullOrWhiteSpace(cmt))
             {
-                return Json(new { success = false, message = "Comment can not be Blank!" });
+                _logger.LogError("Comment cannot be blank!");
+                return Json(new { success = false});
             }
 
             try
@@ -36,8 +39,9 @@ namespace Task_Management_System.Controllers
             }
             catch (Exception ex)
             {
+                _logger.LogError(ex, "Database Error");
                 Response.StatusCode = 500;
-                return Json(new { success = false, ms = ex.Message });
+                return Json(new { success = false });
             }
         }
 
@@ -46,7 +50,8 @@ namespace Task_Management_System.Controllers
         {
             if (string.IsNullOrWhiteSpace(taskTitle))
             {
-                return Json(new { success = false, message = "Task Title required hai!" });
+                _logger.LogError($"Please Provide Task!");
+                return Json(new { success = false});
             }
 
             try
@@ -76,8 +81,9 @@ namespace Task_Management_System.Controllers
             }
             catch (Exception ex)
             {
+                _logger.LogError(ex, "Database Error");
                 Response.StatusCode = 500;
-                return Json(new { success = false, ms = ex.Message });
+                return Json(new { success = false });
             }
         }
 
@@ -86,7 +92,8 @@ namespace Task_Management_System.Controllers
         {
             if (projectId <= 0)
             {
-                return Json(new { success = false, message = "Valid Project ID required hai!" });
+                _logger.LogError("Valid Project ID required hai!");
+                return Json(new { success = false});
             }
 
             try
@@ -131,8 +138,9 @@ namespace Task_Management_System.Controllers
             }
             catch (Exception ex)
             {
+                _logger.LogError(ex, "Database Error");
                 Response.StatusCode = 500;
-                return Json(new { success = false, ms = ex.Message });
+                return Json(new { success = false });
             }
         }
 
@@ -141,7 +149,8 @@ namespace Task_Management_System.Controllers
         {
             if (projectId <= 0 || string.IsNullOrWhiteSpace(userQuestion))
             {
-                return Json(new { success = false, message = "Valid Project ID aur Question required hai!" });
+                _logger.LogError("Valid Project ID aur Question required hai!");
+                return Json(new { success = false});
             }
 
             try
@@ -185,8 +194,9 @@ namespace Task_Management_System.Controllers
             }
             catch (Exception ex)
             {
+                _logger.LogError(ex, "Database Error");
                 Response.StatusCode = 500;
-                return Json(new { success = false, ms = ex.Message });
+                return Json(new { success = false });
             }
         }
 
@@ -195,16 +205,18 @@ namespace Task_Management_System.Controllers
         {
             if (string.IsNullOrWhiteSpace(userQuestion))
             {
-                return Json(new { success = false, message = "Question cannot be empty!" });
+                _logger.LogError("Question cannot be empty!");
+                return Json(new { success = false});
             }
 
             try
             {
                 var claimUserId = User.FindFirst("userId")?.Value;
 
-                if (string.IsNullOrEmpty(claimUserId) || !int.TryParse(claimUserId, out int loggedUserId))
+                if (!int.TryParse(claimUserId, out int loggedUserId) || loggedUserId<=0)
                 {
-                    return Json(new { success = false, message = "User session expired. Please login again!" });
+                    _logger.LogError("User session expired. Please login again!");
+                    return Json(new { success = false});
                 }
                  
                 DataTable dtTasks = await _db.TableAsync("sp_Task", new SqlParameter[]
@@ -216,7 +228,7 @@ namespace Task_Management_System.Controllers
 
                 if (dtTasks == null || dtTasks.Rows.Count == 0)
                 {
-                    return Json(new { success = false, message = "Aapke paas filhal koi assigned tasks nahi hain!" });
+                    return Json(new { success = false, ms = "noTask" });
                 }
                  
                 var taskList = dtTasks.AsEnumerable().Select(row => new
@@ -250,8 +262,9 @@ namespace Task_Management_System.Controllers
             }
             catch (Exception ex)
             {
+                _logger.LogError(ex, "Database Error");
                 Response.StatusCode = 500;
-                return Json(new { success = false, ms = ex.Message });
+                return Json(new { success = false });
             }
         }
          

@@ -21,17 +21,8 @@
                     Swal.fire("Error", "Project Not Added!", "error");
                 }
             },
-            error: function (xhr, status, error) {
-                var err = null;
-                try {
-                    err = JSON.parse(xhr.responseText)
-                }
-                catch (e) {
-                    err = xhr.responseText
-                }
-
-                Swal.fire("Server Error", "Something went wrong, Please check your internet connection or Try Again Leter...!", "error")
-                console.log(err)
+            error: function () {
+                Swal.fire("Server Error", "Please Check Your Internet Connection or Try Again Later!", "error");
             }
         })
     })
@@ -79,17 +70,8 @@
                     Swal.fire("Info", "No Project Found!", "info");
                 } 
             },
-             error: function (xhr, status, error) {
-                var err = null;
-                try {
-                    err = JSON.parse(xhr.responseText)
-                }
-                catch (e) {
-                    err = xhr.responseText
-                }
-
-                Swal.fire("Server Error", "Something went wrong, Please check your internet connection or Try Again Leter...!", "error")
-                console.log(err)
+            error: function () {
+                Swal.fire("Server Error", "Please Check Your Internet Connection or Try Again Later!", "error");
             }
         })
     }
@@ -130,17 +112,8 @@
                     Swal.fire("Notice", res.message || "Summary generate nahi ho saki.", "info");
                 }
             },
-            error: function (xhr, status, error) {
-                var err = null;
-                try {
-                    err = JSON.parse(xhr.responseText)
-                }
-                catch (e) {
-                    err = xhr.responseText
-                }
-
-                Swal.fire("Server Error", "Something went wrong, Please check your internet connection or Try Again Leter...!", "error")
-                console.log(err)
+            error: function () {
+                Swal.fire("Server Error", "Please Check Your Internet Connection or Try Again Later!", "error");
             },
             complete: function () {
                 $("#btnProjectSummary").prop("disabled", false);
@@ -184,17 +157,8 @@
                 }
                 
             },
-            error: function (xhr, status, error) {
-                var err = null;
-                try {
-                    err = JSON.parse(xhr.responseText)
-                }
-                catch (e) {
-                    err = xhr.responseText
-                }
-
-                Swal.fire("Server Error", "Something went wrong, Please check your internet connection or Try Again Leter...!", "error")
-                console.log(err)
+            error: function () {
+                Swal.fire("Server Error", "Please Check Your Internet Connection or Try Again Later!", "error");
             }
         })
     }
@@ -242,17 +206,8 @@
                             Swal.fire("Error", "Project Not Delete!", "error");
                         }
                     },
-                    error: function (xhr, status, error) {
-                        var err = null;
-                        try {
-                            err = JSON.parse(xhr.responseText)
-                        }
-                        catch (e) {
-                            err = xhr.responseText
-                        }
-
-                        Swal.fire("Server Error", "Something went wrong, Please check your internet connection or Try Again Leter...!", "error")
-                        console.log(err)
+                    error: function () {
+                        Swal.fire("Server Error", "Please Check Your Internet Connection or Try Again Later!", "error");
                     }
                 })
             }

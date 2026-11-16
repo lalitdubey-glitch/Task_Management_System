@@ -1,7 +1,7 @@
 ﻿using System.Text;
 using System.Text.Json;
 
-namespace Task_Management_System.Models
+namespace Task_Management_System.Services
 {
     public class GroqAIServices : IGroqAIServices
     {
@@ -22,7 +22,7 @@ namespace Task_Management_System.Models
 
             var payload = new
             {
-                model = model,
+                model,
                 messages = new[]
                 {
                     new {role = "system" , content = systemPrompt},

@@ -1,0 +1,18 @@
+﻿<div class="text-center mx-auto">
+    <h2>You Dont Have Access Of This Page!</h2>
+
+
+    @if (User.IsInRole("admin"))
+    {
+        <a asp-controller="admin" asp-action="index" class="btn btn-warning">Go Back</a>
+    }
+    else if (User.IsInRole("employee"))
+    {
+        <a asp-controller="employee" asp-action="index" class="btn btn-warning">Go Back</a>
+    }
+    else
+    {
+        <a asp-controller="home" asp-action="index" class="btn btn-warning">Go Back</a>
+    }
+
+</div>

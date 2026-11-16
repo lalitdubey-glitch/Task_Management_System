@@ -1,6 +1,6 @@
 using Microsoft.AspNetCore.Authentication.Cookies;
-using Task_Management_System.Models;
 using Microsoft.AspNetCore.Mvc.NewtonsoftJson;
+using Task_Management_System.Services;
 
 namespace Task_Management_System
 {
@@ -24,6 +24,7 @@ namespace Task_Management_System
                 Options.LogoutPath = "/Home/Logout";
                 Options.ExpireTimeSpan = TimeSpan.FromMinutes(30);
                 Options.SlidingExpiration = true;
+                Options.AccessDeniedPath = "/home/AccessDeniedPage";
             });
             builder.Services.AddAuthorization();
             var app = builder.Build();

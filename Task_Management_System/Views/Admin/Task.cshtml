@@ -13,12 +13,12 @@
                 <input type="text" name="taskId" id="taskId" hidden />
 
                 <label for="projectId">Project Name</label>
-                <select class="form-select mb-3" name="projectId" id="projectId">
+                <select class="form-select mb-3" name="projectId" id="projectId" required>
                     <option selected disabled> -- Select Project -- </option>
                 </select>
 
                 <label for="task">Task</label>
-                <input type="text" name="task" id="task" class="form-control mb-3" placeholder="Enter Your Task Here.." />
+                <input type="text" name="task" id="task" class="form-control mb-3" placeholder="Enter Your Task Here.." required />
 
                 <label for="Description">Description</label>
                 <textarea name="Description" id="Description" class="form-control mb-3" placeholder="Enter Your Task Description Here.."></textarea>
@@ -47,14 +47,16 @@
                 </div>
                 
                 <div class="row">
-                        <div class="col-6 mb-3">
-                            <label for="AssignedTo">User Name</label>
-                            <select class="form-select" name="AssignedTo" id="AssignedTo">
-                                <option selected disabled>Select User</option>
+                    <div class="col-6 mb-3">
+                        <label for="AssignedTo">User Name</label>
+                        <select class="form-select" name="AssignedTo" id="AssignedTo">
+                            <option selected disabled>Select User</option>
 
-                            </select>
-                        </div> 
-                  <input type="email" name="email" id="email" hidden />
+                        </select>
+                    </div>
+
+                    <input type="email" name="email" id="email" hidden />
+
                     <div class="col-6 mb-3">
                         <label for="DueDate">DueDate</label>
                         <input type="date" name="DueDate" id="DueDate" class="form-control" />

@@ -3,12 +3,12 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.NewtonsoftJson;
 using Microsoft.Data;
 using Microsoft.Data.Sql;
-using Microsoft.Data.SqlClient; 
+using Microsoft.Data.SqlClient;
 using Newtonsoft.Json;
 using System.Data;
 using System.Net.Mail;
 using System.Threading.Tasks;
-using Task_Management_System.Models;
+using Task_Management_System.Services;
 
 
 namespace Task_Management_System.Controllers
@@ -19,10 +19,13 @@ namespace Task_Management_System.Controllers
     {
         private readonly IDBLayer db;
         private readonly IEmailService emailService;
-        public EmployeeController(IDBLayer _db , IEmailService _emailService)
+        private readonly ILogger<EmployeeController> _logger;
+
+        public EmployeeController(IDBLayer _db , IEmailService _emailService, ILogger<EmployeeController> logger)
         {
             db = _db;
             emailService = _emailService;
+            _logger = logger;
         }
 
         public IActionResult Index()
@@ -50,10 +53,11 @@ namespace Task_Management_System.Controllers
             }
             catch (Exception ex)
             {
+                _logger.LogError(ex, "Database Error");
                 Response.StatusCode = 500;
-                return Json(new { success = false, ms = ex.Message });
+                return Json(new { success = false });
             }
-             
+
         }
 
         public async Task<ActionResult> selectByMember()
@@ -83,10 +87,11 @@ namespace Task_Management_System.Controllers
             }
             catch (Exception ex)
             {
+                _logger.LogError(ex, "Database Error");
                 Response.StatusCode = 500;
-                return Json(new { success = false, ms = ex.Message });
+                return Json(new { success = false });
             }
-            
+
         }
 
         [HttpPost]
@@ -116,12 +121,13 @@ namespace Task_Management_System.Controllers
 
                 return Json(new { success = false});
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
+                _logger.LogError(ex, "Database Error");
                 Response.StatusCode = 500;
-                return Json(new { success = false, ms = ex.Message });
+                return Json(new { success = false });
             }
-             
+
         }
 
         [HttpPost]
@@ -156,8 +162,9 @@ namespace Task_Management_System.Controllers
             }
             catch (Exception ex)
             {
+                _logger.LogError(ex, "Database Error");
                 Response.StatusCode = 500;
-                return Json(new { success = false, ms = ex.Message });
+                return Json(new { success = false });
             }
 
         }
@@ -191,6 +198,7 @@ namespace Task_Management_System.Controllers
 
                 if (!isSent)
                 {
+                    _logger.LogError($"Failed to send email. Please check SMTP settings. User Email is - {userEmail}");
                     return Json(new { success = false, message = "Failed to send email. Please check SMTP settings." });
                 }
 
@@ -198,8 +206,9 @@ namespace Task_Management_System.Controllers
             }
             catch (Exception ex)
             {
+                _logger.LogError(ex, "Database Error");
                 Response.StatusCode = 500;
-                return Json(new { success = false, ms = ex.Message });
+                return Json(new { success = false });
             }
         }
 
@@ -210,7 +219,7 @@ namespace Task_Management_System.Controllers
             {
                 if (string.IsNullOrWhiteSpace(UserOTP))
                 {
-                    return Json(new { success = false, message = "Please enter OTP." });
+                    return Json(new { success = false});
                 }
 
                 string? sessionOtp = HttpContext.Session.GetString("otp");
@@ -256,8 +265,9 @@ namespace Task_Management_System.Controllers
             }
             catch (Exception ex)
             {
+                _logger.LogError(ex, "Database Error");
                 Response.StatusCode = 500;
-                return Json(new { success = false, ms = ex.Message });
+                return Json(new { success = false });
             }
         }
 

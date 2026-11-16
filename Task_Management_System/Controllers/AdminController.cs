@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using System.Xml.Linq;
 using Task_Management_System.Models;
 using Microsoft.AspNetCore.Mvc.NewtonsoftJson;
+using Task_Management_System.Services;
 
 namespace Task_Management_System.Controllers
 {
@@ -14,32 +15,41 @@ namespace Task_Management_System.Controllers
     {
         private readonly IDBLayer db;
         private readonly IEmailService _emailService;
-        public AdminController(IDBLayer _db, IEmailService EmailService)
+        private readonly ILogger<AiController> _logger;
+        public AdminController(IDBLayer _db, IEmailService EmailService, ILogger<AiController> logger)
         {
             db = _db;
             _emailService = EmailService;
+            _logger = logger;
         }
-        public async Task<IActionResult> Index()
+
+        public IActionResult Index()
+        {
+           return View();
+        }
+
+        public async Task<IActionResult> GetCounts()
         {
             try
             {
-                DataTable totals = await db.TableAsync("sp_Users", new SqlParameter[]
+                DataTable counts = await db.TableAsync("sp_Users", new SqlParameter[]
                 {
                     new SqlParameter("@action" , "totalCounts")
                 });
 
-                ViewBag.totalProject = totals.Rows[0]["totalProject"].ToString();
-                ViewBag.totalTask = totals.Rows[0]["totalTask"].ToString();
-                ViewBag.totalUser = totals.Rows[0]["totalUser"].ToString();
-                ViewBag.LoginUser = User.FindFirst("name")?.Value;
+                if (counts.Rows.Count > 0)
+                {
+                    return Json(new{success = true, data = counts }); 
+                }
+                return Json(new { success = false});
+
             }
             catch (Exception ex)
             {
+                _logger.LogError(ex, "Database Error");
                 Response.StatusCode = 500;
-                return Json(new { success = false , ms = ex.Message });
+                return Json(new { success = false });
             }
-
-            return View();
         }
 
         public async Task<ActionResult> GetUser()
@@ -61,8 +71,9 @@ namespace Task_Management_System.Controllers
             }
             catch (Exception ex)
             {
+                _logger.LogError(ex, "Database Error");
                 Response.StatusCode = 500;
-                return Json(new { success = false , ms = ex.Message });
+                return Json(new { success = false });
             }
 
         }
@@ -84,9 +95,10 @@ namespace Task_Management_System.Controllers
             }
             catch (Exception ex)
             {
+                _logger.LogError(ex, "Database Error");
                 Response.StatusCode = 500;
-                return Json(new { success = false , ms = ex.Message});
-            } 
+                return Json(new { success = false });
+            }
         }
 
         public async Task<ActionResult> selectByProjectId(int? id)
@@ -109,9 +121,10 @@ namespace Task_Management_System.Controllers
             }
             catch (Exception ex)
             {
+                _logger.LogError(ex, "Database Error");
                 Response.StatusCode = 500;
-                return Json(new { success = false, ms = ex.Message });
-            } 
+                return Json(new { success = false });
+            }
         }
 
         [HttpPost]
@@ -142,9 +155,10 @@ namespace Task_Management_System.Controllers
             }
             catch (Exception ex)
             {
+                _logger.LogError(ex, "Database Error");
                 Response.StatusCode = 500;
-                return Json(new { success = false, ms = ex.Message });
-            } 
+                return Json(new { success = false });
+            }
         }
 
         [HttpPost]
@@ -176,9 +190,10 @@ namespace Task_Management_System.Controllers
             }
             catch (Exception ex)
             {
+                _logger.LogError(ex, "Database Error");
                 Response.StatusCode = 500;
-                return Json(new { success = false, ms = ex.Message });
-            } 
+                return Json(new { success = false });
+            }
         }
          
         public ActionResult UserData()
@@ -186,8 +201,7 @@ namespace Task_Management_System.Controllers
             return View();
         }
         public ActionResult Project()
-        {
-            ViewBag.createdBy = User.FindFirst("name")?.Value;
+        { 
             return View();
         }
 
@@ -196,6 +210,19 @@ namespace Task_Management_System.Controllers
         {
             try
             {
+                if (!ModelState.IsValid)
+                {
+                    _logger.LogError("Please Fill All Required Fields");
+                    return Json(new { success = false });
+                }
+
+                string? user = User.FindFirst("userId")?.Value;
+                if (!int.TryParse(user , out int userId) || userId <= 0)
+                {
+                    _logger.LogError("User Id is not valid");
+                    return Json(new { success = false });
+                }
+
                 string action = p.projectID > 0 ? "edit" : "add";
 
                 SqlParameter msg = new SqlParameter("@msg", SqlDbType.NVarChar, 255)
@@ -203,13 +230,13 @@ namespace Task_Management_System.Controllers
                     Direction = ParameterDirection.Output
                 };
 
-                await db.ExecuteQueryAsync("sp_Projects", new SqlParameter[]
+                 await db.ExecuteQueryAsync("sp_Projects", new SqlParameter[]
                  {
                     new SqlParameter("@action" , action),
                     new SqlParameter("@projectID" , p.projectID!=0?p.projectID:(object)DBNull.Value),
-                    new SqlParameter("@projectName" , p.projectName),
-                    new SqlParameter("@Description" , p.Description),
-                    new SqlParameter("@createdBy" , User.FindFirst("userId")?.Value),
+                    new SqlParameter("@projectName" , p.projectName ?? (object)DBNull.Value),
+                    new SqlParameter("@Description" , p.Description ?? (object)DBNull.Value),
+                    new SqlParameter("@createdBy" , userId),
                     msg
                  });
 
@@ -224,10 +251,11 @@ namespace Task_Management_System.Controllers
             }
             catch (Exception ex)
             {
+                _logger.LogError(ex, "Database Error");
                 Response.StatusCode = 500;
-                return Json(new { success = false, ms = ex.Message });
+                return Json(new { success = false });
             }
-             
+
         }
         public ActionResult Task()
         {
@@ -240,6 +268,11 @@ namespace Task_Management_System.Controllers
 
             try
             {
+                if (!ModelState.IsValid)
+                {
+                    return Json(new { success = false });
+                }
+
                 string action = t.taskId > 0 ? "edit" : "add";
 
                 SqlParameter msg = new SqlParameter("@msg", SqlDbType.NVarChar, 255)
@@ -263,32 +296,29 @@ namespace Task_Management_System.Controllers
 
                 string ms = msg.Value?.ToString() ?? "";
 
-                if (ms == "success")
-                {
-                    string emailBody = $@"
+                string emailBody = $@"
                     <div>
                         <h3>Your Task is: {t.task}</h3>
                         <p><strong>Task Description:</strong> {t.Description}</p>
                         <p style='color: red;'><strong>Due Date:</strong> {t.DueDate}</p>
                     </div>";
 
-                    bool isSent =   await _emailService.SendEmail(  t.email, "You have a Task", emailBody  );
+                bool isSent = await _emailService.SendEmail(t.email!, "You have a Task", emailBody);
 
-                    if (isSent)
-                    {
-                        return Json(new { success = true });
-                    }
-
+                if (ms == "success" || isSent)
+                {
+                    return Json(new { success = true });
                 }
 
                 return Json(new { success = false });
             }
             catch (Exception ex)
             {
+                _logger.LogError(ex, "Database Error");
                 Response.StatusCode = 500;
-                return Json(new { success = false, ms = ex.Message });
+                return Json(new { success = false });
             }
-             
+
         }
 
         [HttpPost]
@@ -319,8 +349,9 @@ namespace Task_Management_System.Controllers
             }
             catch (Exception ex)
             {
+                _logger.LogError(ex, "Database Error");
                 Response.StatusCode = 500;
-                return Json(new { success = false, ms = ex.Message });
+                return Json(new { success = false });
             }
         }
 
@@ -351,8 +382,9 @@ namespace Task_Management_System.Controllers
             }
             catch (Exception ex)
             {
+                _logger.LogError(ex, "Database Error");
                 Response.StatusCode = 500;
-                return Json(new { success = false, ms = ex.Message });
+                return Json(new { success = false });
             }
         }
 
@@ -375,10 +407,11 @@ namespace Task_Management_System.Controllers
             }
             catch (Exception ex)
             {
+                _logger.LogError(ex, "Database Error");
                 Response.StatusCode = 500;
-                return Json(new { success = false, ms = ex.Message });
+                return Json(new { success = false });
             }
-             
+
         } 
     }
 }

@@ -30,17 +30,8 @@
                 }
 
             },
-            error: function (xhr, status, error) {
-                var err = null;
-                try {
-                    err = JSON.parse(xhr.responseText)
-                }
-                catch (e) {
-                    err = xhr.responseText
-                }
-
-                Swal.fire("Server Error", "Something went wrong, Please check your internet connection or Try Again Leter...!", "error")
-                console.log(err)
+            error: function () {
+                Swal.fire("Server Error", "Please Check Your Internet Connection or Try Again Later!", "error");
             }
         })
     }
@@ -62,9 +53,7 @@
 
                     $.each(res.data, function (index, d) {
                         $("#projectId").append(
-                            `
-                         <option value="${d.projectID}"> ${d.projectName} </option>
-                        `
+                            `  <option value="${d.projectID}"> ${d.projectName} </option> `
                         );
                     })
                 }
@@ -72,17 +61,8 @@
                     Swal.fire("Error", "No Data Found in get Prj Task!", "error");
                 }
             },
-            error: function (xhr, status, error) {
-                var err = null;
-                try {
-                    err = JSON.parse(xhr.responseText)
-                }
-                catch (e) {
-                    err = xhr.responseText
-                }
-
-                Swal.fire("Server Error", "Something went wrong, Please check your internet connection or Try Again Leter...!", "error")
-                console.log(err)
+            error: function () {
+                Swal.fire("Server Error", "Please Check Your Internet Connection or Try Again Later!", "error");
             }
         })
     }
@@ -157,17 +137,8 @@
                     $('#TaskTable').DataTable();
                 }
             },
-            error: function (xhr, status, error) {
-                var err = null;
-                try {
-                    err = JSON.parse(xhr.responseText)
-                }
-                catch (e) {
-                    err = xhr.responseText
-                }
-
-                Swal.fire("Server Error", "Something went wrong, Please check your internet connection or Try Again Leter...!", "error")
-                console.log(err)
+            error: function () {
+                Swal.fire("Server Error", "Please Check Your Internet Connection or Try Again Later!", "error");
             }
         });
     }
@@ -226,17 +197,8 @@
 
                 TaskTable();
             },
-            error: function (xhr, status, error) {
-                var err = null;
-                try {
-                    err = JSON.parse(xhr.responseText)
-                }
-                catch (e) {
-                    err = xhr.responseText
-                }
-
-                Swal.fire("Server Error", "Something went wrong, Please check your internet connection or Try Again Leter...!", "error")
-                console.log(err)
+            error: function () {
+                Swal.fire("Server Error", "Please Check Your Internet Connection or Try Again Later!", "error");
             }
         })
     })
@@ -245,7 +207,7 @@
         var id = $(this).data("id");
         Swal.fire({
             title: "Are you sure?",
-            text: "You want to Deleted this Task?",
+            text: "Do You Really Want To Delete This Task?",
             icon: "warning",
             showCancelButton: true,
 
@@ -264,19 +226,9 @@
                         }
 
                         TaskTable();
-
                     },
-                    error: function (xhr, status, error) {
-                        var err = null;
-                        try {
-                            err = JSON.parse(xhr.responseText)
-                        }
-                        catch (e) {
-                            err = xhr.responseText
-                        }
-
-                        Swal.fire("Server Error", "Something went wrong, Please check your internet connection or Try Again Leter...!", "error")
-                        console.log(err)
+                    error: function () {
+                        Swal.fire("Server Error", "Please Check Your Internet Connection or Try Again Later!", "error");
                     }
                 })
             }
@@ -307,28 +259,19 @@
             },
             success: function (res) {
                 if (res.success) {
-                    Swal.fire("Success", res.message || "Task assigned successfully!", "success");
+                    Swal.fire("Success", "Task assigned successfully!", "success");
                     form.reset();
                     btn.val("Add Task");
                     $("#TaskForm h2").text("Add Task");
                     TaskTable();
                 }
                 else {
-                    Swal.fire("Error", res.message || "Command Unsuccessful", "error");
+                    Swal.fire("Error", "Command Unsuccessful", "error");
                 }
 
             },
-            error: function (xhr, status, error) {
-                var err = null;
-                try {
-                    err = JSON.parse(xhr.responseText)
-                }
-                catch (e) {
-                    err = xhr.responseText
-                }
-
-                Swal.fire("Server Error", "Something went wrong, Please check your internet connection or Try Again Leter...!", "error")
-                console.log(err)
+            error: function () {
+                Swal.fire("Server Error", "Please Check Your Internet Connection or Try Again Later!", "error");
             },
             complete: function () {
                 btn.prop("disabled", false);

@@ -11,7 +11,7 @@
                 <input type="text" name="Description" id="Description" placeholder="Enter Project Description..." class="form-control" required />
 
                 <label>Created By</label>
-                <input type="text" name="createdBy" id="createdBy" class="form-control" readonly value="@ViewBag.createdBy" />
+                <input type="text" name="createdBy" id="createdBy" class="form-control" readonly value="@User.FindFirst("name")?.Value" required />
 
                 <div class="text-center d-block my-4">
                     <input type="reset" value="Clear" class="btn btn-outline-dark  " />

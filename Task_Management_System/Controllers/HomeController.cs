@@ -1,18 +1,13 @@
-using BCrypt;
-using BCrypt.Net;
+using EmailValidation;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.Data.SqlClient; 
+using Microsoft.Data.SqlClient;
 using System.Data;
-using Microsoft.AspNetCore.Mvc.NewtonsoftJson;
 using System.Diagnostics;
-using System.Net;
 using System.Security.Claims;
-using System.Security.Cryptography;
-using System.Threading.Tasks;
-using EmailValidation;
 using Task_Management_System.Models;
+using Task_Management_System.Services;
 
 namespace Task_Management_System.Controllers
 {
@@ -20,13 +15,20 @@ namespace Task_Management_System.Controllers
     {
         private readonly IDBLayer db;
         private readonly IEmailService emailService;
-        public HomeController(IDBLayer _db, IEmailService _emailService)
+        private readonly ILogger<HomeController> _logger;
+        public HomeController(IDBLayer _db, IEmailService _emailService, ILogger<HomeController> logger)
         {
             db = _db;
             emailService = _emailService;
+            _logger = logger;
         }
 
         public IActionResult Index()
+        {
+            return View();
+        }
+
+        public IActionResult AccessDeniedPage()
         {
             return View();
         }
@@ -43,9 +45,9 @@ namespace Task_Management_System.Controllers
             {
                 if (!ModelState.IsValid)
                 {
-                    return Json(new { success = false , ms = "pleaseFillMandatoryFields"});
+                    return Json(new { success = false, ms = "pleaseFillMandatoryFields" });
                 }
-            
+
                 if (!string.IsNullOrWhiteSpace(s.email))
                 {
                     var isValid = EmailValidator.Validate(s.email);
@@ -53,7 +55,7 @@ namespace Task_Management_System.Controllers
                     {
                         return Json(new { success = false, ms = "invalidEmail" });
                     }
-                    
+
                 }
 
                 string? hashPass = null;
@@ -67,7 +69,7 @@ namespace Task_Management_System.Controllers
 
                 if (!allowRoles.Contains(s.role))
                 {
-                    return Json(new {success=false,ms="invalidRole"});
+                    return Json(new { success = false, ms = "invalidRole" });
                 }
 
                 SqlParameter msg = new SqlParameter("@msg", SqlDbType.NVarChar, 255)
@@ -85,7 +87,7 @@ namespace Task_Management_System.Controllers
                     msg
                 });
 
-                string? ms = msg.Value?.ToString()??"";
+                string? ms = msg.Value?.ToString() ?? "";
 
                 if (ms == "success")
                 {
@@ -101,9 +103,9 @@ namespace Task_Management_System.Controllers
             catch (Exception ex)
             {
                 Response.StatusCode = 500;
-                return Json(new {success=false , ms = ex.Message});
+                return Json(new { success = false, ms = ex.Message });
             }
-          
+
         }
 
         [HttpPost]
@@ -117,24 +119,29 @@ namespace Task_Management_System.Controllers
                     Direction = ParameterDirection.Output
                 };
 
-                 await db.ExecuteQueryAsync("sp_Users", new SqlParameter[]
-                 {
+                await db.ExecuteQueryAsync("sp_Users", new SqlParameter[]
+                {
                     new SqlParameter("@action" , "edit"),
                     new SqlParameter("@userId" , s.id),
                     new SqlParameter("@name" , s.name ),
                     new SqlParameter("@role" ,s.role ),
                     msg
-                 });
+                });
 
                 string? ms = msg.Value?.ToString() ?? "";
 
                 if (ms == "success")
                 {
-                    return Json(new { success = true , ms=ms});
+                    return Json(new { success = true, ms = ms });
                 }
                 return Json(new { success = false });
             }
-            catch(Exception ex) { Response.StatusCode = 500; return Json(new {success = false , ms = ex.Message}); }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Database Error");
+                Response.StatusCode = 500;
+                return Json(new { success = false });
+            }
         }
 
         public ActionResult Login()
@@ -154,9 +161,9 @@ namespace Task_Management_System.Controllers
 
                 DataTable dt = await db.TableAsync("sp_Users", new SqlParameter[]
                 {
-                new SqlParameter("@action" , "selectOne"),
-                new SqlParameter("@email" ,l.email),
-                msg
+                    new SqlParameter("@action" , "selectOne"),
+                    new SqlParameter("@email" ,l.email),
+                    msg
                 });
 
                 string? ms = msg.Value?.ToString() ?? "";
@@ -176,28 +183,46 @@ namespace Task_Management_System.Controllers
 
                 if (hashPass)
                 {
-                    var claims = new List<Claim>
-                    {
-                        new Claim("userId" , dt.Rows[0]["userId"].ToString()!),
-                        new Claim("name" , dt.Rows[0]["name"].ToString()!),
-                        new Claim("email" , dt.Rows[0]["email"].ToString()!),
-                        new Claim(ClaimTypes.Role , roles)
-                    };
-
-                    var identity = new ClaimsIdentity(claims, CookieAuthenticationDefaults.AuthenticationScheme);
-                    await HttpContext.SignInAsync(new ClaimsPrincipal(identity));
-
                     if (ms == "success")
                     {
-                        return Json(new { success = true, ms=ms, userName = dt.Rows[0]["name"], userRole = roles });
+                        var prop = new AuthenticationProperties
+                        {
+                            IsPersistent = l.remember,
+                            ExpiresUtc = l.remember ? DateTimeOffset.UtcNow.AddDays(7) : null,
+                        };
+
+                        var claims = new List<Claim>
+                        {
+                            new Claim("userId" , dt.Rows[0]["userId"].ToString()!),
+                            new Claim("name" , dt.Rows[0]["name"].ToString()!),
+                            new Claim("email" , dt.Rows[0]["email"].ToString()!),
+                            new Claim(ClaimTypes.Role , roles!)
+                        };
+
+                        var identity = new ClaimsIdentity(claims, CookieAuthenticationDefaults.AuthenticationScheme);
+                        await HttpContext.SignInAsync(new ClaimsPrincipal(identity), prop);
+
+                        //string url = roles == "admin" ? Url.Action("Index", "Admin")! : Url.Action("Index", "Employee")!;
+                         
+                        string url = roles?.ToLower() switch
+                        {
+                            "admin" => Url.Action("Index", "Admin")!, 
+                            "employee" => Url.Action("Index", "Employee")!,
+                            "hr" => Url.Action("index" , "Employee")!,
+                            "manager" => Url.Action("index" , "Employee")!,
+                            _ => Url.Action("Login", "Home")!    //fallback
+                        };
+
+                        return Json(new { success = true, ms = ms, userName = dt.Rows[0]["name"], userRole = roles, url = url });
                     }
                 }
-                return Json(new { success = false});
+                return Json(new { success = false });
             }
             catch (Exception ex)
             {
+                _logger.LogError(ex, "Database Error");
                 Response.StatusCode = 500;
-                return Json(new { success = false, ms = ex.Message });
+                return Json(new { success = false });
             }
         }
 
@@ -229,14 +254,15 @@ namespace Task_Management_System.Controllers
                     return Json(new { success = true, data = dt });
                 }
 
-                return Json(new { success = false});
+                return Json(new { success = false });
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
+                _logger.LogError(ex, "Database Error");
                 Response.StatusCode = 500;
-                return Json(new { success = false, ms = ex.Message });
+                return Json(new { success = false });
             }
-             
+
         }
 
         [HttpPost]
@@ -244,6 +270,11 @@ namespace Task_Management_System.Controllers
         {
             try
             {
+                if (string.IsNullOrWhiteSpace(cmt))
+                {
+                    return Json(new { success = false });
+                }
+
                 SqlParameter msg = new SqlParameter("@msg", SqlDbType.NVarChar, 255)
                 {
                     Direction = ParameterDirection.Output
@@ -261,7 +292,7 @@ namespace Task_Management_System.Controllers
                 string ms = msg.Value?.ToString() ?? "";
 
                 if (ms == "success")
-                { 
+                {
                     return Json(new { success = true });
                 }
 
@@ -269,10 +300,11 @@ namespace Task_Management_System.Controllers
             }
             catch (Exception ex)
             {
+                _logger.LogError(ex, "Database Error");
                 Response.StatusCode = 500;
-                return Json(new { success = false, ms = ex.Message });
+                return Json(new { success = false });
             }
-            
+
         }
 
         [HttpPost]
@@ -285,12 +317,12 @@ namespace Task_Management_System.Controllers
                     Direction = ParameterDirection.Output
                 };
 
-                 await db.ExecuteQueryAsync("sp_TaskComments", new SqlParameter[]
-                 {
+                await db.ExecuteQueryAsync("sp_TaskComments", new SqlParameter[]
+                {
                     new SqlParameter("@action" , "delete"),
                     new SqlParameter("@commentId" , id),
                     msg
-                 });
+                });
 
                 string ms = msg.Value?.ToString() ?? "";
 
@@ -303,20 +335,29 @@ namespace Task_Management_System.Controllers
             }
             catch (Exception ex)
             {
+                _logger.LogError(ex, "Database Error");
                 Response.StatusCode = 500;
-                return Json(new { success = false, ms = ex.Message });
+                return Json(new { success = false });
             }
-             
+
         }
 
         public async Task<ActionResult> Logout()
         {
-            await HttpContext.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme);
-            return RedirectToAction("Login");
-         
+            try
+            {
+                await HttpContext.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme);
+                return RedirectToAction("Login");
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Database Error");
+                return RedirectToAction("Login");
+            }
+
         }
 
-        [ResponseCache(Duration =0, Location =ResponseCacheLocation.None,NoStore =true)]
+        [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
         public IActionResult Error()
         {
             return View(new ErrorViewModel
@@ -345,8 +386,9 @@ namespace Task_Management_System.Controllers
             }
             catch (Exception ex)
             {
+                _logger.LogError(ex, "Database Error");
                 Response.StatusCode = 500;
-                return Json(new { success = false, message = ex.Message });
+                return Json(new { success = false });
             }
 
         }

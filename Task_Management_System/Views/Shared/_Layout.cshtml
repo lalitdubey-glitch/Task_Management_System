@@ -25,7 +25,7 @@
                 <div class="navbar-collapse collapse d-sm-inline-flex justify-content-between">
                     <ul class="navbar-nav flex-grow-1">
                       
-                       @if(!User.Identity.IsAuthenticated){
+                       @if(!User.Identity!.IsAuthenticated){
                         <li class="nav-item">
                             <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Index">Home</a>
                         </li>
@@ -59,13 +59,10 @@
                                 <a class="nav-link text-dark" asp-area="" asp-controller="Employee" asp-action="index">Dashboard</a>
                             </li>
 
-                         
- 
-
                         }
                         @if (User.Identity.IsAuthenticated)
                         {
-                            <div class="nav-item end-0 ms-sm-auto d-flex ">
+                            <li class="nav-item end-0 ms-sm-auto d-flex ">
                                 <span class="mx-3">
                                     <a class="btn btn-primary" data-bs-toggle="offcanvas" href="#newComments" role="button" aria-controls="newComments">
                                         <i class="fa-regular fa-comment"></i>
@@ -75,7 +72,7 @@
                                     <a class="nav-link text-white btn-sm btn-danger rounded-pill text-center px-3" asp-area="" asp-controller="Home" asp-action="Logout"><i class="fa-solid fa-right-from-bracket"></i></a>
                                 </span>
 
-                            </div>
+                            </li>
                            
                         }
                        

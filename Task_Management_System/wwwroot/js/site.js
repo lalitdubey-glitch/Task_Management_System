@@ -50,22 +50,13 @@
                     Swal.fire("Error", "User Not Added!", "error");
                 }
             },
-            error: function (xhr, status, error) {
-                var err = null;
-                try {
-                    err = JSON.parse(xhr.responseText)
-                }
-                catch (e) {
-                    err = xhr.responseText
-                }
-
+            error: function () {
                 Swal.fire("Server Error", "Please Check Your Internet Connection or Try Again Later!", "error");
-                console.log(err)
-
             }
         })
     })
 
+    //Login
     $("#BtnLogin").on("click", function () {
         var formData = new FormData(document.getElementById("loginForm"));
 
@@ -92,43 +83,18 @@
                         text: "Welcome ! " + res.userName + " Redirecting in a moment...",
                         icon: "success",
                         showConfirmButton: false,
-                        timer:2000
-                    }).then(() => { 
-                        if (res.userRole == "admin") {
-                            location.href = "/admin/index"
-                        }
-                        else if (res.userRole == "hr") {
-                            location.href = "/employee/index"
-                        }
-                        else if (res.userRole == "manager") {
-                            location.href = "/employee/index"
-                        }
-                        else if (res.userRole == "employee") {
-                            location.href = "/employee/index"
-                        }
-                        else{
-                            location.href = "/home/index"
-                        }
-                        
+                        timer:1500
+                    }).then(() => {  
+                        window.location.href = res.url;
                     })
                     document.getElementById('loginForm').reset(); 
                 } 
                 else {
-                    Swal.fire("Error", "Email or Password is not correct! Try Again!", "error");
+                    Swal.fire("Warning", "Email or Password is not correct! Try Again!", "warning");
                 }
             },
-            error: function (xhr, status, error) {
-                var err = null;
-                try {
-                    err = JSON.parse(xhr.responseText)
-                }
-                catch (e) {
-                    err = xhr.responseText
-                }
-
+            error: function (xhr, status, error) { 
                 Swal.fire("Server Error", "Please Check Your Internet Connection or Try Again Later!", "error");
-                console.log(err)
-
             }
         })
     })
@@ -175,26 +141,16 @@ function PolishWithAI() {
                 Swal.fire({
                     icon: "success",
                     title: "Polished!",
-                    text: "Comment professional format me update ho gaya hai.",
+                    text: "Comment Polished",
                     timer: 1500,
                     showConfirmButton: false
                 });
             } else {
-                Swal.fire("Error", res.message || "Failed to polish comment", "error");
+                Swal.fire("Warning", "Failed to polish comment, Try Again!", "warning");
             }
         },
-        error: function (xhr, status, error) {
-            var err = null;
-            try {
-                err = JSON.parse(xhr.responseText)
-            }
-            catch (e) {
-                err = xhr.responseText
-            }
-
+        error: function () {
             Swal.fire("Server Error", "Please Check Your Internet Connection or Try Again Later!", "error");
-            console.log(err)
-
         },
         complete: function () {
             $("#btnPolishCmt").prop("disabled", false);

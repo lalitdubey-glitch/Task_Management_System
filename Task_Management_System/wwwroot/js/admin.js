@@ -2,6 +2,7 @@
 
     LoadProjectsDropdown();
     UserTable();
+    RenderChart();
 
     function UserTable() {
         $.ajax({
@@ -13,7 +14,7 @@
                     $("#userTable tbody").empty();
                 } 
 
-                if (res.data.length > 0) { 
+                if (res.success && res.data.length > 0) {
                     $.each(res.data, function (index, data) {
                         $("#userTable tbody").append(`
                         <tr>
@@ -31,23 +32,16 @@
 
                     `)
                     })
-                }
 
-                $('#userTable').DataTable();
-                 
+                    $('#userTable').DataTable();
+                }
+                else {
+                    Swal.fire("Error", "No User Found!", "error");
+                }
             },
-            error: function (xhr, status, error) {
-                var err = null;
-                try {
-                    err = JSON.parse(xhr.responseText)
-                }
-                catch (e) {
-                    err = xhr.responseText
-                }
-
-                Swal.fire("Server Error", "Something went wrong, Please check your internet connection or Try Again Leter...!", "error")
-                console.log(err)
-            }
+            error: function () {
+                Swal.fire("Server Error", "Please Check Your Internet Connection or Try Again Later!", "error");
+            },
         })
     }
 
@@ -62,7 +56,6 @@
         $("#role").val($(this).data("role")); 
 
     })
-
 
     $("#SaveEdit").on("click", function () {
         var formData = new FormData(document.getElementById("editForm"))
@@ -82,17 +75,8 @@
                     Swal.fire("Error", "User Not Edited", "error");
                 }
             },
-            error: function (xhr, status, error) {
-                var err = null;
-                try {
-                    err = JSON.parse(xhr.responseText)
-                }
-                catch (e) {
-                    err = xhr.responseText
-                }
-
-                Swal.fire("Server Error", "Something went wrong, Please check your internet connection or Try Again Leter...!", "error")
-                console.log(err)
+            error: function () {
+                Swal.fire("Server Error", "Please Check Your Internet Connection or Try Again Later!", "error");
             }
         })
     })
@@ -125,60 +109,61 @@
                             Swal.fire("Error", "User Not Deleted!", "error");
                         }
                     },
-                    error: function (xhr, status, error) {
-                        var err = null;
-                        try {
-                            err = JSON.parse(xhr.responseText)
-                        }
-                        catch (e) {
-                            err = xhr.responseText
-                        }
-
-                        Swal.fire("Server Error", "Something went wrong, Please check your internet connection or Try Again Leter...!", "error")
-                        console.log(err)
+                    error: function () {
+                        Swal.fire("Server Error", "Please Check Your Internet Connection or Try Again Later!", "error");
                     }
                 })
                  
             }
         });
+    }) 
+}) 
 
-        
-    })
+function RenderChart() {
+    var canvas = document.getElementById('statsChart');
+    if (!canvas) return;  
 
-    var canvas = document.getElementById('statsChart')
-    if (canvas) {
-        var ctx = document.getElementById('statsChart').getContext('2d');
-        new Chart(ctx, {
-            type: 'polarArea',
-            data: {
-                labels: ['Users', 'Projects', 'Tasks'],
-                datasets: [{
-                    label: 'Total Count',
-                    data: [
-                        $("#user").val(),
-                        $("#project").val(),
-                        $("#task").val()
-                    ],
-                    backgroundColor: [
-                        'blue',
-                        'green',
-                        'red'
-                    ]
-                }]
-            },
-            options: {
-                responsive: true,
-                maintainAspectRatio: true
+    $.ajax({
+        url: "/admin/GetCounts",
+        type: "GET",
+        success: function (res) {
+            if (res.success && res.data && res.data.length > 0) {
+                var counts = res.data[0];
+                 
+                var totalUser = counts.totalUser || 0;
+                var totalProject = counts.totalProject || 0;
+                var totalTask = counts.totalTask || 0;
+                 
+                var existingChart = Chart.getChart(canvas);
+                if (existingChart) {
+                    existingChart.destroy();
+                }
+
+                var ctx = canvas.getContext('2d');
+                new Chart(ctx, {
+                    type: 'polarArea',
+                    data: {
+                        labels: ['Users', 'Projects', 'Tasks'],
+                        datasets: [{
+                            label: 'Total Count',
+                            data: [totalUser, totalProject, totalTask],
+                            backgroundColor: ['blue', 'green', 'red']
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: true
+                    }
+                });
             }
-        });
-    }
-
-    
-     
-})
+        },
+        error: function () {
+            Swal.fire("Server Error", "Please Check Your Internet Connection or Try Again Later!", "error");
+        }
+    });
+}
 
 function LoadProjectsDropdown() {
-
     $.ajax({
         url: "/Admin/GetProject",
         type: "GET",
@@ -193,20 +178,11 @@ function LoadProjectsDropdown() {
                     ddl.append(`<option value="${item.projectID}">${item.projectName}</option>`);
                 });
             } else {
-                ddl.append('<option value="">No projects found in GetProject</option>');
+                ddl.append('<option value="">No Projects Found!</option>');
             }
         },
-        error: function (xhr, status, error) {
-            var err = null;
-            try {
-                err = JSON.parse(xhr.responseText)
-            }
-            catch (e) {
-                err = xhr.responseText
-            }
-
-            Swal.fire("Server Error", "Something went wrong, Please check your internet connection or Try Again Leter...!", "error")
-            console.log(err)
+        error: function () {
+            Swal.fire("Server Error", "Please Check Your Internet Connection or Try Again Later!", "error");
         }
     });
 }
@@ -272,7 +248,7 @@ function AskCopilot() {
                 chatBox.append(`
                     <div class="mb-2">
                         <div class="p-2 bg-light border-start border-danger border-3 rounded small text-danger">
-                            ${res.message || "Failed to process question. Try Again!"}
+                            ${"Failed to process question. Try Again!"}
                         </div>
                     </div>
                 `);
